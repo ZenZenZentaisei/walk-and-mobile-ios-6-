@@ -23,6 +23,9 @@
                                 <rect key="frame" x="323" y="433" width="46" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
+                                <connections>
+                                    <action selector="stop:" destination="BYZ-38-t0r" eventType="touchUpInside" id="RY5-LJ-FJT"/>
+                                </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="確認中..." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7bH-u2-xST">
                                 <rect key="frame" x="20" y="475" width="374" height="288"/>
@@ -61,6 +64,12 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
+                    <connections>
+                        <outlet property="angle" destination="2PF-2c-2Sc" id="ZvO-4o-cZn"/>
+                        <outlet property="cameraImageView" destination="w6u-WB-bWY" id="6e3-nr-b4i"/>
+                        <outlet property="code" destination="gik-dj-MD7" id="17F-PK-AfN"/>
+                        <outlet property="codetext" destination="7bH-u2-xST" id="QKO-9D-Kel"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>

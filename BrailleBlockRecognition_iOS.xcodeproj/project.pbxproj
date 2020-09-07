@@ -19,6 +19,8 @@
 		D43116CE250614180050EA18 /* BrailleBlockRecognition_iOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43116CD250614180050EA18 /* BrailleBlockRecognition_iOSTests.swift */; };
 		D43116D9250614180050EA18 /* BrailleBlockRecognition_iOSUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43116D8250614180050EA18 /* BrailleBlockRecognition_iOSUITests.swift */; };
 		D43116E8250614FC0050EA18 /* OpenCV.mm in Sources */ = {isa = PBXBuildFile; fileRef = D43116E7250614FC0050EA18 /* OpenCV.mm */; };
+		D43116EB25061BF30050EA18 /* Reader.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43116EA25061BF30050EA18 /* Reader.swift */; };
+		D43116ED25061C150050EA18 /* Audio.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43116EC25061C150050EA18 /* Audio.swift */; };
 		EC41C639E4BD1F29C854CD91 /* Pods_BrailleBlockRecognition_iOS_BrailleBlockRecognition_iOSUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4259F743859C1438448F4C31 /* Pods_BrailleBlockRecognition_iOS_BrailleBlockRecognition_iOSUITests.framework */; };
 /* End PBXBuildFile section */
 
@@ -66,6 +68,8 @@
 		D43116E6250614FC0050EA18 /* BrailleBlockRecognition_iOS-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BrailleBlockRecognition_iOS-Bridging-Header.h"; sourceTree = "<group>"; };
 		D43116E7250614FC0050EA18 /* OpenCV.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OpenCV.mm; sourceTree = "<group>"; };
 		D43116E9250615580050EA18 /* OpenCV.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenCV.h; sourceTree = "<group>"; };
+		D43116EA25061BF30050EA18 /* Reader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reader.swift; sourceTree = "<group>"; };
+		D43116EC25061C150050EA18 /* Audio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Audio.swift; sourceTree = "<group>"; };
 		FAE17BA8A8334A33E0998506 /* Pods-BrailleBlockRecognition_iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BrailleBlockRecognition_iOS.release.xcconfig"; path = "Target Support Files/Pods-BrailleBlockRecognition_iOS/Pods-BrailleBlockRecognition_iOS.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -156,6 +160,8 @@
 				D43116E7250614FC0050EA18 /* OpenCV.mm */,
 				D43116E6250614FC0050EA18 /* BrailleBlockRecognition_iOS-Bridging-Header.h */,
 				D43116E9250615580050EA18 /* OpenCV.h */,
+				D43116EA25061BF30050EA18 /* Reader.swift */,
+				D43116EC25061C150050EA18 /* Audio.swift */,
 			);
 			path = BrailleBlockRecognition_iOS;
 			sourceTree = "<group>";
@@ -382,11 +388,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D43116EB25061BF30050EA18 /* Reader.swift in Sources */,
 				D43116B8250614170050EA18 /* ViewController.swift in Sources */,
 				D43116E8250614FC0050EA18 /* OpenCV.mm in Sources */,
 				D43116BE250614170050EA18 /* BrailleBlockRecognition_iOS.xcdatamodeld in Sources */,
 				D43116B4250614170050EA18 /* AppDelegate.swift in Sources */,
 				D43116B6250614170050EA18 /* SceneDelegate.swift in Sources */,
+				D43116ED25061C150050EA18 /* Audio.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
