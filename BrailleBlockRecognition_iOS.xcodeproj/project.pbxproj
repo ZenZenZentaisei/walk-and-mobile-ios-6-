@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		51A391FD39C09D56ED48F8EE /* Pods_BrailleBlockRecognition_iOSTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32DF2DDB4C94B154B1D7292C /* Pods_BrailleBlockRecognition_iOSTests.framework */; };
+		8D9CB313D6892B59B710070F /* Pods_BrailleBlockRecognition_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF79FCDCC250C931FCAFF289 /* Pods_BrailleBlockRecognition_iOS.framework */; };
 		D43116B4250614170050EA18 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43116B3250614170050EA18 /* AppDelegate.swift */; };
 		D43116B6250614170050EA18 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43116B5250614170050EA18 /* SceneDelegate.swift */; };
 		D43116B8250614170050EA18 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43116B7250614170050EA18 /* ViewController.swift */; };
@@ -16,6 +18,8 @@
 		D43116C3250614170050EA18 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D43116C1250614170050EA18 /* LaunchScreen.storyboard */; };
 		D43116CE250614180050EA18 /* BrailleBlockRecognition_iOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43116CD250614180050EA18 /* BrailleBlockRecognition_iOSTests.swift */; };
 		D43116D9250614180050EA18 /* BrailleBlockRecognition_iOSUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43116D8250614180050EA18 /* BrailleBlockRecognition_iOSUITests.swift */; };
+		D43116E8250614FC0050EA18 /* OpenCV.mm in Sources */ = {isa = PBXBuildFile; fileRef = D43116E7250614FC0050EA18 /* OpenCV.mm */; };
+		EC41C639E4BD1F29C854CD91 /* Pods_BrailleBlockRecognition_iOS_BrailleBlockRecognition_iOSUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4259F743859C1438448F4C31 /* Pods_BrailleBlockRecognition_iOS_BrailleBlockRecognition_iOSUITests.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +40,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		32DF2DDB4C94B154B1D7292C /* Pods_BrailleBlockRecognition_iOSTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BrailleBlockRecognition_iOSTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		420F7E173E980EB64B240BF2 /* Pods-BrailleBlockRecognition_iOS-BrailleBlockRecognition_iOSUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BrailleBlockRecognition_iOS-BrailleBlockRecognition_iOSUITests.debug.xcconfig"; path = "Target Support Files/Pods-BrailleBlockRecognition_iOS-BrailleBlockRecognition_iOSUITests/Pods-BrailleBlockRecognition_iOS-BrailleBlockRecognition_iOSUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		4259F743859C1438448F4C31 /* Pods_BrailleBlockRecognition_iOS_BrailleBlockRecognition_iOSUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BrailleBlockRecognition_iOS_BrailleBlockRecognition_iOSUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		596A7911805DA1367BD26499 /* Pods-BrailleBlockRecognition_iOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BrailleBlockRecognition_iOSTests.release.xcconfig"; path = "Target Support Files/Pods-BrailleBlockRecognition_iOSTests/Pods-BrailleBlockRecognition_iOSTests.release.xcconfig"; sourceTree = "<group>"; };
+		6A053D04E23151E458B284CC /* Pods-BrailleBlockRecognition_iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BrailleBlockRecognition_iOS.debug.xcconfig"; path = "Target Support Files/Pods-BrailleBlockRecognition_iOS/Pods-BrailleBlockRecognition_iOS.debug.xcconfig"; sourceTree = "<group>"; };
+		80AA82A590105E15FF963B83 /* Pods-BrailleBlockRecognition_iOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BrailleBlockRecognition_iOSTests.debug.xcconfig"; path = "Target Support Files/Pods-BrailleBlockRecognition_iOSTests/Pods-BrailleBlockRecognition_iOSTests.debug.xcconfig"; sourceTree = "<group>"; };
+		9FDF5C6B9C2D85BBE431ACA8 /* Pods-BrailleBlockRecognition_iOS-BrailleBlockRecognition_iOSUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BrailleBlockRecognition_iOS-BrailleBlockRecognition_iOSUITests.release.xcconfig"; path = "Target Support Files/Pods-BrailleBlockRecognition_iOS-BrailleBlockRecognition_iOSUITests/Pods-BrailleBlockRecognition_iOS-BrailleBlockRecognition_iOSUITests.release.xcconfig"; sourceTree = "<group>"; };
+		AF79FCDCC250C931FCAFF289 /* Pods_BrailleBlockRecognition_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BrailleBlockRecognition_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D43116B0250614170050EA18 /* BrailleBlockRecognition_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BrailleBlockRecognition_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D43116B3250614170050EA18 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D43116B5250614170050EA18 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -51,6 +63,10 @@
 		D43116D4250614180050EA18 /* BrailleBlockRecognition_iOSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BrailleBlockRecognition_iOSUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D43116D8250614180050EA18 /* BrailleBlockRecognition_iOSUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrailleBlockRecognition_iOSUITests.swift; sourceTree = "<group>"; };
 		D43116DA250614180050EA18 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D43116E6250614FC0050EA18 /* BrailleBlockRecognition_iOS-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BrailleBlockRecognition_iOS-Bridging-Header.h"; sourceTree = "<group>"; };
+		D43116E7250614FC0050EA18 /* OpenCV.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OpenCV.mm; sourceTree = "<group>"; };
+		D43116E9250615580050EA18 /* OpenCV.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenCV.h; sourceTree = "<group>"; };
+		FAE17BA8A8334A33E0998506 /* Pods-BrailleBlockRecognition_iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BrailleBlockRecognition_iOS.release.xcconfig"; path = "Target Support Files/Pods-BrailleBlockRecognition_iOS/Pods-BrailleBlockRecognition_iOS.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +74,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8D9CB313D6892B59B710070F /* Pods_BrailleBlockRecognition_iOS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +82,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				51A391FD39C09D56ED48F8EE /* Pods_BrailleBlockRecognition_iOSTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,12 +90,36 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EC41C639E4BD1F29C854CD91 /* Pods_BrailleBlockRecognition_iOS_BrailleBlockRecognition_iOSUITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2CD9EAFDBE42DEF8DB67814E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				AF79FCDCC250C931FCAFF289 /* Pods_BrailleBlockRecognition_iOS.framework */,
+				4259F743859C1438448F4C31 /* Pods_BrailleBlockRecognition_iOS_BrailleBlockRecognition_iOSUITests.framework */,
+				32DF2DDB4C94B154B1D7292C /* Pods_BrailleBlockRecognition_iOSTests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		AF05769BCEEBC67148DF8D10 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				6A053D04E23151E458B284CC /* Pods-BrailleBlockRecognition_iOS.debug.xcconfig */,
+				FAE17BA8A8334A33E0998506 /* Pods-BrailleBlockRecognition_iOS.release.xcconfig */,
+				420F7E173E980EB64B240BF2 /* Pods-BrailleBlockRecognition_iOS-BrailleBlockRecognition_iOSUITests.debug.xcconfig */,
+				9FDF5C6B9C2D85BBE431ACA8 /* Pods-BrailleBlockRecognition_iOS-BrailleBlockRecognition_iOSUITests.release.xcconfig */,
+				80AA82A590105E15FF963B83 /* Pods-BrailleBlockRecognition_iOSTests.debug.xcconfig */,
+				596A7911805DA1367BD26499 /* Pods-BrailleBlockRecognition_iOSTests.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		D43116A7250614170050EA18 = {
 			isa = PBXGroup;
 			children = (
@@ -85,6 +127,8 @@
 				D43116CC250614180050EA18 /* BrailleBlockRecognition_iOSTests */,
 				D43116D7250614180050EA18 /* BrailleBlockRecognition_iOSUITests */,
 				D43116B1250614170050EA18 /* Products */,
+				AF05769BCEEBC67148DF8D10 /* Pods */,
+				2CD9EAFDBE42DEF8DB67814E /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -109,6 +153,9 @@
 				D43116C1250614170050EA18 /* LaunchScreen.storyboard */,
 				D43116C4250614170050EA18 /* Info.plist */,
 				D43116BC250614170050EA18 /* BrailleBlockRecognition_iOS.xcdatamodeld */,
+				D43116E7250614FC0050EA18 /* OpenCV.mm */,
+				D43116E6250614FC0050EA18 /* BrailleBlockRecognition_iOS-Bridging-Header.h */,
+				D43116E9250615580050EA18 /* OpenCV.h */,
 			);
 			path = BrailleBlockRecognition_iOS;
 			sourceTree = "<group>";
@@ -138,6 +185,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = D43116DD250614180050EA18 /* Build configuration list for PBXNativeTarget "BrailleBlockRecognition_iOS" */;
 			buildPhases = (
+				26D3A20F2AA00DDEDE56D343 /* [CP] Check Pods Manifest.lock */,
 				D43116AC250614170050EA18 /* Sources */,
 				D43116AD250614170050EA18 /* Frameworks */,
 				D43116AE250614170050EA18 /* Resources */,
@@ -155,6 +203,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = D43116E0250614180050EA18 /* Build configuration list for PBXNativeTarget "BrailleBlockRecognition_iOSTests" */;
 			buildPhases = (
+				5427BD093D75F555115C3714 /* [CP] Check Pods Manifest.lock */,
 				D43116C5250614180050EA18 /* Sources */,
 				D43116C6250614180050EA18 /* Frameworks */,
 				D43116C7250614180050EA18 /* Resources */,
@@ -173,6 +222,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = D43116E3250614180050EA18 /* Build configuration list for PBXNativeTarget "BrailleBlockRecognition_iOSUITests" */;
 			buildPhases = (
+				A99F4BC8C11871BB2A465CDF /* [CP] Check Pods Manifest.lock */,
 				D43116D0250614180050EA18 /* Sources */,
 				D43116D1250614180050EA18 /* Frameworks */,
 				D43116D2250614180050EA18 /* Resources */,
@@ -199,6 +249,7 @@
 				TargetAttributes = {
 					D43116AF250614170050EA18 = {
 						CreatedOnToolsVersion = 11.7;
+						LastSwiftMigration = 1170;
 					};
 					D43116C8250614180050EA18 = {
 						CreatedOnToolsVersion = 11.7;
@@ -257,12 +308,82 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		26D3A20F2AA00DDEDE56D343 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-BrailleBlockRecognition_iOS-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		5427BD093D75F555115C3714 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-BrailleBlockRecognition_iOSTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A99F4BC8C11871BB2A465CDF /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-BrailleBlockRecognition_iOS-BrailleBlockRecognition_iOSUITests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		D43116AC250614170050EA18 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				D43116B8250614170050EA18 /* ViewController.swift in Sources */,
+				D43116E8250614FC0050EA18 /* OpenCV.mm in Sources */,
 				D43116BE250614170050EA18 /* BrailleBlockRecognition_iOS.xcdatamodeld in Sources */,
 				D43116B4250614170050EA18 /* AppDelegate.swift in Sources */,
 				D43116B6250614170050EA18 /* SceneDelegate.swift in Sources */,
@@ -436,8 +557,10 @@
 		};
 		D43116DE250614180050EA18 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6A053D04E23151E458B284CC /* Pods-BrailleBlockRecognition_iOS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 8748GXXZPF;
 				INFOPLIST_FILE = BrailleBlockRecognition_iOS/Info.plist;
@@ -447,6 +570,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.matuilab.BrailleBlockRecognition-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "BrailleBlockRecognition_iOS/BrailleBlockRecognition_iOS-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -454,8 +579,10 @@
 		};
 		D43116DF250614180050EA18 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = FAE17BA8A8334A33E0998506 /* Pods-BrailleBlockRecognition_iOS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 8748GXXZPF;
 				INFOPLIST_FILE = BrailleBlockRecognition_iOS/Info.plist;
@@ -465,6 +592,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "jp.matuilab.BrailleBlockRecognition-iOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "BrailleBlockRecognition_iOS/BrailleBlockRecognition_iOS-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -472,6 +600,7 @@
 		};
 		D43116E1250614180050EA18 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 80AA82A590105E15FF963B83 /* Pods-BrailleBlockRecognition_iOSTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -494,6 +623,7 @@
 		};
 		D43116E2250614180050EA18 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 596A7911805DA1367BD26499 /* Pods-BrailleBlockRecognition_iOSTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -516,6 +646,7 @@
 		};
 		D43116E4250614180050EA18 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 420F7E173E980EB64B240BF2 /* Pods-BrailleBlockRecognition_iOS-BrailleBlockRecognition_iOSUITests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -536,6 +667,7 @@
 		};
 		D43116E5250614180050EA18 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9FDF5C6B9C2D85BBE431ACA8 /* Pods-BrailleBlockRecognition_iOS-BrailleBlockRecognition_iOSUITests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
