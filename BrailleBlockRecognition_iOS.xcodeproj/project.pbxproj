@@ -1,0 +1,612 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		D43116B4250614170050EA18 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43116B3250614170050EA18 /* AppDelegate.swift */; };
+		D43116B6250614170050EA18 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43116B5250614170050EA18 /* SceneDelegate.swift */; };
+		D43116B8250614170050EA18 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43116B7250614170050EA18 /* ViewController.swift */; };
+		D43116BB250614170050EA18 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D43116B9250614170050EA18 /* Main.storyboard */; };
+		D43116BE250614170050EA18 /* BrailleBlockRecognition_iOS.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D43116BC250614170050EA18 /* BrailleBlockRecognition_iOS.xcdatamodeld */; };
+		D43116C0250614170050EA18 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D43116BF250614170050EA18 /* Assets.xcassets */; };
+		D43116C3250614170050EA18 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D43116C1250614170050EA18 /* LaunchScreen.storyboard */; };
+		D43116CE250614180050EA18 /* BrailleBlockRecognition_iOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43116CD250614180050EA18 /* BrailleBlockRecognition_iOSTests.swift */; };
+		D43116D9250614180050EA18 /* BrailleBlockRecognition_iOSUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43116D8250614180050EA18 /* BrailleBlockRecognition_iOSUITests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		D43116CA250614180050EA18 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D43116A8250614170050EA18 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D43116AF250614170050EA18;
+			remoteInfo = BrailleBlockRecognition_iOS;
+		};
+		D43116D5250614180050EA18 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D43116A8250614170050EA18 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D43116AF250614170050EA18;
+			remoteInfo = BrailleBlockRecognition_iOS;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		D43116B0250614170050EA18 /* BrailleBlockRecognition_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BrailleBlockRecognition_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D43116B3250614170050EA18 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		D43116B5250614170050EA18 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		D43116B7250614170050EA18 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		D43116BA250614170050EA18 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		D43116BD250614170050EA18 /* BrailleBlockRecognition_iOS.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = BrailleBlockRecognition_iOS.xcdatamodel; sourceTree = "<group>"; };
+		D43116BF250614170050EA18 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		D43116C2250614170050EA18 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		D43116C4250614170050EA18 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D43116C9250614180050EA18 /* BrailleBlockRecognition_iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BrailleBlockRecognition_iOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D43116CD250614180050EA18 /* BrailleBlockRecognition_iOSTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrailleBlockRecognition_iOSTests.swift; sourceTree = "<group>"; };
+		D43116CF250614180050EA18 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D43116D4250614180050EA18 /* BrailleBlockRecognition_iOSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BrailleBlockRecognition_iOSUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D43116D8250614180050EA18 /* BrailleBlockRecognition_iOSUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrailleBlockRecognition_iOSUITests.swift; sourceTree = "<group>"; };
+		D43116DA250614180050EA18 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D43116AD250614170050EA18 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D43116C6250614180050EA18 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D43116D1250614180050EA18 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		D43116A7250614170050EA18 = {
+			isa = PBXGroup;
+			children = (
+				D43116B2250614170050EA18 /* BrailleBlockRecognition_iOS */,
+				D43116CC250614180050EA18 /* BrailleBlockRecognition_iOSTests */,
+				D43116D7250614180050EA18 /* BrailleBlockRecognition_iOSUITests */,
+				D43116B1250614170050EA18 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		D43116B1250614170050EA18 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D43116B0250614170050EA18 /* BrailleBlockRecognition_iOS.app */,
+				D43116C9250614180050EA18 /* BrailleBlockRecognition_iOSTests.xctest */,
+				D43116D4250614180050EA18 /* BrailleBlockRecognition_iOSUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D43116B2250614170050EA18 /* BrailleBlockRecognition_iOS */ = {
+			isa = PBXGroup;
+			children = (
+				D43116B3250614170050EA18 /* AppDelegate.swift */,
+				D43116B5250614170050EA18 /* SceneDelegate.swift */,
+				D43116B7250614170050EA18 /* ViewController.swift */,
+				D43116B9250614170050EA18 /* Main.storyboard */,
+				D43116BF250614170050EA18 /* Assets.xcassets */,
+				D43116C1250614170050EA18 /* LaunchScreen.storyboard */,
+				D43116C4250614170050EA18 /* Info.plist */,
+				D43116BC250614170050EA18 /* BrailleBlockRecognition_iOS.xcdatamodeld */,
+			);
+			path = BrailleBlockRecognition_iOS;
+			sourceTree = "<group>";
+		};
+		D43116CC250614180050EA18 /* BrailleBlockRecognition_iOSTests */ = {
+			isa = PBXGroup;
+			children = (
+				D43116CD250614180050EA18 /* BrailleBlockRecognition_iOSTests.swift */,
+				D43116CF250614180050EA18 /* Info.plist */,
+			);
+			path = BrailleBlockRecognition_iOSTests;
+			sourceTree = "<group>";
+		};
+		D43116D7250614180050EA18 /* BrailleBlockRecognition_iOSUITests */ = {
+			isa = PBXGroup;
+			children = (
+				D43116D8250614180050EA18 /* BrailleBlockRecognition_iOSUITests.swift */,
+				D43116DA250614180050EA18 /* Info.plist */,
+			);
+			path = BrailleBlockRecognition_iOSUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		D43116AF250614170050EA18 /* BrailleBlockRecognition_iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D43116DD250614180050EA18 /* Build configuration list for PBXNativeTarget "BrailleBlockRecognition_iOS" */;
+			buildPhases = (
+				D43116AC250614170050EA18 /* Sources */,
+				D43116AD250614170050EA18 /* Frameworks */,
+				D43116AE250614170050EA18 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BrailleBlockRecognition_iOS;
+			productName = BrailleBlockRecognition_iOS;
+			productReference = D43116B0250614170050EA18 /* BrailleBlockRecognition_iOS.app */;
+			productType = "com.apple.product-type.application";
+		};
+		D43116C8250614180050EA18 /* BrailleBlockRecognition_iOSTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D43116E0250614180050EA18 /* Build configuration list for PBXNativeTarget "BrailleBlockRecognition_iOSTests" */;
+			buildPhases = (
+				D43116C5250614180050EA18 /* Sources */,
+				D43116C6250614180050EA18 /* Frameworks */,
+				D43116C7250614180050EA18 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D43116CB250614180050EA18 /* PBXTargetDependency */,
+			);
+			name = BrailleBlockRecognition_iOSTests;
+			productName = BrailleBlockRecognition_iOSTests;
+			productReference = D43116C9250614180050EA18 /* BrailleBlockRecognition_iOSTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		D43116D3250614180050EA18 /* BrailleBlockRecognition_iOSUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D43116E3250614180050EA18 /* Build configuration list for PBXNativeTarget "BrailleBlockRecognition_iOSUITests" */;
+			buildPhases = (
+				D43116D0250614180050EA18 /* Sources */,
+				D43116D1250614180050EA18 /* Frameworks */,
+				D43116D2250614180050EA18 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D43116D6250614180050EA18 /* PBXTargetDependency */,
+			);
+			name = BrailleBlockRecognition_iOSUITests;
+			productName = BrailleBlockRecognition_iOSUITests;
+			productReference = D43116D4250614180050EA18 /* BrailleBlockRecognition_iOSUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D43116A8250614170050EA18 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1170;
+				LastUpgradeCheck = 1170;
+				ORGANIZATIONNAME = matuilab;
+				TargetAttributes = {
+					D43116AF250614170050EA18 = {
+						CreatedOnToolsVersion = 11.7;
+					};
+					D43116C8250614180050EA18 = {
+						CreatedOnToolsVersion = 11.7;
+						TestTargetID = D43116AF250614170050EA18;
+					};
+					D43116D3250614180050EA18 = {
+						CreatedOnToolsVersion = 11.7;
+						TestTargetID = D43116AF250614170050EA18;
+					};
+				};
+			};
+			buildConfigurationList = D43116AB250614170050EA18 /* Build configuration list for PBXProject "BrailleBlockRecognition_iOS" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = D43116A7250614170050EA18;
+			productRefGroup = D43116B1250614170050EA18 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D43116AF250614170050EA18 /* BrailleBlockRecognition_iOS */,
+				D43116C8250614180050EA18 /* BrailleBlockRecognition_iOSTests */,
+				D43116D3250614180050EA18 /* BrailleBlockRecognition_iOSUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		D43116AE250614170050EA18 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D43116C3250614170050EA18 /* LaunchScreen.storyboard in Resources */,
+				D43116C0250614170050EA18 /* Assets.xcassets in Resources */,
+				D43116BB250614170050EA18 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D43116C7250614180050EA18 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D43116D2250614180050EA18 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D43116AC250614170050EA18 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D43116B8250614170050EA18 /* ViewController.swift in Sources */,
+				D43116BE250614170050EA18 /* BrailleBlockRecognition_iOS.xcdatamodeld in Sources */,
+				D43116B4250614170050EA18 /* AppDelegate.swift in Sources */,
+				D43116B6250614170050EA18 /* SceneDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D43116C5250614180050EA18 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D43116CE250614180050EA18 /* BrailleBlockRecognition_iOSTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D43116D0250614180050EA18 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D43116D9250614180050EA18 /* BrailleBlockRecognition_iOSUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D43116CB250614180050EA18 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D43116AF250614170050EA18 /* BrailleBlockRecognition_iOS */;
+			targetProxy = D43116CA250614180050EA18 /* PBXContainerItemProxy */;
+		};
+		D43116D6250614180050EA18 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D43116AF250614170050EA18 /* BrailleBlockRecognition_iOS */;
+			targetProxy = D43116D5250614180050EA18 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		D43116B9250614170050EA18 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D43116BA250614170050EA18 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		D43116C1250614170050EA18 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				D43116C2250614170050EA18 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		D43116DB250614180050EA18 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.7;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		D43116DC250614180050EA18 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.7;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		D43116DE250614180050EA18 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 8748GXXZPF;
+				INFOPLIST_FILE = BrailleBlockRecognition_iOS/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "jp.matuilab.BrailleBlockRecognition-iOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		D43116DF250614180050EA18 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 8748GXXZPF;
+				INFOPLIST_FILE = BrailleBlockRecognition_iOS/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "jp.matuilab.BrailleBlockRecognition-iOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		D43116E1250614180050EA18 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 8748GXXZPF;
+				INFOPLIST_FILE = BrailleBlockRecognition_iOSTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.7;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "jp.matuilab.BrailleBlockRecognition-iOSTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BrailleBlockRecognition_iOS.app/BrailleBlockRecognition_iOS";
+			};
+			name = Debug;
+		};
+		D43116E2250614180050EA18 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 8748GXXZPF;
+				INFOPLIST_FILE = BrailleBlockRecognition_iOSTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.7;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "jp.matuilab.BrailleBlockRecognition-iOSTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BrailleBlockRecognition_iOS.app/BrailleBlockRecognition_iOS";
+			};
+			name = Release;
+		};
+		D43116E4250614180050EA18 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 8748GXXZPF;
+				INFOPLIST_FILE = BrailleBlockRecognition_iOSUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "jp.matuilab.BrailleBlockRecognition-iOSUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = BrailleBlockRecognition_iOS;
+			};
+			name = Debug;
+		};
+		D43116E5250614180050EA18 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 8748GXXZPF;
+				INFOPLIST_FILE = BrailleBlockRecognition_iOSUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "jp.matuilab.BrailleBlockRecognition-iOSUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = BrailleBlockRecognition_iOS;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		D43116AB250614170050EA18 /* Build configuration list for PBXProject "BrailleBlockRecognition_iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D43116DB250614180050EA18 /* Debug */,
+				D43116DC250614180050EA18 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D43116DD250614180050EA18 /* Build configuration list for PBXNativeTarget "BrailleBlockRecognition_iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D43116DE250614180050EA18 /* Debug */,
+				D43116DF250614180050EA18 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D43116E0250614180050EA18 /* Build configuration list for PBXNativeTarget "BrailleBlockRecognition_iOSTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D43116E1250614180050EA18 /* Debug */,
+				D43116E2250614180050EA18 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D43116E3250614180050EA18 /* Build configuration list for PBXNativeTarget "BrailleBlockRecognition_iOSUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D43116E4250614180050EA18 /* Debug */,
+				D43116E5250614180050EA18 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		D43116BC250614170050EA18 /* BrailleBlockRecognition_iOS.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				D43116BD250614170050EA18 /* BrailleBlockRecognition_iOS.xcdatamodel */,
+			);
+			currentVersion = D43116BD250614170050EA18 /* BrailleBlockRecognition_iOS.xcdatamodel */;
+			path = BrailleBlockRecognition_iOS.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = D43116A8250614170050EA18 /* Project object */;
+}
