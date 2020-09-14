@@ -1,6 +1,9 @@
 // OpenCV.mm
 
+#include <string>
+#include <vector>
 #import <opencv2/opencv.hpp>
+#import <opencv2/core.hpp>
 #import <opencv2/highgui.hpp>
 #import <opencv2/imgcodecs/ios.h>
 
@@ -56,7 +59,7 @@
     cv::Rect rect(0,0,300,270); //android→800:720
     cv::Mat image1(image0,rect);
     cv::Mat image2(image1.size(),CV_8UC3);
-    cvtColor(image1, image2, cv::COLOR_RGBA2BGR);
+    cv::cvtColor(image1, image2, cv::COLOR_RGBA2BGR);
     
     //int invmean0 = mean(image2)[0];
     
@@ -369,12 +372,12 @@ static void Black_point(const Mat& mt, int black[5][5], int X, int Y)
 static long Getcode( const Mat& image, int *X, int *Y,int &invmean)
 {
     int black[5][5];
-    
+
     unsigned char B[25];
     int xx=0;
     int yy=0;
     int max;
-    
+
     Mat img = image.clone();
     Mat img0,img1,mt,gray,gray1,pyr;
     Mat yellow=Mat(img.size(),CV_8UC3);
@@ -382,7 +385,7 @@ static long Getcode( const Mat& image, int *X, int *Y,int &invmean)
     Mat mask = Mat::zeros(img.rows, img.cols, CV_8UC1);
     vector<Mat> plane,pl0;
     vector<Mat> plane1;
-    /////////////////look-up-table
+/////////////////look-up-table
     double gamma = 1.8;                                    // ガンマ値
     Mat lookUp(1,256,CV_8U);
     uchar*  lut = lookUp.data;                                    // ルックアップテーブル用配列
@@ -390,9 +393,9 @@ static long Getcode( const Mat& image, int *X, int *Y,int &invmean)
         lut[i] = pow(i / 255.0, 1 / gamma) * 255.0;        // ガンマ補正式
     }
     //cv::LUT(src, cv::Mat(1, 256, CV_8UC1, lut), dst2);    // ルックアップテーブル変換
-    //////////////////////////////////
+//////////////////////////////////
     int invmean0;
-    
+
     medianBlur(img,img1,5);
     cvtColor(img1, gray1, COLOR_BGR2GRAY);
     //imshow("Getcode-gray",gray1);
@@ -411,7 +414,7 @@ static long Getcode( const Mat& image, int *X, int *Y,int &invmean)
                 b++;
             else  w++;
         }
-    
+
     split(img, plane);
     pl0.push_back(mask);//黒
     pl0.push_back(plane[1]);//G
@@ -420,7 +423,7 @@ static long Getcode( const Mat& image, int *X, int *Y,int &invmean)
     cvtColor(yellow,gray, COLOR_BGR2GRAY);
     //invmean=mean(gray)[0];
     printf("Get_code-Blgray-mean : %d\n" ,invmean);
-    
+
     if (b<w){// White TR
         bitwise_not(gray,gray);
         invmean=mean(gray)[0];
@@ -470,7 +473,8 @@ static long Getcode( const Mat& image, int *X, int *Y,int &invmean)
 
 ////////////////////////////////////////////////////////
     //if ((max < 150) || (max > 350)) return -1;/// max < 450 は大きすぎ?? 2019-2-18
-    if ((max < 120) || (max > 450)) return -1;/// min 150 はちいさい　350から380へ変更　2019-11-4
+    //if ((max < 120) || (max > 450)) return -1;/// min 150 はちいさい　350から380へ変更　2019-11-4
+    if ((max < 120) || (max > 600)) return -1;/// min 150 はちいさい　450から600へ変更　2020-8
 //////////////////////////////////以下　黒点数により　０か１に変換/////////////////////
     for ( int j=0; j<5; j++)
         for (int k=0; k<5; k++)
@@ -1368,9 +1372,7 @@ static int TRC=8;// 射影後の三角形のブレ範囲 +-5
 // Break  continue の使い方ミスで変更　2019-6-24
 static int FHomo(const Mat& image, vector<vector<cv::Point> >& sq, int sqindex, vector<vector<cv::Point> >& tr, int trindex, int &invmeanf)
 {
-    if ((sqindex == 0)||(trindex == 0)){
-        return -1;
-    }
+    if ((sqindex == 0)||(trindex == 0)) return -1;
     //printf("FHomo=SQ=%d TR=%d ",sqindex,trindex);
     Mat img = image.clone();
     int m=0;//for Tr
@@ -1751,9 +1753,7 @@ static int FHomo(const Mat& image, vector<vector<cv::Point> >& sq, int sqindex, 
 ///// コードが２種類以上で重複があった場合はどうするか　追加チェック必要　4-2
     int cnt=0;
     Code=0;
-    if (cindex==0){
-        return -1;
-    }
+    if (cindex==0) return -1;
 //printf("\ncode-index=%d\n ",cindex);
     if (cindex==1) {
         //printf("Single1-code=%ld Angle=%d \n",code[0],angl);//test
@@ -1856,8 +1856,4 @@ static int Trmask(const Mat& image, vector<vector<cv::Point> >& sq, int sqindex,
 
     return 0;    ////////////////////////////////
 }
-
-
-
-
 @end
