@@ -29,6 +29,8 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     var ManagedObjectContext = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     var audioPlayer = AVAudioPlayer()
+    
+    var config_bool = false
 
     @IBAction func stop(_ sender: Any) {
         
@@ -44,8 +46,29 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         }else{
             assert(false) //カメラが使えない
         }
+        config_bool = userDefaults.bool(forKey: "config_bool")
     }
-
+    
+    //値の送受信(設定画面)
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        //segueの指定は省く(今回は1対1なので)
+        
+       // if segue.identifier == "2" {
+        
+        let next = segue.destination as? Config
+        //値を送信
+        next?.config_bool = config_bool
+        //値を受信
+        next?.resultHandler = { setting in
+            self.config_bool = setting
+            //設定の保存
+            self.userDefaults.set(self.config_bool, forKey: "config_bool")
+        //}
+            
+        }
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -213,7 +236,8 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                         Reader().reader_IS(code: Int(resultCode),angle: Int(resultAngle))
                         //案内音声取得
                         let mp3 = String(format: "wm%05d_%d.mp3",resultCode,resultAngle)
-                        if (Audio().existingFile(fileName: mp3) == false){
+                        if (Audio().existingFile(fileName: mp3) == false ||
+                                (self.config_bool == true)){
                             Audio().writeAudio(mp3: mp3)
                         }
                         
@@ -279,7 +303,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         return resultImage
     }
 
-    //imageViewの大きさを調整
+    //imageViewの大きさを調整(いらないかも)
     func setImageViewLayout(preset: AVCaptureSession.Preset){
         let width = self.view.frame.width
         var height:CGFloat
@@ -325,22 +349,3 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         return modeList
     }
 }
-/*
-extension ViewController: AVAudioPlayerDelegate {
-    func playSound(name: String) {
-        guard let path = Bundle.main.path(forResource: name, ofType: "mp3") else {
-            print("音源ファイルが見つかりません")
-            return
-        }
-        do {
-            // AVAudioPlayerのインスタンス化
-            audioPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: path))
-            // AVAudioPlayerのデリゲートをセット
-            audioPlayer.delegate = self
-            // 音声の再生
-            audioPlayer.play()
-        } catch {
-        }
-    }
-}
-*/

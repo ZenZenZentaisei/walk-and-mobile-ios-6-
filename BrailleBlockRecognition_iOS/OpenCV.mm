@@ -271,6 +271,11 @@ static int GfindTr( const Mat& gray, int &X, int &Y )
                 ij = minl_return(ll);
                 X=(int)approx[ij].x +10;
                 Y=(int)approx[ij].y +20;
+                
+                ////////////// Xが大きすぎる場合に処理を終了する(応急処置)。
+                if(X > 1000) return -1;
+                ////////////// 2020-9-29
+                
                 printf( "Canny TR X=%d Y=%d \n", X,Y );
                 return 1;
                 //////////////////
@@ -302,6 +307,11 @@ static int GfindTr( const Mat& gray, int &X, int &Y )
                     ij = minl_return(ll);
                     X=(int)approx[ij].x +10;
                     Y=(int)approx[ij].y +20;
+                    
+                    ////////////// Xが大きすぎる場合に処理を終了する(応急処置)。
+                    if(X > 1000) return -1;
+                    ////////////// 2020-9-29
+                    
                     printf( "Adap TR X=%d Y=%d \n", X,Y );
                     return 1;
                 }
@@ -317,7 +327,6 @@ static int GfindTr( const Mat& gray, int &X, int &Y )
 ///////////////////////////////　２５個の突起の黒点数算出/////Get_codeよりcall
 static void Black_point(const Mat& mt, int black[5][5], int X, int Y)
 {
-
     int x,y,x0,y0;
     //int black[5][5];
     //////////////////// 周囲の枠を塗りつぶし/////// これは効果的　////////////////////
