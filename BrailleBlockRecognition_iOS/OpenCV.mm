@@ -20,8 +20,17 @@
     
     // *************** UIImage -> cv::Mat変換 ***************
     CGColorSpaceRef colorSpace = CGImageGetColorSpace(img.CGImage);
+    
+    //切り抜きサイズに合わせるため、拡大
+    //固定値でないと重くなる..
     CGFloat cols = img.size.width;
     CGFloat rows = img.size.height;
+    //CGFloat cols = 800;
+    //CGFloat rows = 1065
+    
+    //printf("%f",cols);
+    //printf("%f",rows);
+    
     
     cv::Mat Img(rows, cols, CV_8UC4);
     cv::Mat image0(rows, cols, CV_8UC3);
@@ -35,9 +44,13 @@
                                                     kCGBitmapByteOrderDefault);
 
     CGContextDrawImage(contextRef, CGRectMake(0, 0, cols, rows), img.CGImage);
+    
     CGContextRelease(contextRef);
+    CGColorSpaceRelease(colorSpace);
     
     image0 = cvMatC3(Img);
+    
+    //printf("|%d*%d| ",image0.cols,image0.rows);
 
     // *************** 処理 ***************
     std::vector<std::vector<cv::Point>> tr; // 三角形　エリア 座標
@@ -56,7 +69,12 @@
     sq.resize(40);
     sq.clear();
     
-    cv::Rect rect(0,0,300,270); //android→800:720
+    //cv::Rect rect(0,0,800,720);
+    //iPhoneの比に合わせる許可をもらったので
+    //cv::Rect rect(0,0,675,900);
+    cv::Rect rect(0,0,640,576);
+    
+    
     cv::Mat image1(image0,rect);
     cv::Mat image2(image1.size(),CV_8UC3);
     cv::cvtColor(image1, image2, cv::COLOR_RGBA2BGR);
@@ -86,13 +104,12 @@
     int invmeanf;
     int ret = FHomo(image, sq, sqindex, tr, trindex, invmeanf);//image--->image0
     cvtColor(image, image0, cv::COLOR_BGR2RGBA);
-    //NSLog(@"sq:%d,ti:%d,tr:%d",sqindex,tindex,trindex);
+
     // *************** cv::Mat → UIImage ***************
+    
     long code = Code;
     int  angle = Angl;
-    
-    
-    //NSLog("%d",i);
+
     UIImage *resultImg = MatToUIImage(image0);
     
     NSNumber *code_n = [NSNumber numberWithLong:code];
@@ -272,8 +289,8 @@ static int GfindTr( const Mat& gray, int &X, int &Y )
                 X=(int)approx[ij].x +10;
                 Y=(int)approx[ij].y +20;
                 
-                ////////////// Xが大きすぎる場合に処理を終了する(応急処置)。
-                if(X > 1000) return -1;
+                ////////////// XYが大きすぎる場合に処理を終了する(応急処置)。
+                if(X > 900 || Y > 900) return -1;
                 ////////////// 2020-9-29
                 
                 printf( "Canny TR X=%d Y=%d \n", X,Y );
@@ -308,8 +325,8 @@ static int GfindTr( const Mat& gray, int &X, int &Y )
                     X=(int)approx[ij].x +10;
                     Y=(int)approx[ij].y +20;
                     
-                    ////////////// Xが大きすぎる場合に処理を終了する(応急処置)。
-                    if(X > 1000) return -1;
+                    ////////////// XYが大きすぎる場合に処理を終了する(応急処置)。
+                    if(X > 900 || Y > 900) return -1;
                     ////////////// 2020-9-29
                     
                     printf( "Adap TR X=%d Y=%d \n", X,Y );
@@ -978,8 +995,7 @@ static int findSq( const Mat& image, const Mat& imageGR, vector<vector<cv::Point
     ///////////////////////////////////DIlate or Closing & findContours/////////////////////////////////
     ///// この後　Diliteした方がよいと思われるが？不明　Closing
     //morphologyEx(nh,close_img,MORPH_CLOSE,element,cv::Point(-1,-1),1);//6-10 変更した
-    dilate(nh, close_img, Mat(), cv::Point(-1,-1)); // この部分がすべて結果を左右する1-30
-    findContours(close_img, contours, RETR_LIST, CHAIN_APPROX_SIMPLE);// Orignal
+    dilate(nh, close_img, Mat(), cv::Point(-1,-1)); // この部分がすべて結果を左右する1-30    findContours(close_img, contours, RETR_LIST, CHAIN_APPROX_SIMPLE);// Orignal
     findContours(mbgr0, contours1, RETR_LIST, CHAIN_APPROX_SIMPLE);
     //// RETR_EXTERNALは個別に取れないのでやめたほうがよい2018-3-2
 
