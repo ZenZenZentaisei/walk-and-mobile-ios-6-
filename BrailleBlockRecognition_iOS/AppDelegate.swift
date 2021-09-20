@@ -11,11 +11,14 @@ import CoreData
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
-
+    
+    var localDB: [String: String] = [:]
+    var mp3: [String: String] = [:]
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        AppEventHandler.sharedInstance.startObserving()
+        
         return true
     }
 
@@ -80,3 +83,50 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 }
 
+
+class AppEventHandler: NSObject {
+    static let sharedInstance = AppEventHandler()
+
+    override private init() {
+        super.init()
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    func startObserving() {
+        // アプリ起動時
+        NotificationCenter.default.addObserver(self, selector: #selector(self.didFinishLaunch),
+                                               name: UIApplication.didFinishLaunchingNotification, object: nil)
+    }
+
+    // アプリ起動時の処理
+    @objc func didFinishLaunch() {
+        print("kidou")
+        Reader().httpGet(GuideVoice: false, language: true)
+        let appDelegate: AppDelegate = UIApplication.shared.delegate as! AppDelegate
+        let managedContext: NSManagedObjectContext = appDelegate.persistentContainer.viewContext
+        
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "BBlock")
+
+        do {
+            let myResults = try managedContext.fetch(fetchRequest)
+            
+
+            for myData in myResults {
+
+                let id = myData.value(forKey: "id") as! Int
+                let angle = myData.value(forKey: "angle") as! Int
+                let message = myData.value(forKey: "message") as! String
+                let mp3 = myData.value(forKey: "mp3") as? String
+                
+                appDelegate.localDB[String(id) + String(angle)] = message
+                appDelegate.mp3[String(id) + String(angle)] = mp3
+            }
+
+        } catch let error as NSError {
+            print("\(error), \(error.userInfo)")
+        }
+    }
+}

@@ -1,7 +1,5 @@
 // OpenCV.mm
 
-#include <string>
-#include <vector>
 #import <opencv2/opencv.hpp>
 #import <opencv2/core.hpp>
 #import <opencv2/highgui.hpp>
@@ -48,7 +46,9 @@
     CGContextRelease(contextRef);
     CGColorSpaceRelease(colorSpace);
     
+    
     image0 = cvMatC3(Img);
+    Img.release();
     
     //printf("|%d*%d| ",image0.cols,image0.rows);
 
@@ -69,10 +69,13 @@
     sq.resize(40);
     sq.clear();
     
+    /* 必要性がわからないのでコメントアウト
     //cv::Rect rect(0,0,800,720);
-    //iPhoneの比に合わせる許可をもらったので
-    //cv::Rect rect(0,0,675,900);
-    cv::Rect rect(0,0,640,576);
+    //iPhoneの比に合わせる許可をもらったので変更
+    //切り抜き画像(0.9倍)用
+    //cv::Rect rect(0,0,640,576);
+    //切り抜き画像(0.7倍)用
+    cv::Rect rect(0,0,520,470);
     
     
     cv::Mat image1(image0,rect);
@@ -80,6 +83,7 @@
     cv::cvtColor(image1, image2, cv::COLOR_RGBA2BGR);
     
     //int invmean0 = mean(image2)[0];
+    */
     
     cv::Mat image = cv::Mat(image0.size(),CV_8UC3);
     cv::cvtColor(image0, image, cv::COLOR_RGBA2BGR);
@@ -102,7 +106,7 @@
     trindex = Trcheck(Tr, tindex, tr);// ダブりチェックa
     
     int invmeanf;
-    int ret = FHomo(image, sq, sqindex, tr, trindex, invmeanf);//image--->image0
+    FHomo(image, sq, sqindex, tr, trindex, invmeanf);//image--->image0
     cvtColor(image, image0, cv::COLOR_BGR2RGBA);
 
     // *************** cv::Mat → UIImage ***************
@@ -111,6 +115,13 @@
     int  angle = Angl;
 
     UIImage *resultImg = MatToUIImage(image0);
+    
+    image0.release();
+    image.release();
+    img1.release();
+    img2.release();
+    img3.release();
+    img4.release();
     
     NSNumber *code_n = [NSNumber numberWithLong:code];
     NSNumber *angle_n = [NSNumber numberWithInt:angle];
@@ -123,6 +134,7 @@
 cv::Mat cvMatC3(cv::Mat cvMat){
     cv::Mat cvMatC3(cvMat.rows, cvMat.cols,CV_8UC3);
     cvMat.convertTo(cvMatC3, CV_8UC3);
+    cvMat.release();
     return cvMatC3;
 }
 //関数
@@ -265,7 +277,7 @@ static int GfindTr( const Mat& gray, int &X, int &Y )
     morphologyEx(gray0,mt0,MORPH_CLOSE,element,cv::Point(-1,-1),1);// 三角頂点がつながらないケースあり必要2019-12-29
     //imshow("Mor-TRCanny",mt0);
 
-    findContours(mt0, contours, RETR_LIST, CHAIN_APPROX_SIMPLE);
+    cv::findContours(mt0, contours, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);
 
     int t=0;              // 三角形個数
 
@@ -278,7 +290,6 @@ static int GfindTr( const Mat& gray, int &X, int &Y )
             //  approxPolyDP(Mat(contours[i]), approx, arcLength(Mat(contours[i]), true)*0.05, true);//0.05
             approxPolyDP(Mat(contours[i]), approx, arcLength(Mat(contours[i]), true)*0.05, true);
             if (approx.size() == 3 && t < 4 ){
-                printf( "TRC-Area=%f\n", area );
                 //polylines(imgSub, approx, true, Scalar(255), 2);// Test表示はここ
                 //imshow("FT-apl-Canny", imgSub);
                 t++;
@@ -291,9 +302,6 @@ static int GfindTr( const Mat& gray, int &X, int &Y )
                 
                 ////////////// XYが大きすぎる場合に処理を終了する(応急処置)。
                 if(X > 900 || Y > 900) return -1;
-                ////////////// 2020-9-29
-                
-                printf( "Canny TR X=%d Y=%d \n", X,Y );
                 return 1;
                 //////////////////
             }
@@ -306,7 +314,7 @@ static int GfindTr( const Mat& gray, int &X, int &Y )
         //imshow("FT-Adap", mt1);
         //adaptiveThreshold(imgsub,mt1,255,ADAPTIVE_THRESH_MEAN_C,THRESH_BINARY_INV,41,15);//白三角はこちらの方がよいかも？
         //imshow("TR-White-41-15", mt1);
-        findContours(mt, contours1, RETR_LIST, CHAIN_APPROX_SIMPLE);
+        cv::findContours(mt, contours1, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);
         for( size_t i = 0; i < contours1.size(); i++ )
         {
             if (t > 3) break;
@@ -424,9 +432,7 @@ static long Getcode( const Mat& image, int *X, int *Y,int &invmean)
 
     medianBlur(img,img1,5);
     cvtColor(img1, gray1, COLOR_BGR2GRAY);
-    //imshow("Getcode-gray",gray1);
-    //invmean=mean(gray1)[0];
-    printf("Get_code orignal-gray-mean : %d\n" ,invmean);//輝度の取得　２０１９－１２－２６
+
     //////TEST 2019-12-26 ////////////////////////////
     int Tx = (X[0] + X[1] + X[2])/3;// 三角内部が黒か白かチェック
     int Ty = (Y[0] + Y[1] + Y[2])/3;
@@ -447,18 +453,15 @@ static long Getcode( const Mat& image, int *X, int *Y,int &invmean)
     pl0.push_back(plane[2]);//R
     merge(pl0,yellow);
     cvtColor(yellow,gray, COLOR_BGR2GRAY);
-    //invmean=mean(gray)[0];
-    printf("Get_code-Blgray-mean : %d\n" ,invmean);
+
 
     if (b<w){// White TR
         bitwise_not(gray,gray);
         invmean=mean(gray)[0];
-        printf("Get_code Whgray-mean : %d\n" ,invmean);
     }
     ////////////////////////////////////////////////////
     //////// 三角形直角点 座標
     int ret = GfindTr(gray,xx,yy);
-    printf("\n FINDTR=%d xx=%d yy=%d X=%d Y=%d \n",ret,xx,yy,X[0],Y[0]);
     if(ret < 1){ xx=X[0]; yy=Y[0];}// xx yy がとれない場合　旧来の座標使用　・・・return -1 でもよいかも
     //////////////////////////////////////////////
     pyrDown(gray, pyr, cv::Size(image.cols/2, image.rows/2));
@@ -472,9 +475,6 @@ static long Getcode( const Mat& image, int *X, int *Y,int &invmean)
         if(invmean < 90){
             LUT(ygray0,lookUp,ygray0);
             invmean0=mean(ygray0)[0];
-            printf("Whgray-mean < 90 : %d\n" ,invmean);
-            //adaptiveThreshold(ygray0,mt,255,ADAPTIVE_THRESH_MEAN_C,THRESH_BINARY_INV,41,21);//for White TR 41,21
-            //adaptiveThreshold(ygray0,mt,255,ADAPTIVE_THRESH_MEAN_C,THRESH_BINARY_INV,67,35);
         }
 
         adaptiveThreshold(ygray0,mt,255,ADAPTIVE_THRESH_MEAN_C,THRESH_BINARY_INV,67,35);//BEST
@@ -483,12 +483,7 @@ static long Getcode( const Mat& image, int *X, int *Y,int &invmean)
     //////////////////////////////////////
     //Black_point(mt,black,X[0],Y[0]);
     Black_point(mt,black,xx,yy);
-    //////////////////////////////////////// ここまでは通常　////////////
-    for (int i=0;i<5;i++){//print only
-        printf(" \n");
-        for(int j=0;j<5;j++)
-            printf(" %3d ",black[i][j]);
-    }
+
 
     max = 0;
     black[0][0]=0;  black[0][1]=0;  black[1][0]=0;  // 一番左とその隣、その下は使わない
@@ -583,8 +578,8 @@ static int mask( const Mat& img1, const Mat& image, const Mat& imageGR ,vector<v
 /////////////////////////////////////////////////////////////////////////////////////
     morphologyEx(nh,gray,MORPH_CLOSE,element,cv::Point(-1,-1),1);
     // ここはClosingの方がよいかも
-    findContours(gray, contours0, RETR_LIST, CHAIN_APPROX_SIMPLE);
-    findContours(l_b, contours, RETR_LIST, CHAIN_APPROX_SIMPLE);///4-30
+    cv::findContours(gray, contours0, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);
+    cv::findContours(l_b, contours, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);///4-30
     //////////////////////
     //const int drawAllContours = -1;//すべて表示
     ///////////////////////////////////////////
@@ -592,7 +587,7 @@ static int mask( const Mat& img1, const Mat& image, const Mat& imageGR ,vector<v
     int s2=0;
     int s3=0;
     int s4=0;
-    int aps;
+    unsigned long aps;
     double cosine,maxCosine;
 
 
@@ -809,9 +804,9 @@ static int findTr( const Mat& image, const Mat& imageW, vector<vector<cv::Point>
     //imshow("White-TR-41-21", mt1);
     adaptiveThreshold(grayw,mt2,255,ADAPTIVE_THRESH_MEAN_C,THRESH_BINARY_INV,41,15);//白三角はこちらの方がよいかも？
     //imshow("TR-White-41-15", mt1);
-    findContours(mt0, contours, RETR_LIST, CHAIN_APPROX_SIMPLE);
-    findContours(mt1, contours1, RETR_LIST, CHAIN_APPROX_SIMPLE);
-    findContours(mt2, contours2, RETR_LIST, CHAIN_APPROX_SIMPLE);
+    cv::findContours(mt0, contours, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);
+    cv::findContours(mt1, contours1, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);
+    cv::findContours(mt2, contours2, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);
 
     int t=0;              // 三角形個数
 
@@ -949,7 +944,7 @@ static int findSq( const Mat& image, const Mat& imageGR, vector<vector<cv::Point
     Mat element = getStructuringElement(MORPH_RECT,cv::Size(3,3));
     Mat close_img;// dilate の代わり
     double area,area2;
-    int aps,aps2;
+    unsigned long aps,aps2;
     Mat canny0,canny1;
     ////////////////////////////filter は検討要する
     medianBlur(image,mt,5);// 追加2-20 おかしかったら削除のこと
@@ -996,7 +991,8 @@ static int findSq( const Mat& image, const Mat& imageGR, vector<vector<cv::Point
     ///// この後　Diliteした方がよいと思われるが？不明　Closing
     //morphologyEx(nh,close_img,MORPH_CLOSE,element,cv::Point(-1,-1),1);//6-10 変更した
     dilate(nh, close_img, Mat(), cv::Point(-1,-1)); // この部分がすべて結果を左右する1-30    findContours(close_img, contours, RETR_LIST, CHAIN_APPROX_SIMPLE);// Orignal
-    findContours(mbgr0, contours1, RETR_LIST, CHAIN_APPROX_SIMPLE);
+    //printf("%d ",mbgr0.flags);
+    cv::findContours(mbgr0, contours1, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);
     //// RETR_EXTERNALは個別に取れないのでやめたほうがよい2018-3-2
 
     int s=0;int s2=0;int s3=0;
@@ -1358,7 +1354,7 @@ static int Trcheck(vector<vector<cv::Point> >& tr, int tindex, vector<vector<cv:
         int jmax = maxtd_return(lt);
         int jmin = mintd_return(lt);
         //printf("TRMax=%lf TRMin=%lf\n",lt[jmax],lt[jmin]);
-        if (lt[jmax] > lt[jmin]*25) { printf("\nTR-length Err \n"); continue;}//長辺が短辺の５倍以上なら除外２０１９－１１－１８
+        if (lt[jmax] > lt[jmin]*25) {continue;}//長辺が短辺の５倍以上なら除外２０１９－１１－１８
         //printf( "Next =%d ax,ay=%d %d cx,cy=%d %d",n, ax,ay,cx,cy );
         onaji=0;
         for (int t=0; t<s; t++)// セーブしてあるTr　ｓ個
@@ -1474,19 +1470,11 @@ static int FHomo(const Mat& image, vector<vector<cv::Point> >& sq, int sqindex, 
         //printf( "M1 M2=%lf %lf\n", m1,m2 );
         if (b1<=b3)
             if (m1<m2) {
-                //PlaySound("bu.wav",NULL,SND_FILENAME | SND_ASYNC | SND_NOSTOP);
-                //この部分再生タイミングによっては正常のコード音声が再生されない場合あり、コメントに2018-5-22
-                //  PlaySound("camera-err.wav",NULL,SND_FILENAME | SND_ASYNC | SND_NOSTOP);
-                //  polylines(image, sq[n], true, Scalar(255, 0, 0), 2);
-                //    imshow("ERR-SQ-TR", image);
-                printf("Camera dist err1");
                 continue;
             }
         if (b1>b3)
             if (4*((a3-a0)*(a3-a0)+(b3-b0)*(b3-b0)) < ((a3-a2)*(a3-a2)+(b3-b2)*(b3-b2))) {
-                //PlaySound("bu.wav",NULL,SND_FILENAME | SND_ASYNC | SND_NOSTOP);
-                //  PlaySound(".wav",NULL,SND_FILENAME | SND_ASYNC | SND_NOSTOP);
-                printf("Camera dist err2");//waitKey(0);
+
                 continue;
             }
         //printf("Fhomo-SQ-size-ok");
@@ -1576,7 +1564,7 @@ static int FHomo(const Mat& image, vector<vector<cv::Point> >& sq, int sqindex, 
                 for(int ij=0;ij<3;ij++)
                     ll[ij] =(ax[ii]-tx[ij])*(ax[ii]-tx[ij]) + (bx[ii]-ty[ij])*(bx[ii]-ty[ij]);
                 ij = minl_return(ll);
-                if (ll[ij]  < TRmin*0.5) { printf("TRmin Wrong \n");continue;}//四角点と三角直角点が近すぎる時エラー
+                if (ll[ij]  < TRmin*0.5) {continue;}//四角点と三角直角点が近すぎる時エラー
                 // *0.5 は意味不明？検討要す２０１９－６－３０
                 ////////////////////////////////
                 //////////並べ替え　右か左か不明なので　右回りにする////////////////////////////////////
@@ -1616,7 +1604,7 @@ static int FHomo(const Mat& image, vector<vector<cv::Point> >& sq, int sqindex, 
                 minc = maxtd_return(cosine);
                 //printf("IJ=%d Max-cos = %d  %lf %lf %lf \n",ij,minc,cosine[0],cosine[1],cosine[2]);
                 //if (minc != 0)
-                if (minc == 0){ printf("Tr-Angle NG! \n");
+                if (minc == 0){ 
                     continue;}
 
                 //////////////////////////////
@@ -1749,17 +1737,12 @@ static int FHomo(const Mat& image, vector<vector<cv::Point> >& sq, int sqindex, 
                 ////////////////////////////////test end
                 Mat im_out;
                 warpPerspective(image, im_out, h, cv::Size(250, 250));
-                //warpPerspective(image, im_out, h, cv::Size(300, 300));
-//imshow("FHomo-sq", im_out);
-                //int bw = Trf[m];// Black:0 or White:1 TR 追加２０１９－６－２８　画像反転フラグ
-                //invmeanf=mean(im_out)[0];
-                printf("rect-image-mean : %d\n" ,invmeanf);
+
                 //printf("Black or White? = %d \n",bw);
                 int invmean=0;
                 code[cindex] = Getcode(im_out,gx,gy,invmean);// 三角形の直角頂点を使うかは検討要す
                 invmeanf=invmean;
                 if (code[cindex] > 0){
-                    printf("    CODE=%ld ANGLE=%d \n",code[cindex], angl);
                     tmx[cindex] = m;// m番目の３角形を記録
                     Angle[cindex] = angl;
                     cindex++;

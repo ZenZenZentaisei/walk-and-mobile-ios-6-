@@ -1,16 +1,23 @@
 //
 //  ViewController.swift
 
-
+//import Network
 import UIKit
 import AVFoundation
 import CoreData
+import Network
 
-class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
+class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate,AVAudioPlayerDelegate {
     @IBOutlet weak var cameraImageView: UIImageView!
     @IBOutlet weak var code: UITextField!
     @IBOutlet weak var angle: UITextField!
     @IBOutlet weak var codetext: UILabel!
+    
+  
+
+    var audioPlayer = AVAudioPlayer()
+    
+    var reproduction = false
     
     
     var openCV = OpenCV()
@@ -19,23 +26,26 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     var device: AVCaptureDevice! //カメラ
     var output: AVCaptureVideoDataOutput! //出力先
     
-    var userDefaults = UserDefaults.standard
+    weak var ManagedObjectContext = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
-    var dialogCheck = false
-    var DLwait = false
     
-    var ManagedObjectContext = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    
-    var audioPlayer = AVAudioPlayer()
-    
-    var config_bool = false
+    var configBool = false
     var GuideVoice = true
     var stop_bool = false
+    var dialogCheck = false
+    var DLwait = false
+    var networkBool = false
+    //ネットワーク通信確認用
+    let monitor = NWPathMonitor()
+    let queue = DispatchQueue(label: "Monitor")
+    //本体設定の言語(t:日本語、f:英語)
+    var langBool = true
 
     //音声停止ボタン 現在の再生、同code、angleでの連続再生を停止させる。
     @IBAction func stop(_ sender: Any) {
         audioPlayer.stop()
         stop_bool = true
+        reproduction = false
         
     }
     //自動スリープを無効化
@@ -46,33 +56,55 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        //音声データ格納用フォルダ作成
+        Audio().createFolder(addFolder: "message")
+        Audio().createFolder(addFolder: "message_en")
 
         if initCamera() {
             session.startRunning()
         }else{
             assert(false) //カメラが使えない
         }
-        config_bool = userDefaults.bool(forKey: "config_bool")
-        
+
         //URLジャンプから戻ってきたことを検知
         NotificationCenter.default.addObserver(self, selector: #selector(ViewController.applicationWillEnterForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
+        
+        //ネットワーク確認
+        monitor.pathUpdateHandler = { path in
+            if path.status == .satisfied {
+                self.networkBool = true
+            } else {
+                self.networkBool = false
+            }
+        }
+        monitor.start(queue: queue)
+        
+        //本体設定の言語確認
+        //[0]は、使用言語の優先順序1位(主言語)
+        if(Locale.preferredLanguages[0] != "ja-JP"){
+            langBool = false
+        }
+        else{
+            langBool = true
+        }
+        
+        
+
     }
     
     //値の送受信(設定画面)
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
-        //segueの指定は省く(今回は1対1なので)
-        
-       // if segue.identifier == "2" {
+   
         
         let next = segue.destination as? Config
         //値を送信
-        next?.config_bool = config_bool
+        next?.configBool = configBool
         //値を受信
         next?.resultHandler = { setting in
-            self.config_bool = setting
+            self.configBool = setting
             //設定の保存
-            self.userDefaults.set(self.config_bool, forKey: "config_bool")
+//            self.userDefaults.set(self.configBool, forKey: "configBool")
         //}
             
         }
@@ -86,46 +118,23 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        self.userDefaults.set("案内文はここに表示されます", forKey: "IS")
+//        self.userDefaults.set("案内文はここに表示されます", forKey: "IS")
         
-        // ダイアログ(AlertControllerのインスタンス)を生成します
-        //   titleには、ダイアログの表題として表示される文字列を指定します
-        //   messageには、ダイアログの説明として表示される文字列を指定します
-        let dialog = UIAlertController(title: "事前ダウンロード",
-                                       message: "案内文章と案内音声をダウンロードしますか？ダウンロードしておくことでオフライン時でも使用できるようになります。案内音声は容量が大きいためWi-Fi環境でのダウンロードが推奨されます。(約12MB)",
-                                       preferredStyle: .alert)
-        // 選択肢(ボタン)を2つ(OKとCancel)追加します
-        //   titleには、選択肢として表示される文字列を指定します
-        //   styleには、通常は「.default」、キャンセルなど操作を無効にするものは「.cancel」、削除など注意して選択すべきものは「.destructive」を指定します
-        dialogCheck = false
-        dialog.addAction(UIAlertAction(title: "両方取得", style: .default,
-                                       handler:{ action in
-                                        self.GuideVoice = true
-                                        self.DLwait = true
-                                        self.userDefaults.set(self.DLwait, forKey: "dlwait")
-                                        Reader().httpGet(GuideVoice: self.GuideVoice)
-                                        self.dialogCheck = true
-        }))
-        dialog.addAction(UIAlertAction(title: "案内文章のみ取得", style: .default,
-                                       handler:{ action in
-                                        self.GuideVoice = false
-                                        self.DLwait = true
-                                        self.userDefaults.set(self.DLwait, forKey: "dlwait")
-                                        Reader().httpGet(GuideVoice: self.GuideVoice)
-                                        self.dialogCheck = true
-        }))
-        dialog.addAction(UIAlertAction(title: "キャンセル", style: .cancel,
-                                       handler:{ action in
-                                        self.dialogCheck = true
-                                                }))
-        // 生成したダイアログを実際に表示します
-        self.present(dialog, animated: true, completion: nil)
-        
+        if(networkBool){
+
+            // 選択肢(ボタン)を2つ(OKとCancel)追加します
+            //   titleには、選択肢として表示される文字列を指定します
+            //   styleには、通常は「.default」、キャンセルなど操作を無効にするものは「.cancel」、削除など注意して選択すべきものは「.destructive」を指定します
+            dialogCheck = false
+        }
+        else{
+            self.dialogCheck = true
+        }
     }
     
     // カメラの準備処理
     func initCamera() -> Bool {
-        let preset = AVCaptureSession.Preset.photo //解像度
+        let preset = AVCaptureSession.Preset.photo//解像度
         //解像度
         //        AVCaptureSession.Preset.Photo : 852x640
         //        AVCaptureSession.Preset.High : 1280x720
@@ -177,6 +186,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         output.setSampleBufferDelegate(self, queue: DispatchQueue.main)
 
         // 遅れてきたフレームは無視する
+        //怪しい
         output.alwaysDiscardsLateVideoFrames = true
 
         // FPSを設定
@@ -207,44 +217,20 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     }
 
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        
         DispatchQueue.main.async{ //非同期処理として実行
-            if(self.dialogCheck && self.DLwait){
-                
-                if(self.GuideVoice == true){self.progress()}
-                
-                self.DLwait = self.userDefaults.bool(forKey: "dlwait")
-                
-            }
-            else if(self.dialogCheck && self.DLwait == false){
-                
                 var img = self.captureImage(sampleBuffer) //UIImageへ変換
-                
                 //画像拡大処理(中心から小さく切り抜く)
-                let rectX = img.size.width * 0.9
-                let rectY = img.size.height * 0.9
+                let rectX = img.size.width * 0.5
+                let rectY = img.size.height * 0.5
+
                 img = img.cropping(to: CGRect(x: (img.size.width - rectX)/2, y: (img.size.height - rectY)/2, width: rectX, height: rectY))!
-                
-                //print("---img---")
-                //print(img.size.width)
-                //print(img.size.height)
-                
+
                 //結果を格納する
                 var result: NSArray
-                var bufCode: [Int]
-                var bufAngle: [Int]
-                if let _ = UserDefaults.standard.array(forKey: "codes"){
-                    bufCode = self.userDefaults.array(forKey: "codes") as! [Int]
-                }
-                else{
-                    bufCode = []
-                }
-                if let _ = UserDefaults.standard.array(forKey: "angles"){
-                    bufAngle = self.userDefaults.array(forKey: "angles") as! [Int]
-                }
-                else{
-                    bufAngle = []
-                }
-                
+                var bufCode: [Int]  = []
+                var bufAngle: [Int]  = []
+
                 var resultImg: UIImage
                 var resultCode: Int
                 var resultAngle: Int
@@ -254,18 +240,18 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                 
                 //変換
                 resultImg = result[0] as! UIImage
-                
-                //print("---Rimg---")
-                //print(resultImg.size.width)
-                //print(resultImg.size.height)
-                
                 resultCode = result[1] as! Int
                 resultAngle = result[2] as! Int
     
                 // ****************************************
                 
                 //音声再生中は動作させない
-                if(self.audioPlayer.isPlaying){}
+                if(self.audioPlayer.isPlaying){
+                    
+                    if(resultCode != 0){
+                        self.codeZero()
+                    }
+                }
                 //10回の処理結果中の最頻値を採用
                 else if(bufCode.count < 10){
                     bufCode.append(resultCode)
@@ -279,20 +265,21 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                     if(resultCode == 0){
                         resultAngle = -1
                     }
-                    else if(resultCode != self.userDefaults.integer(forKey: "code") ||
-                        resultAngle != self.userDefaults.integer(forKey: "angle")){
-                        //案内文取得
-                        Reader().reader_IS(code: Int(resultCode),angle: Int(resultAngle))
-                        
-                        self.stop_bool = false
-                    }
-                    
                     //案内音声取得
                     if(resultCode != 0){
                         if(self.stop_bool == false){
-                            let mp3 = String(format: "wm%05d_%d.mp3",resultCode,resultAngle)
-                            if (Audio().existingFile(fileName: mp3) == false ||
-                                        (self.config_bool == true)){
+                            
+                            //保存先ディレクトリの分岐
+                            let mp3:String
+                            if(self.langBool){
+                                mp3 = String(format: "message/wm%05d_%d.mp3",resultCode,resultAngle)
+                            }
+                            else{
+                                mp3 = String(format: "message_en/wm%05d_%d.mp3",resultCode,resultAngle)
+                            }
+                            
+                            if (Audio().existingFile(mp3: mp3) == false ||
+                                        (self.configBool == true)){
                                 Audio().writeAudio(mp3: mp3)
                             }
                             let data = Audio().readAudio(mp3: mp3)
@@ -300,62 +287,61 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                                 self.audioPlayer = try AVAudioPlayer(data:data as Data)
                                 self.audioPlayer.play()
                                 
-                                //カメライメージ初期化
-                                self.code_zero()
-                                
                             }catch{
                                 print("再生エラー")
                             }
                         }
-                        //案内文にURLが含まれていれば、ブラウザにジャンプ
-                        if(self.userDefaults.string(forKey: "IS")?.prefix(4) == "http"){
-                            
-                            sleep(1)
-                            while(self.audioPlayer.isPlaying){}
-                            
-                            var IS = self.userDefaults.string(forKey: "IS")! as String
-                            //改行が入っているので、排除
-                            IS = IS.trimmingCharacters(in: .newlines)
-
-                            //日本語を含むURLにも対応させるため、パーセントエンコーディング
-                            let encodeUrlString: String = IS.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
-                            
-                            //連続して、ジャンプさせないために初期化
-                            //他の初期化はapplicationWillEnterForeground()に
-                            resultCode = 0
-                            bufCode.removeAll()
-                            bufAngle.removeAll()
-                            
-                            //URLの設定
-                            let url = URL(string: encodeUrlString)
-                            if(UIApplication.shared.canOpenURL(url!) ) {
-                                UIApplication.shared.open(url!)
-                            }
-                            
-                        }
                     }
-                    
-                    self.userDefaults.set(resultCode, forKey: "code")
-                    self.userDefaults.set(resultAngle, forKey: "angle")
-                    
                     bufCode.removeAll()
                     bufAngle.removeAll()
+                    
                 }
-                
-                resultCode = self.userDefaults.integer(forKey: "code")
-                resultAngle = self.userDefaults.integer(forKey: "angle")
-                
-                self.userDefaults.set(bufCode, forKey: "codes")
-                self.userDefaults.set(bufAngle, forKey: "angles")
-                // 表示
-                self.cameraImageView.image = resultImg
+
+            self.cameraImageView.image = resultImg
+            if self.reproduction {
+                return
+            } else {
+                let appDelegate: AppDelegate = UIApplication.shared.delegate as! AppDelegate
                 self.code.text = String(resultCode)
                 self.angle.text = String(resultAngle)
-                self.codetext.text = self.userDefaults.string(forKey: "IS")
-                
+                self.codetext.text = appDelegate.localDB[String(resultCode) + String(resultAngle)] ?? "認識中"
+                if let mp3URL = appDelegate.mp3[String(resultCode) + String(resultAngle)] {
+                    let urlstring = "http://18.224.144.136/tenji/" + mp3URL
+                    let url = NSURL(string: urlstring)
+                    print("the url = \(url!)")
+                    self.downloadFileFromURL(url: url! as URL)
+                    self.reproduction = true
+                }
             }
+            
         }
-        
+    }
+    
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        print("finish!")
+        reproduction = false
+        code.text = "認識中"
+    }
+    
+    func downloadFileFromURL(url:URL){
+        let downloadTask:URLSessionDownloadTask = URLSession.shared.downloadTask(with: url as URL) { (URL, response, error) in
+            self.play(url: URL!)
+        }
+        downloadTask.resume()
+    }
+    func play(url:URL) {
+        do {
+            self.audioPlayer = try AVAudioPlayer(contentsOf: url as URL)
+            audioPlayer.prepareToPlay()
+            audioPlayer.volume = 1.0
+            audioPlayer.delegate = self
+            audioPlayer.play()
+        } catch let error as NSError {
+            //self.player = nil
+            print(error.localizedDescription)
+        } catch {
+            print("AVAudioPlayer init failed")
+        }
     }
 
     // sampleBufferからUIImageを作成
@@ -420,34 +406,28 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
             tc = tc!.presentedViewController;
         }
         var alert = tc as? UIAlertController
-        let max = String(self.userDefaults.integer(forKey: "maxdata"))
-        let now = String(self.userDefaults.integer(forKey: "nowdata"))
-        
+
         if alert != nil {
-            alert?.message = now + "/" + max + "件"
-            if(now != "0" && now == max ){
-                alert!.dismiss(animated: false, completion: nil)
-            }
+//            alert?.message = now + "/" + max + "件"
+//            if(now != "0" && now == max ){
+//                alert!.dismiss(animated: false, completion: nil)
+//            }
         }
         else{
             alert = UIAlertController(title: "コードデータ取得中", message: "now loading...", preferredStyle: .alert)
             self.present(alert!, animated: true, completion: nil)
-            self.userDefaults.set(0, forKey: "nowdata")
+//            self.userDefaults.set(0, forKey: "nowdata")
         }
     }
     //opencv内初期化(応急処置)　したくない
-    func code_zero(){
-        
-        self.userDefaults.set(0, forKey: "code")
-        self.userDefaults.set(-1, forKey: "angle")
-        self.userDefaults.set([], forKey: "codes")
-        self.userDefaults.set([], forKey: "angles")
+    func codeZero(){
         let Image = UIImage(named: "sample")!
         _ = self.openCV.reader(Image)
+        print("zero")
     }
     
     @objc func applicationWillEnterForeground() {
-        code_zero()
+        codeZero()
     }
 
 }
