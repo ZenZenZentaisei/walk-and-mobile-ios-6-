@@ -60,12 +60,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         //音声データ格納用フォルダ作成
         Audio().createFolder(addFolder: "message")
         Audio().createFolder(addFolder: "message_en")
-
-        if initCamera() {
-            session.startRunning()
-        }else{
-            assert(false) //カメラが使えない
-        }
+        initCamera()
 
         //URLジャンプから戻ってきたことを検知
         NotificationCenter.default.addObserver(self, selector: #selector(ViewController.applicationWillEnterForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
@@ -84,13 +79,9 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         //[0]は、使用言語の優先順序1位(主言語)
         if(Locale.preferredLanguages[0] != "ja-JP"){
             langBool = false
-        }
-        else{
+        } else {
             langBool = true
         }
-        
-        
-
     }
     
     //値の送受信(設定画面)
@@ -133,46 +124,30 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     }
     
     // カメラの準備処理
-    func initCamera() -> Bool {
-        let preset = AVCaptureSession.Preset.photo//解像度
-        //解像度
-        //        AVCaptureSession.Preset.Photo : 852x640
-        //        AVCaptureSession.Preset.High : 1280x720
-        //        AVCaptureSession.Preset.Medium : 480x360
-        //        AVCaptureSession.Preset.Low : 192x144
-
-
-        let frame = CMTimeMake(value: 1, timescale: 20) //フレームレート
-        let position = AVCaptureDevice.Position.back //フロントカメラかバックカメラか
-
-        //setImageViewLayout(preset: preset)//UIImageViewの大きさを調整
-
+    func initCamera() {
         // セッションの作成.
         session = AVCaptureSession()
-
         // 解像度の指定.
-        session.sessionPreset = preset
-
+        session.sessionPreset = .photo
         // デバイス取得.
         device = AVCaptureDevice.default(AVCaptureDevice.DeviceType.builtInWideAngleCamera,
-                                           for: AVMediaType.video,
-                                           position: position)
+                                           for: .video,
+                                         position: .back)
 
         // VideoInputを取得.
         var input: AVCaptureDeviceInput! = nil
         do {
-            input = try
-            AVCaptureDeviceInput(device: device) as AVCaptureDeviceInput
+            input = try AVCaptureDeviceInput(device: device) as AVCaptureDeviceInput
         } catch let error {
             print(error)
-            return false
+            return
         }
 
         // セッションに追加.
         if session.canAddInput(input) {
             session.addInput(input)
         } else {
-            return false
+            return
         }
 
         // 出力先を設定
@@ -193,17 +168,17 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         do {
             try device.lockForConfiguration()
 
-            device.activeVideoMinFrameDuration = frame //フレームレート
+            device.activeVideoMinFrameDuration = CMTimeMake(value: 1, timescale: 20) //フレームレート
             device.unlockForConfiguration()
         } catch {
-            return false
+            return
         }
 
         // セッションに追加.
         if session.canAddOutput(output) {
             session.addOutput(output)
         } else {
-            return false
+            return
         }
 
         // カメラの向きを合わせる
@@ -212,90 +187,83 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                 connection.videoOrientation = AVCaptureVideoOrientation.portrait
             }
         }
-
-        return true
+        
+        session.startRunning()
     }
 
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         
         DispatchQueue.main.async{ //非同期処理として実行
-                var img = self.captureImage(sampleBuffer) //UIImageへ変換
-                //画像拡大処理(中心から小さく切り抜く)
-                let rectX = img.size.width * 0.5
-                let rectY = img.size.height * 0.5
+            var img = self.captureImage(sampleBuffer) //UIImageへ変換
+            //画像拡大処理(中心から小さく切り抜く)
+            let rectX = img.size.width * 0.5
+            let rectY = img.size.height * 0.5
 
-                img = img.cropping(to: CGRect(x: (img.size.width - rectX)/2, y: (img.size.height - rectY)/2, width: rectX, height: rectY))!
+            img = img.cropping(to: CGRect(x: (img.size.width - rectX)/2, y: (img.size.height - rectY)/2, width: rectX, height: rectY))!
 
-                //結果を格納する
-                var result: NSArray
-                var bufCode: [Int]  = []
-                var bufAngle: [Int]  = []
+            //結果を格納する
+            var result: NSArray
+            var bufCode: [Int]  = []
+            var bufAngle: [Int]  = []
 
-                var resultImg: UIImage
-                var resultCode: Int
-                var resultAngle: Int
+            var resultImg: UIImage
+            var resultCode: Int
+            var resultAngle: Int
                 
-                // *************** 画像処理 ***************
-                result = self.openCV.reader(img)! as NSArray
+            // *************** 画像処理 ***************
+            result = self.openCV.reader(img)! as NSArray
                 
-                //変換
-                resultImg = result[0] as! UIImage
-                resultCode = result[1] as! Int
-                resultAngle = result[2] as! Int
+            //変換
+            resultImg = result[0] as! UIImage
+            resultCode = result[1] as! Int
+            resultAngle = result[2] as! Int
     
-                // ****************************************
+            // ****************************************
                 
-                //音声再生中は動作させない
-                if(self.audioPlayer.isPlaying){
-                    
-                    if(resultCode != 0){
-                        self.codeZero()
-                    }
+            //音声再生中は動作させない
+            if(self.audioPlayer.isPlaying){
+                if(resultCode != 0){
+                    self.codeZero()
                 }
-                //10回の処理結果中の最頻値を採用
-                else if(bufCode.count < 10){
-                    bufCode.append(resultCode)
-                    bufAngle.append(resultAngle)
+            }
+            //10回の処理結果中の最頻値を採用
+            else if(bufCode.count < 10){
+                bufCode.append(resultCode)
+                bufAngle.append(resultAngle)
+            } else {
+                resultCode = self.mode(bufCode)[0]
+                resultAngle = self.mode(bufAngle)[0]
+                //案内文取得
+                //Code=0の時、angle=-1に　同code、angleの場合でも読み込ますため
+                if(resultCode == 0){
+                    resultAngle = -1
                 }
-                else{
-                    resultCode = self.mode(bufCode)[0]
-                    resultAngle = self.mode(bufAngle)[0]
-                    //案内文取得
-                    //Code=0の時、angle=-1に　同code、angleの場合でも読み込ますため
-                    if(resultCode == 0){
-                        resultAngle = -1
-                    }
-                    //案内音声取得
-                    if(resultCode != 0){
-                        if(self.stop_bool == false){
+                //案内音声取得
+                if(resultCode != 0){
+                    if(self.stop_bool == false){
+                        //保存先ディレクトリの分岐
+                        let mp3:String
+                        if(self.langBool){
+                            mp3 = String(format: "message/wm%05d_%d.mp3",resultCode,resultAngle)
+                        } else {
+                            mp3 = String(format: "message_en/wm%05d_%d.mp3",resultCode,resultAngle)
+                        }
                             
-                            //保存先ディレクトリの分岐
-                            let mp3:String
-                            if(self.langBool){
-                                mp3 = String(format: "message/wm%05d_%d.mp3",resultCode,resultAngle)
-                            }
-                            else{
-                                mp3 = String(format: "message_en/wm%05d_%d.mp3",resultCode,resultAngle)
-                            }
-                            
-                            if (Audio().existingFile(mp3: mp3) == false ||
-                                        (self.configBool == true)){
-                                Audio().writeAudio(mp3: mp3)
-                            }
-                            let data = Audio().readAudio(mp3: mp3)
-                            do{
-                                self.audioPlayer = try AVAudioPlayer(data:data as Data)
-                                self.audioPlayer.play()
-                                
-                            }catch{
-                                print("再生エラー")
-                            }
+                        if (Audio().existingFile(mp3: mp3) == false || (self.configBool == true)) {
+                            Audio().writeAudio(mp3: mp3)
+                        }
+                        let data = Audio().readAudio(mp3: mp3)
+                        do{
+                            self.audioPlayer = try AVAudioPlayer(data:data as Data)
+                            self.audioPlayer.play()
+                        } catch {
+                            print("再生エラー")
                         }
                     }
-                    bufCode.removeAll()
-                    bufAngle.removeAll()
-                    
                 }
+                bufCode.removeAll()
+                bufAngle.removeAll()
+            }
 
             self.cameraImageView.image = resultImg
             if self.reproduction {
@@ -313,7 +281,6 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
                     self.reproduction = true
                 }
             }
-            
         }
     }
     
