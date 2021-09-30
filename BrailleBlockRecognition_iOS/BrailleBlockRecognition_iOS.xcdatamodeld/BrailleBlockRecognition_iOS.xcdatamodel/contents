@@ -1,15 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17511" systemVersion="20B29" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="19206" systemVersion="20G165" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="">
     <entity name="BBlock" representedClassName="BBlock" syncable="YES" codeGenerationType="class">
-        <attribute name="angle" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="code" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="id" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="message" optional="YES" attributeType="String"/>
-        <attribute name="messagecategory" optional="YES" attributeType="String"/>
-        <attribute name="mp3" optional="YES" attributeType="String"/>
-        <attribute name="reading" optional="YES" attributeType="String"/>
-    </entity>
-    <entity name="BBlock_en" representedClassName="BBlock_en" syncable="YES" codeGenerationType="class">
         <attribute name="angle" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="code" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="id" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
@@ -20,6 +11,5 @@
     </entity>
     <elements>
         <element name="BBlock" positionX="-54" positionY="-9" width="128" height="148"/>
-        <element name="BBlock_en" positionX="-36" positionY="72" width="128" height="134"/>
     </elements>
 </model>

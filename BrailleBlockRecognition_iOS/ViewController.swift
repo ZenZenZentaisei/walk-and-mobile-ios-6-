@@ -7,17 +7,21 @@ import AVFoundation
 import CoreData
 import Network
 
-class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate,AVAudioPlayerDelegate {
+import SafariServices
+
+class ViewController: UIViewController {
     @IBOutlet weak var cameraImageView: UIImageView!
     @IBOutlet weak var code: UITextField!
     @IBOutlet weak var angle: UITextField!
     @IBOutlet weak var codetext: UILabel!
     
   
-
     var audioPlayer = AVAudioPlayer()
     
     var reproduction = false
+    var safariVC: SFSafariViewController?
+    
+    let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
     
     
     var openCV = OpenCV()
@@ -26,9 +30,7 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     var device: AVCaptureDevice! //カメラ
     var output: AVCaptureVideoDataOutput! //出力先
     
-    weak var ManagedObjectContext = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    
-    
+
     var configBool = false
     var GuideVoice = true
     var stop_bool = false
@@ -86,18 +88,12 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     
     //値の送受信(設定画面)
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-   
-        
         let next = segue.destination as? Config
         //値を送信
         next?.configBool = configBool
         //値を受信
         next?.resultHandler = { setting in
-            self.configBool = setting
-            //設定の保存
-//            self.userDefaults.set(self.configBool, forKey: "configBool")
-        //}
-            
+        self.configBool = setting
         }
     }
     
@@ -108,211 +104,15 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
-//        self.userDefaults.set("案内文はここに表示されます", forKey: "IS")
-        
         if(networkBool){
-
-            // 選択肢(ボタン)を2つ(OKとCancel)追加します
-            //   titleには、選択肢として表示される文字列を指定します
-            //   styleには、通常は「.default」、キャンセルなど操作を無効にするものは「.cancel」、削除など注意して選択すべきものは「.destructive」を指定します
             dialogCheck = false
-        }
-        else{
+        } else {
             self.dialogCheck = true
-        }
-    }
-    
-    // カメラの準備処理
-    func initCamera() {
-        // セッションの作成.
-        session = AVCaptureSession()
-        // 解像度の指定.
-        session.sessionPreset = .photo
-        // デバイス取得.
-        device = AVCaptureDevice.default(AVCaptureDevice.DeviceType.builtInWideAngleCamera,
-                                           for: .video,
-                                         position: .back)
-
-        // VideoInputを取得.
-        var input: AVCaptureDeviceInput! = nil
-        do {
-            input = try AVCaptureDeviceInput(device: device) as AVCaptureDeviceInput
-        } catch let error {
-            print(error)
-            return
-        }
-
-        // セッションに追加.
-        if session.canAddInput(input) {
-            session.addInput(input)
-        } else {
-            return
-        }
-
-        // 出力先を設定
-        output = AVCaptureVideoDataOutput()
-
-        //ピクセルフォーマットを設定
-        output.videoSettings =
-            [ kCVPixelBufferPixelFormatTypeKey as AnyHashable as! String : Int(kCVPixelFormatType_32BGRA) ]
-
-        //サブスレッド用のシリアルキューを用意
-        output.setSampleBufferDelegate(self, queue: DispatchQueue.main)
-
-        // 遅れてきたフレームは無視する
-        //怪しい
-        output.alwaysDiscardsLateVideoFrames = true
-
-        // FPSを設定
-        do {
-            try device.lockForConfiguration()
-
-            device.activeVideoMinFrameDuration = CMTimeMake(value: 1, timescale: 20) //フレームレート
-            device.unlockForConfiguration()
-        } catch {
-            return
-        }
-
-        // セッションに追加.
-        if session.canAddOutput(output) {
-            session.addOutput(output)
-        } else {
-            return
-        }
-
-        // カメラの向きを合わせる
-        for connection in output.connections {
-            if connection.isVideoOrientationSupported {
-                connection.videoOrientation = AVCaptureVideoOrientation.portrait
-            }
-        }
-        
-        session.startRunning()
-    }
-
-    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        
-        DispatchQueue.main.async{ //非同期処理として実行
-            var img = self.captureImage(sampleBuffer) //UIImageへ変換
-            //画像拡大処理(中心から小さく切り抜く)
-            let rectX = img.size.width * 0.5
-            let rectY = img.size.height * 0.5
-
-            img = img.cropping(to: CGRect(x: (img.size.width - rectX)/2, y: (img.size.height - rectY)/2, width: rectX, height: rectY))!
-
-            //結果を格納する
-            var result: NSArray
-            var bufCode: [Int]  = []
-            var bufAngle: [Int]  = []
-
-            var resultImg: UIImage
-            var resultCode: Int
-            var resultAngle: Int
-                
-            // *************** 画像処理 ***************
-            result = self.openCV.reader(img)! as NSArray
-                
-            //変換
-            resultImg = result[0] as! UIImage
-            resultCode = result[1] as! Int
-            resultAngle = result[2] as! Int
-    
-            // ****************************************
-                
-            //音声再生中は動作させない
-            if(self.audioPlayer.isPlaying){
-                if(resultCode != 0){
-                    self.codeZero()
-                }
-            }
-            //10回の処理結果中の最頻値を採用
-            else if(bufCode.count < 10){
-                bufCode.append(resultCode)
-                bufAngle.append(resultAngle)
-            } else {
-                resultCode = self.mode(bufCode)[0]
-                resultAngle = self.mode(bufAngle)[0]
-                //案内文取得
-                //Code=0の時、angle=-1に　同code、angleの場合でも読み込ますため
-                if(resultCode == 0){
-                    resultAngle = -1
-                }
-                //案内音声取得
-                if(resultCode != 0){
-                    if(self.stop_bool == false){
-                        //保存先ディレクトリの分岐
-                        let mp3:String
-                        if(self.langBool){
-                            mp3 = String(format: "message/wm%05d_%d.mp3",resultCode,resultAngle)
-                        } else {
-                            mp3 = String(format: "message_en/wm%05d_%d.mp3",resultCode,resultAngle)
-                        }
-                            
-                        if (Audio().existingFile(mp3: mp3) == false || (self.configBool == true)) {
-                            Audio().writeAudio(mp3: mp3)
-                        }
-                        let data = Audio().readAudio(mp3: mp3)
-                        do{
-                            self.audioPlayer = try AVAudioPlayer(data:data as Data)
-                            self.audioPlayer.play()
-                        } catch {
-                            print("再生エラー")
-                        }
-                    }
-                }
-                bufCode.removeAll()
-                bufAngle.removeAll()
-            }
-
-            self.cameraImageView.image = resultImg
-            if self.reproduction {
-                return
-            } else {
-                let appDelegate: AppDelegate = UIApplication.shared.delegate as! AppDelegate
-                self.code.text = String(resultCode)
-                self.angle.text = String(resultAngle)
-                self.codetext.text = appDelegate.localDB[String(resultCode) + String(resultAngle)] ?? "認識中"
-                if let mp3URL = appDelegate.mp3[String(resultCode) + String(resultAngle)] {
-                    let urlstring = "http://18.224.144.136/tenji/" + mp3URL
-                    let url = NSURL(string: urlstring)
-                    print("the url = \(url!)")
-                    self.downloadFileFromURL(url: url! as URL)
-                    self.reproduction = true
-                }
-            }
-        }
-    }
-    
-    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-        print("finish!")
-        reproduction = false
-        code.text = "認識中"
-    }
-    
-    func downloadFileFromURL(url:URL){
-        let downloadTask:URLSessionDownloadTask = URLSession.shared.downloadTask(with: url as URL) { (URL, response, error) in
-            self.play(url: URL!)
-        }
-        downloadTask.resume()
-    }
-    func play(url:URL) {
-        do {
-            self.audioPlayer = try AVAudioPlayer(contentsOf: url as URL)
-            audioPlayer.prepareToPlay()
-            audioPlayer.volume = 1.0
-            audioPlayer.delegate = self
-            audioPlayer.play()
-        } catch let error as NSError {
-            //self.player = nil
-            print(error.localizedDescription)
-        } catch {
-            print("AVAudioPlayer init failed")
         }
     }
 
     // sampleBufferからUIImageを作成
-    func captureImage(_ sampleBuffer:CMSampleBuffer) -> UIImage{
+    func captureImage(_ sampleBuffer:CMSampleBuffer) -> UIImage {
         let imageBuffer: CVImageBuffer! = CMSampleBufferGetImageBuffer(sampleBuffer)
 
         // ベースアドレスをロック
@@ -374,16 +174,9 @@ class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDele
         }
         var alert = tc as? UIAlertController
 
-        if alert != nil {
-//            alert?.message = now + "/" + max + "件"
-//            if(now != "0" && now == max ){
-//                alert!.dismiss(animated: false, completion: nil)
-//            }
-        }
-        else{
+        if alert == nil {
             alert = UIAlertController(title: "コードデータ取得中", message: "now loading...", preferredStyle: .alert)
             self.present(alert!, animated: true, completion: nil)
-//            self.userDefaults.set(0, forKey: "nowdata")
         }
     }
     //opencv内初期化(応急処置)　したくない
@@ -433,4 +226,229 @@ extension UIImage {
             UIGraphicsEndImageContext()
             return result
         }
+}
+
+extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
+    // カメラの準備処理
+    func initCamera() {
+        // セッションの作成.
+        session = AVCaptureSession()
+        // 解像度の指定.
+        session.sessionPreset = .photo
+        // デバイス取得.
+        device = AVCaptureDevice.default(AVCaptureDevice.DeviceType.builtInWideAngleCamera,
+                                         for: .video,
+                                         position: .back)
+
+        // VideoInputを取得.
+        var input: AVCaptureDeviceInput! = nil
+        do {
+            input = try AVCaptureDeviceInput(device: device) as AVCaptureDeviceInput
+        } catch let error {
+            print(error)
+            return
+        }
+
+        // セッションに追加.
+        if session.canAddInput(input) {
+            session.addInput(input)
+        } else {
+            return
+        }
+
+        // 出力先を設定
+        output = AVCaptureVideoDataOutput()
+
+        //ピクセルフォーマットを設定
+        output.videoSettings =
+            [ kCVPixelBufferPixelFormatTypeKey as AnyHashable as! String : Int(kCVPixelFormatType_32BGRA) ]
+
+        //サブスレッド用のシリアルキューを用意
+        output.setSampleBufferDelegate(self, queue: DispatchQueue.main)
+
+        // 遅れてきたフレームは無視する
+        //怪しい
+        output.alwaysDiscardsLateVideoFrames = true
+
+        // FPSを設定
+        do {
+            try device.lockForConfiguration()
+
+            device.activeVideoMinFrameDuration = CMTimeMake(value: 1, timescale: 20) //フレームレート
+            device.unlockForConfiguration()
+        } catch {
+            return
+        }
+
+        // セッションに追加.
+        if session.canAddOutput(output) {
+            session.addOutput(output)
+        } else {
+            return
+        }
+
+        // カメラの向きを合わせる
+        for connection in output.connections {
+            if connection.isVideoOrientationSupported {
+                connection.videoOrientation = AVCaptureVideoOrientation.portrait
+            }
+        }
+        
+        session.startRunning()
+    }
+
+    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        DispatchQueue.main.async{ //非同期処理として実行
+            var img = self.captureImage(sampleBuffer) //UIImageへ変換
+            //画像拡大処理(中心から小さく切り抜く)
+            let rectX = img.size.width * 0.5
+            let rectY = img.size.height * 0.5
+
+            img = img.cropping(to: CGRect(x: (img.size.width - rectX)/2, y: (img.size.height - rectY)/2, width: rectX, height: rectY))!
+
+            //結果を格納する
+            var bufCode: [Int]  = []
+            var bufAngle: [Int]  = []
+                
+            // *************** 画像処理 ***************
+            let result = self.openCV.reader(img)! as NSArray
+                
+            //変換
+            let resultImg = result[0] as! UIImage
+            var resultCode = result[1] as! Int
+            var resultAngle = result[2] as! Int
+    
+            // ****************************************
+                
+            //音声再生中は動作させない
+            if(self.audioPlayer.isPlaying){
+                if(resultCode != 0){
+                    self.codeZero()
+                }
+            }
+            //10回の処理結果中の最頻値を採用
+            else if(bufCode.count < 10){
+                bufCode.append(resultCode)
+                bufAngle.append(resultAngle)
+            } else {
+                resultCode = self.mode(bufCode)[0]
+                resultAngle = self.mode(bufAngle)[0]
+                //案内文取得
+                //Code=0の時、angle=-1に　同code、angleの場合でも読み込ますため
+                if(resultCode == 0){
+                    resultAngle = -1
+                }
+                //案内音声取得
+                if(resultCode != 0){
+                    if(self.stop_bool == false){
+                        //保存先ディレクトリの分岐
+                        let mp3:String
+                        if(self.langBool){
+                            mp3 = String(format: "message/wm%05d_%d.mp3",resultCode,resultAngle)
+                        } else {
+                            mp3 = String(format: "message_en/wm%05d_%d.mp3",resultCode,resultAngle)
+                        }
+                            
+                        if (Audio().existingFile(mp3: mp3) == false || (self.configBool == true)) {
+                            Audio().writeAudio(mp3: mp3)
+                        }
+                        let data = Audio().readAudio(mp3: mp3)
+                        do{
+                            self.audioPlayer = try AVAudioPlayer(data:data as Data)
+                            self.audioPlayer.play()
+                        } catch {
+                            print("再生エラー")
+                        }
+                    }
+                }
+                bufCode.removeAll()
+                bufAngle.removeAll()
+            }
+
+            self.cameraImageView.image = resultImg
+            
+            if self.reproduction { return }
+            self.safariVC = self.reflectRecognition(angleRecognition: "\(resultCode)", codeRecognition: "\(resultAngle)")
+        }
+    }
+    
+    // 認識結果を画面に反映
+    func reflectRecognition(angleRecognition: String, codeRecognition: String) -> SFSafariViewController? {
+        let guidanceKey = angleRecognition + codeRecognition
+        self.code.text = angleRecognition
+        self.angle.text = codeRecognition
+        
+        if let mp3URL = appDelegate.voice[guidanceKey] {
+            let urlstring = "http://18.224.144.136/tenji/" + mp3URL
+            let url = NSURL(string: urlstring)
+            print("the url = \(url!)")
+            self.downloadFileFromURL(url: url! as URL)
+            self.reproduction = true
+        }
+        
+        if let resultMessage = appDelegate.guidanceMessage[guidanceKey] {
+            if resultMessage.prefix(4) == "http" {
+                self.codetext.text = appDelegate.callMessage[guidanceKey] ?? "未登録"
+            } else {
+                self.codetext.text = resultMessage
+                return nil
+            }
+        } else {
+            self.codetext.text = "確認中"
+        }
+
+        guard let webURL = appDelegate.guidanceMessage[guidanceKey] else { return nil }
+        return SFSafariViewController(url: NSURL(string: webURL)! as URL)
+    }
+    
+    func downloadFileFromURL(url:URL){
+        let downloadTask:URLSessionDownloadTask = URLSession.shared.downloadTask(with: url as URL) { (URL, response, error) in
+            self.play(url: URL!)
+        }
+        downloadTask.resume()
+    }
+    
+}
+
+extension ViewController: AVAudioPlayerDelegate {
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        if let webView = safariVC {
+            webView.delegate = self
+            self.present(webView, animated: true, completion: nil)
+        } else {
+            reproduction = false
+            codetext.text = "認識中"
+        }
+    }
+    
+    
+    func play(url:URL) {
+        do {
+            self.audioPlayer = try AVAudioPlayer(contentsOf: url as URL)
+            audioPlayer.prepareToPlay()
+            audioPlayer.volume = 1.0
+            audioPlayer.delegate = self
+            audioPlayer.play()
+        } catch let error as NSError {
+            //self.player = nil
+            print(error.localizedDescription)
+        } catch {
+            print("AVAudioPlayer init failed")
+        }
+    }
+}
+
+extension ViewController: SFSafariViewControllerDelegate {
+    // 画面の読み込み完了時に呼び出し
+    func safariViewController(_ controller: SFSafariViewController, didCompleteInitialLoad didLoadSuccessfully: Bool) {
+        self.reproduction = true
+    }
+    // Doneタップ時に呼び出し
+    func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
+        codetext.text = "認識中"
+        DispatchQueue.global(qos: .userInitiated).async {
+            sleep(3)
+            self.reproduction = false
+        }
+    }
 }

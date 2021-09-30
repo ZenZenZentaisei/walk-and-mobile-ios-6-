@@ -11,9 +11,9 @@ import CoreData
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    
-    var localDB: [String: String] = [:]
-    var mp3: [String: String] = [:]
+    var guidanceMessage: [String: String] = [:]
+    var voice: [String: String] = [:]
+    var callMessage: [String: String] = [:]
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -104,29 +104,31 @@ class AppEventHandler: NSObject {
     // アプリ起動時の処理
     @objc func didFinishLaunch() {
         print("kidou")
-        Reader().httpGet(GuideVoice: false, language: true)
-        let appDelegate: AppDelegate = UIApplication.shared.delegate as! AppDelegate
-        let managedContext: NSManagedObjectContext = appDelegate.persistentContainer.viewContext
+        let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate 
+
+        let url = URL(string: "http://18.224.144.136/tenji/get_db2json.py?data=blockmessage")!
         
-        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "BBlock")
+        let task: URLSessionTask = URLSession.shared.dataTask(with: url, completionHandler: { (data, response, error) in
+            do{
+                let Data_I = try JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions.mutableLeaves) as! [NSDictionary]
+    
+                for data in Data_I{
+                    let code = data.value(forKey: "code") as! Int
+                    let angle = data.value(forKey: "angle") as! Int
+                    let message = data.value(forKey: "message") as! String
+                    let wav = data.value(forKey: "wav") as? String
+                    let reading = data.value(forKey: "reading") as? String
+                    
+                    let dataKey = String(code) + String(angle)
 
-        do {
-            let myResults = try managedContext.fetch(fetchRequest)
-            
-
-            for myData in myResults {
-
-                let id = myData.value(forKey: "id") as! Int
-                let angle = myData.value(forKey: "angle") as! Int
-                let message = myData.value(forKey: "message") as! String
-                let mp3 = myData.value(forKey: "mp3") as? String
-                
-                appDelegate.localDB[String(id) + String(angle)] = message
-                appDelegate.mp3[String(id) + String(angle)] = mp3
+                    appDelegate.guidanceMessage[dataKey] = message
+                    appDelegate.voice[dataKey] = wav
+                    appDelegate.callMessage[dataKey] = reading
+                }
+            } catch {
+                print(error)
             }
-
-        } catch let error as NSError {
-            print("\(error), \(error.userInfo)")
-        }
+        })
+        task.resume()
     }
 }
