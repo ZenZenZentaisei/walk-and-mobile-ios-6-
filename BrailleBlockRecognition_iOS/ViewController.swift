@@ -13,8 +13,9 @@ class ViewController: UIViewController {
     @IBOutlet weak var cameraImageView: UIImageView!
     @IBOutlet weak var code: UITextField!
     @IBOutlet weak var angle: UITextField!
-    @IBOutlet weak var codetext: UILabel!
+    @IBOutlet weak var guidance: UITextView!
     
+    var infoBarButtonItem: UIBarButtonItem!     // 編集ボタン
   
     var audioPlayer = AVAudioPlayer()
     
@@ -84,6 +85,16 @@ class ViewController: UIViewController {
         } else {
             langBool = true
         }
+        
+        infoBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "info.circle"), style: .done, target: self, action: #selector(infoBarButtonTapped(_:)))
+        self.navigationItem.rightBarButtonItem = infoBarButtonItem
+    }
+    
+    @objc func infoBarButtonTapped(_ sender: UIBarButtonItem) {
+        let secondViewController = self.storyboard?.instantiateViewController(withIdentifier: "infoVC") as! InfoViewController
+        let nav = UINavigationController(rootViewController: secondViewController)
+        self.present(nav, animated: true, completion: nil)
+        
     }
     
     //値の送受信(設定画面)
@@ -388,13 +399,13 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
         
         if let resultMessage = appDelegate.guidanceMessage[guidanceKey] {
             if resultMessage.prefix(4) == "http" {
-                self.codetext.text = appDelegate.callMessage[guidanceKey] ?? "未登録"
+                self.guidance.text = appDelegate.callMessage[guidanceKey] ?? "未登録"
             } else {
-                self.codetext.text = resultMessage
+                self.guidance.text = resultMessage
                 return nil
             }
         } else {
-            self.codetext.text = "確認中"
+            self.guidance.text = "確認中"
         }
 
         guard let webURL = appDelegate.guidanceMessage[guidanceKey] else { return nil }
@@ -417,7 +428,7 @@ extension ViewController: AVAudioPlayerDelegate {
             self.present(webView, animated: true, completion: nil)
         } else {
             reproduction = false
-            codetext.text = "認識中"
+            guidance.text = "認識中"
         }
     }
     
@@ -445,7 +456,7 @@ extension ViewController: SFSafariViewControllerDelegate {
     }
     // Doneタップ時に呼び出し
     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
-        codetext.text = "認識中"
+        guidance.text = "認識中"
         DispatchQueue.global(qos: .userInitiated).async {
             sleep(3)
             self.reproduction = false

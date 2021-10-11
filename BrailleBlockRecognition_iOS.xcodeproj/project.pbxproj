@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2AACE765270D1F33009D60D0 /* InfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AACE764270D1F33009D60D0 /* InfoViewController.swift */; };
 		51A391FD39C09D56ED48F8EE /* Pods_BrailleBlockRecognition_iOSTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32DF2DDB4C94B154B1D7292C /* Pods_BrailleBlockRecognition_iOSTests.framework */; };
 		8D9CB313D6892B59B710070F /* Pods_BrailleBlockRecognition_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF79FCDCC250C931FCAFF289 /* Pods_BrailleBlockRecognition_iOS.framework */; };
 		D429DC9A256CE6770036A93B /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = D429DC99256CE6770036A93B /* Config.swift */; };
@@ -43,6 +44,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2AACE764270D1F33009D60D0 /* InfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoViewController.swift; sourceTree = "<group>"; };
 		32DF2DDB4C94B154B1D7292C /* Pods_BrailleBlockRecognition_iOSTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BrailleBlockRecognition_iOSTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		420F7E173E980EB64B240BF2 /* Pods-BrailleBlockRecognition_iOS-BrailleBlockRecognition_iOSUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BrailleBlockRecognition_iOS-BrailleBlockRecognition_iOSUITests.debug.xcconfig"; path = "Target Support Files/Pods-BrailleBlockRecognition_iOS-BrailleBlockRecognition_iOSUITests/Pods-BrailleBlockRecognition_iOS-BrailleBlockRecognition_iOSUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		4259F743859C1438448F4C31 /* Pods_BrailleBlockRecognition_iOS_BrailleBlockRecognition_iOSUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BrailleBlockRecognition_iOS_BrailleBlockRecognition_iOSUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -165,6 +167,7 @@
 				D43116E9250615580050EA18 /* OpenCV.h */,
 				D43116EA25061BF30050EA18 /* Reader.swift */,
 				D43116EC25061C150050EA18 /* Audio.swift */,
+				2AACE764270D1F33009D60D0 /* InfoViewController.swift */,
 			);
 			path = BrailleBlockRecognition_iOS;
 			sourceTree = "<group>";
@@ -395,6 +398,7 @@
 				D43116B8250614170050EA18 /* ViewController.swift in Sources */,
 				D43116E8250614FC0050EA18 /* OpenCV.mm in Sources */,
 				D43116BE250614170050EA18 /* BrailleBlockRecognition_iOS.xcdatamodeld in Sources */,
+				2AACE765270D1F33009D60D0 /* InfoViewController.swift in Sources */,
 				D43116B4250614170050EA18 /* AppDelegate.swift in Sources */,
 				D429DC9A256CE6770036A93B /* Config.swift in Sources */,
 				D43116B6250614170050EA18 /* SceneDelegate.swift in Sources */,
@@ -586,7 +590,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.6.2;
-				PRODUCT_BUNDLE_IDENTIFIER = "\t72S23KX6NZ.jp.matuilab.BrailleBlockRecognition-iOS20201001";
+				PRODUCT_BUNDLE_IDENTIFIER = "jp.matuilab.BrailleBlockRecognition-iOS20201001";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "BrailleBlockRecognition_iOS/BrailleBlockRecognition_iOS-Bridging-Header.h";
@@ -613,7 +617,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.6.2;
-				PRODUCT_BUNDLE_IDENTIFIER = "\t72S23KX6NZ.jp.matuilab.BrailleBlockRecognition-iOS20201001";
+				PRODUCT_BUNDLE_IDENTIFIER = "jp.matuilab.BrailleBlockRecognition-iOS20201001";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "BrailleBlockRecognition_iOS/BrailleBlockRecognition_iOS-Bridging-Header.h";
