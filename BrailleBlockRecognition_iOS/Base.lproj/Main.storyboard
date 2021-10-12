@@ -62,7 +62,7 @@
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nDR-f1-vqN">
                                 <rect key="frame" x="10" y="598" width="370" height="148"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                <mutableString key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</mutableString>
+                                <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
                                 <color key="textColor" systemColor="labelColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
@@ -142,18 +142,45 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="再生速度" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4Yc-Xz-0Iz">
+                                <rect key="frame" x="10" y="125" width="70" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dlc-M0-hiY" userLabel="speedLabel">
+                                <rect key="frame" x="10" y="151" width="266" height="19.333333333333343"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="UM5-TZ-EkF">
+                                <rect key="frame" x="286" y="151" width="94" height="32"/>
+                                <connections>
+                                    <action selector="speedAdjustmentDidTapped:" destination="fbY-h6-gsi" eventType="valueChanged" id="pTy-QN-5J5"/>
+                                </connections>
+                            </stepper>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="TDM-Kb-Pvw"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="UM5-TZ-EkF" firstAttribute="leading" secondItem="dlc-M0-hiY" secondAttribute="trailing" constant="10" id="2Ft-aT-vpY"/>
+                            <constraint firstItem="UM5-TZ-EkF" firstAttribute="top" secondItem="4Yc-Xz-0Iz" secondAttribute="bottom" constant="5" id="6Dc-s0-gJI"/>
+                            <constraint firstItem="TDM-Kb-Pvw" firstAttribute="trailing" secondItem="UM5-TZ-EkF" secondAttribute="trailing" constant="10" id="BXM-YD-EJl"/>
                             <constraint firstItem="Aee-H6-sjD" firstAttribute="leading" secondItem="TDM-Kb-Pvw" secondAttribute="leading" constant="10" id="Jam-LQ-zfd"/>
+                            <constraint firstItem="dlc-M0-hiY" firstAttribute="top" secondItem="4Yc-Xz-0Iz" secondAttribute="bottom" constant="5" id="V8H-ZW-J3d"/>
                             <constraint firstItem="TDM-Kb-Pvw" firstAttribute="trailing" secondItem="PF7-zc-oJY" secondAttribute="trailing" constant="10" id="XNV-el-8Y3"/>
+                            <constraint firstItem="4Yc-Xz-0Iz" firstAttribute="leading" secondItem="TDM-Kb-Pvw" secondAttribute="leading" constant="10" id="Xnl-sb-gjD"/>
                             <constraint firstItem="PF7-zc-oJY" firstAttribute="top" secondItem="TDM-Kb-Pvw" secondAttribute="top" constant="30" id="dfB-E4-h2Y"/>
+                            <constraint firstItem="4Yc-Xz-0Iz" firstAttribute="top" secondItem="Aee-H6-sjD" secondAttribute="bottom" constant="30" id="jxA-tR-7GF"/>
+                            <constraint firstItem="dlc-M0-hiY" firstAttribute="leading" secondItem="TDM-Kb-Pvw" secondAttribute="leading" constant="10" id="tEy-t3-inZ"/>
                             <constraint firstItem="Aee-H6-sjD" firstAttribute="top" secondItem="TDM-Kb-Pvw" secondAttribute="top" constant="30" id="zaP-hU-2PP"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="appVersionLabel" destination="PF7-zc-oJY" id="Izt-qg-GyA"/>
+                        <outlet property="speedLabel" destination="dlc-M0-hiY" id="0pw-KM-9kf"/>
+                        <outlet property="speedStepper" destination="UM5-TZ-EkF" id="1JA-AK-crl"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="189-YK-QFQ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

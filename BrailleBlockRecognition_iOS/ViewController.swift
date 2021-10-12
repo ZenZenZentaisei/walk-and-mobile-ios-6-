@@ -1,12 +1,5 @@
-//
-//  ViewController.swift
-
-//import Network
 import UIKit
 import AVFoundation
-import CoreData
-import Network
-
 import SafariServices
 
 class ViewController: UIViewController {
@@ -33,23 +26,13 @@ class ViewController: UIViewController {
     
 
     var configBool = false
-    var GuideVoice = true
     var stop_bool = false
-    var dialogCheck = false
-    var DLwait = false
-    var networkBool = false
-    //ネットワーク通信確認用
-    let monitor = NWPathMonitor()
-    let queue = DispatchQueue(label: "Monitor")
-    //本体設定の言語(t:日本語、f:英語)
-    var langBool = true
+
 
     //音声停止ボタン 現在の再生、同code、angleでの連続再生を停止させる。
     @IBAction func stop(_ sender: Any) {
         audioPlayer.stop()
-        stop_bool = true
         reproduction = false
-        
     }
     //自動スリープを無効化
     override func viewWillAppear(_ animated: Bool) {
@@ -67,25 +50,7 @@ class ViewController: UIViewController {
 
         //URLジャンプから戻ってきたことを検知
         NotificationCenter.default.addObserver(self, selector: #selector(ViewController.applicationWillEnterForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
-        
-        //ネットワーク確認
-        monitor.pathUpdateHandler = { path in
-            if path.status == .satisfied {
-                self.networkBool = true
-            } else {
-                self.networkBool = false
-            }
-        }
-        monitor.start(queue: queue)
-        
-        //本体設定の言語確認
-        //[0]は、使用言語の優先順序1位(主言語)
-        if(Locale.preferredLanguages[0] != "ja-JP"){
-            langBool = false
-        } else {
-            langBool = true
-        }
-        
+       
         infoBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "info.circle"), style: .done, target: self, action: #selector(infoBarButtonTapped(_:)))
         self.navigationItem.rightBarButtonItem = infoBarButtonItem
     }
@@ -113,14 +78,7 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        if(networkBool){
-            dialogCheck = false
-        } else {
-            self.dialogCheck = true
-        }
-    }
+  
 
     // sampleBufferからUIImageを作成
     func captureImage(_ sampleBuffer:CMSampleBuffer) -> UIImage {
@@ -349,29 +307,29 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
                 if(resultCode == 0){
                     resultAngle = -1
                 }
-                //案内音声取得
-                if(resultCode != 0){
-                    if(self.stop_bool == false){
-                        //保存先ディレクトリの分岐
-                        let mp3:String
-                        if(self.langBool){
-                            mp3 = String(format: "message/wm%05d_%d.mp3",resultCode,resultAngle)
-                        } else {
-                            mp3 = String(format: "message_en/wm%05d_%d.mp3",resultCode,resultAngle)
-                        }
-                            
-                        if (Audio().existingFile(mp3: mp3) == false || (self.configBool == true)) {
-                            Audio().writeAudio(mp3: mp3)
-                        }
-                        let data = Audio().readAudio(mp3: mp3)
-                        do{
-                            self.audioPlayer = try AVAudioPlayer(data:data as Data)
-                            self.audioPlayer.play()
-                        } catch {
-                            print("再生エラー")
-                        }
-                    }
-                }
+//                //案内音声取得
+//                if(resultCode != 0){
+//                    if(self.stop_bool == false){
+//                        //保存先ディレクトリの分岐
+//                        let mp3:String
+////                        if(self.langBool){
+////                            mp3 = String(format: "message/wm%05d_%d.mp3",resultCode,resultAngle)
+////                        } else {
+////                            mp3 = String(format: "message_en/wm%05d_%d.mp3",resultCode,resultAngle)
+////                        }
+//
+//                        if (Audio().existingFile(mp3: mp3) == false || (self.configBool == true)) {
+//                            Audio().writeAudio(mp3: mp3)
+//                        }
+//                        let data = Audio().readAudio(mp3: mp3)
+//                        do{
+//                            self.audioPlayer = try AVAudioPlayer(data:data as Data)
+//                            self.audioPlayer.play()
+//                        } catch {
+//                            print("再生エラー")
+//                        }
+//                    }
+//                }
                 bufCode.removeAll()
                 bufAngle.removeAll()
             }
@@ -436,12 +394,13 @@ extension ViewController: AVAudioPlayerDelegate {
     func play(url:URL) {
         do {
             self.audioPlayer = try AVAudioPlayer(contentsOf: url as URL)
-            audioPlayer.prepareToPlay()
-            audioPlayer.volume = 1.0
+            audioPlayer.enableRate = true
+            print(UserDefaults.standard.float(forKey: "reproductionSpeed"))
+            audioPlayer.rate = UserDefaults.standard.float(forKey: "reproductionSpeed")
             audioPlayer.delegate = self
+            audioPlayer.prepareToPlay()
             audioPlayer.play()
         } catch let error as NSError {
-            //self.player = nil
             print(error.localizedDescription)
         } catch {
             print("AVAudioPlayer init failed")

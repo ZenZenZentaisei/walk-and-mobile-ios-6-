@@ -12,7 +12,10 @@ class InfoViewController: UIViewController {
     
     var previousVCButton: UIBarButtonItem!
 
+    @IBOutlet weak var speedStepper: UIStepper!
     @IBOutlet weak var appVersionLabel: UILabel!
+    @IBOutlet weak var speedLabel: UILabel!
+    var loadSpeed: Float = 1.0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,22 +26,28 @@ class InfoViewController: UIViewController {
         previousVCButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(previousVCButtonTapped(_:)))
         self.navigationItem.leftBarButtonItem = previousVCButton
         
-        appVersionLabel.text = "\(version) (\(build))"
         
+        if UserDefaults.standard.float(forKey: "reproductionSpeed") != 0.0 {
+            loadSpeed = UserDefaults.standard.float(forKey: "reproductionSpeed")
+        }
+        speedLabel.text = String(loadSpeed)
+        speedStepper.value = Double(loadSpeed)
+        speedStepper.stepValue = 0.1
+        
+        appVersionLabel.text = "\(version) (\(build))"
+    }
+    
+    override func viewWillLayoutSubviews() {
         
     }
     @objc func previousVCButtonTapped(_ sender: UIBarButtonItem) {
         self.dismiss(animated: true, completion: nil)
     }
 
-    /*
-    // MARK: - Navigation
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    @IBAction func speedAdjustmentDidTapped(_ sender: UIStepper) {
+        speedLabel.text = "\(round(sender.value*10)/10)"
+        UserDefaults.standard.set(round(sender.value*10)/10, forKey: "reproductionSpeed")
     }
-    */
-
+    
 }
