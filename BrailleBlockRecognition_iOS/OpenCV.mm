@@ -336,8 +336,7 @@ static int GfindTr( const Mat& gray, int &X, int &Y )
                     ////////////// XYが大きすぎる場合に処理を終了する(応急処置)。
                     if(X > 900 || Y > 900) return -1;
                     ////////////// 2020-9-29
-                    
-                    printf( "Adap TR X=%d Y=%d \n", X,Y );
+                
                     return 1;
                 }
             }
@@ -401,6 +400,12 @@ static void Black_point(const Mat& mt, int black[5][5], int X, int Y)
     ///////////////////////////////////
 
 }
+
+
+
+
+const int MaxblackPiont = 700;                //2021-9-17  通常＝450  
+
 //////////////////////////// 追加　ｂｗ　３角形の白黒判定　2019-6-28 ////////////////////////////////
 /////////////////////３角形の直角頂点を使ったコード取得////////
 static long Getcode( const Mat& image, int *X, int *Y,int &invmean)
@@ -491,19 +496,19 @@ static long Getcode( const Mat& image, int *X, int *Y,int &invmean)
         for(int i=0; i<5; i++){
             if (black[j][i] > max)  max = black[j][i];
         }
+    black[0][0]=0;  black[0][1]=0;  black[1][0]=0;  // 一番左とその隣、その下は使わない
+    for (int j=0; j<5; j++)
+        for(int i=0; i<5; i++)
+            if (black[j][i] > max)  max = black[j][i];
 
-////////////////////////////////////////////////////////
-    //if ((max < 150) || (max > 350)) return -1;/// max < 450 は大きすぎ?? 2019-2-18
-    //if ((max < 120) || (max > 450)) return -1;/// min 150 はちいさい　350から380へ変更　2019-11-4
-    if ((max < 120) || (max > 600)) return -1;/// min 150 はちいさい　450から600へ変更　2020-8
+
+    if ((max < 120) || (max > MaxblackPiont)) return -1;
 //////////////////////////////////以下　黒点数により　０か１に変換/////////////////////
     for ( int j=0; j<5; j++)
         for (int k=0; k<5; k++)
-            //if ( (black[j][k] > ( max - 100)) || (black[j][k] > 150) ) B[5*j+k]=0x31;// ２分の１よりよい　影があると半分以上は黒くなる
-            //if ( (black[j][k] > ( max - 100)) || (black[j][k] > 120) ) B[5*j+k]=0x31;//150--->120 2019-11-16 変更
-            //if ( (black[j][k] > ( max - 100)) && (black[j][k] > 120) ) B[5*j+k]=0x31;//or---- >  && バグ　2019-12-14
-            if ( (black[j][k] > ( max - 250)) && (black[j][k] > 120) ) B[5*j+k]=0x31;//or---- >  && バグ　2019-12-14 ///max-200---->-250 12-26
+            if ( (black[j][k] < MaxblackPiont) && (black[j][k] > 120) )  B[5*j+k]=0x31;
             else B[5*j+k]=0x30;// -100 は適当
+    // MARK: -- check_comment
 
 
     B[0]=0x30;//一番左上は使わない　取りあえず　　三角マーカーの黒を拾うため

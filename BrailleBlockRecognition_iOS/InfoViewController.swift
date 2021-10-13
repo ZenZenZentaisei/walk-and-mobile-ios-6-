@@ -20,21 +20,20 @@ class InfoViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as! String
-
-        let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String
         
-        previousVCButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(previousVCButtonTapped(_:)))
-        self.navigationItem.leftBarButtonItem = previousVCButton
+        previousVCButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(previousVCButtonTapped(_:)))
+        self.navigationItem.rightBarButtonItem = previousVCButton
         
         
         if UserDefaults.standard.float(forKey: "reproductionSpeed") != 0.0 {
             loadSpeed = UserDefaults.standard.float(forKey: "reproductionSpeed")
         }
+        
         speedLabel.text = String(loadSpeed)
         speedStepper.value = Double(loadSpeed)
         speedStepper.stepValue = 0.1
         
-        appVersionLabel.text = "\(version) (\(build))"
+        appVersionLabel.text = "\(version)"
     }
     
     override func viewWillLayoutSubviews() {

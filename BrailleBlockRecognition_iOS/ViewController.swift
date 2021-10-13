@@ -9,13 +9,17 @@ class ViewController: UIViewController {
     @IBOutlet weak var guidance: UITextView!
     
     var infoBarButtonItem: UIBarButtonItem!     // 編集ボタン
+    
+    let initGuidanceMessage = "認識中"
   
     var audioPlayer = AVAudioPlayer()
     
-    var reproduction = false
+    var playingTheGuide = false
+    var openSafariVC = false
     var safariVC: SFSafariViewController?
+
     
-    let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate
+    let appDelegate: AppDelegate = UIApplication.shared.delegate as! AppDelegate
     
     
     var openCV = OpenCV()
@@ -32,7 +36,7 @@ class ViewController: UIViewController {
     //音声停止ボタン 現在の再生、同code、angleでの連続再生を停止させる。
     @IBAction func stop(_ sender: Any) {
         audioPlayer.stop()
-        reproduction = false
+        playingTheGuide = false
     }
     //自動スリープを無効化
     override func viewWillAppear(_ animated: Bool) {
@@ -53,13 +57,14 @@ class ViewController: UIViewController {
        
         infoBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "info.circle"), style: .done, target: self, action: #selector(infoBarButtonTapped(_:)))
         self.navigationItem.rightBarButtonItem = infoBarButtonItem
+        
+        guidance.text = initGuidanceMessage
     }
     
     @objc func infoBarButtonTapped(_ sender: UIBarButtonItem) {
         let secondViewController = self.storyboard?.instantiateViewController(withIdentifier: "infoVC") as! InfoViewController
         let nav = UINavigationController(rootViewController: secondViewController)
         self.present(nav, animated: true, completion: nil)
-        
     }
     
     //値の送受信(設定画面)
@@ -73,13 +78,6 @@ class ViewController: UIViewController {
         }
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-  
-
     // sampleBufferからUIImageを作成
     func captureImage(_ sampleBuffer:CMSampleBuffer) -> UIImage {
         let imageBuffer: CVImageBuffer! = CMSampleBufferGetImageBuffer(sampleBuffer)
@@ -267,7 +265,7 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     }
 
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        DispatchQueue.main.async{ //非同期処理として実行
+        DispatchQueue.main.async {
             var img = self.captureImage(sampleBuffer) //UIImageへ変換
             //画像拡大処理(中心から小さく切り抜く)
             let rectX = img.size.width * 0.5
@@ -336,7 +334,7 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
 
             self.cameraImageView.image = resultImg
             
-            if self.reproduction { return }
+            if self.playingTheGuide { return }
             self.safariVC = self.reflectRecognition(angleRecognition: "\(resultCode)", codeRecognition: "\(resultAngle)")
         }
     }
@@ -344,58 +342,87 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     // 認識結果を画面に反映
     func reflectRecognition(angleRecognition: String, codeRecognition: String) -> SFSafariViewController? {
         let guidanceKey = angleRecognition + codeRecognition
-        self.code.text = angleRecognition
-        self.angle.text = codeRecognition
+        guard let loadURL = appDelegate.voice[guidanceKey] else { return nil }
+        guard let mp3URL = URL(string: "http://18.224.144.136/tenji/" + loadURL) else { return nil }
+        guard let resultMessage = appDelegate.guidanceMessage[guidanceKey] else { return nil }
         
-        if let mp3URL = appDelegate.voice[guidanceKey] {
-            let urlstring = "http://18.224.144.136/tenji/" + mp3URL
-            let url = NSURL(string: urlstring)
-            print("the url = \(url!)")
-            self.downloadFileFromURL(url: url! as URL)
-            self.reproduction = true
+        code.text = angleRecognition
+        angle.text = codeRecognition
+        
+        if openSafariVC { return nil }
+        let openStartFile = "GuidanceTextHasStartedPlaying"
+        let delayStartTime = fetchIntervalEffectSound(fileName: openStartFile)
+        playMP3File(url: fetchMP3File(file: openStartFile))
+        
+        DispatchQueue.global(qos: .userInitiated).async {
+            Thread.sleep(forTimeInterval: delayStartTime)
+            self.playStreamingMusic(url: mp3URL)
         }
         
-        if let resultMessage = appDelegate.guidanceMessage[guidanceKey] {
-            if resultMessage.prefix(4) == "http" {
-                self.guidance.text = appDelegate.callMessage[guidanceKey] ?? "未登録"
-            } else {
-                self.guidance.text = resultMessage
-                return nil
-            }
+        playingTheGuide = true
+        // 案内文を更新
+        if resultMessage.prefix(4) == "http" {
+            guidance.text = appDelegate.callMessage[guidanceKey] ?? "未登録"
         } else {
-            self.guidance.text = "確認中"
+            guidance.text = resultMessage
+            return nil
         }
 
         guard let webURL = appDelegate.guidanceMessage[guidanceKey] else { return nil }
         return SFSafariViewController(url: NSURL(string: webURL)! as URL)
     }
     
-    func downloadFileFromURL(url:URL){
+    func fetchMP3File(file: String) -> URL {
+        guard let startedPath = Bundle.main.path(forResource: file, ofType:"mp3") else {
+            fatalError("Cannot find mp3 file: GuidanceTextHasStartedPlaying")
+        }
+        return URL(fileURLWithPath: startedPath)
+    }
+    
+    func fetchIntervalEffectSound(fileName: String) -> Double {
+        do {
+            audioPlayer = try AVAudioPlayer(contentsOf: fetchMP3File(file: fileName))
+        } catch {
+            fatalError("Error \(error.localizedDescription)")
+        }
+        let effectDuration = Int(audioPlayer.duration)
+        // 時間と分を計算
+        let min = effectDuration / 60
+        let sec = effectDuration % 60
+        return Double(min * 60 + sec)
+    }
+    
+    func playStreamingMusic(url: URL) {
+        let openFinishFile = "GuidanceTextHasFinishedPlaying"
+        let delayFinishTime = self.fetchIntervalEffectSound(fileName: openFinishFile)
         let downloadTask:URLSessionDownloadTask = URLSession.shared.downloadTask(with: url as URL) { (URL, response, error) in
-            self.play(url: URL!)
+            // 案内文を再生
+            do {
+                self.audioPlayer = try AVAudioPlayer(contentsOf: URL!)
+                self.playMP3File(url: URL!)
+            } catch {
+                fatalError("Error \(error.localizedDescription)")
+            }
+            
+            // 再生時間(mp3の再生時間切り上げ)
+            let playbackTime = TimeInterval(ceil(Double(self.audioPlayer.duration)))
+            // 案内文終了の効果音
+            DispatchQueue.main.asyncAfter(deadline: .now() + playbackTime + 1.0) {
+                self.playMP3File(url: self.fetchMP3File(file: openFinishFile))
+                Thread.sleep(forTimeInterval: delayFinishTime)
+                self.guidance.text = self.initGuidanceMessage
+                self.playingTheGuide = false
+            }
         }
         downloadTask.resume()
     }
-    
 }
 
 extension ViewController: AVAudioPlayerDelegate {
-    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-        if let webView = safariVC {
-            webView.delegate = self
-            self.present(webView, animated: true, completion: nil)
-        } else {
-            reproduction = false
-            guidance.text = "認識中"
-        }
-    }
-    
-    
-    func play(url:URL) {
+    func playMP3File(url: URL) {
         do {
             self.audioPlayer = try AVAudioPlayer(contentsOf: url as URL)
             audioPlayer.enableRate = true
-            print(UserDefaults.standard.float(forKey: "reproductionSpeed"))
             audioPlayer.rate = UserDefaults.standard.float(forKey: "reproductionSpeed")
             audioPlayer.delegate = self
             audioPlayer.prepareToPlay()
@@ -406,19 +433,24 @@ extension ViewController: AVAudioPlayerDelegate {
             print("AVAudioPlayer init failed")
         }
     }
+    
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        guard let webView = safariVC else { return }
+        webView.delegate = self
+        self.present(webView, animated: true, completion: nil)
+    }
 }
 
 extension ViewController: SFSafariViewControllerDelegate {
     // 画面の読み込み完了時に呼び出し
     func safariViewController(_ controller: SFSafariViewController, didCompleteInitialLoad didLoadSuccessfully: Bool) {
-        self.reproduction = true
+        openSafariVC = true
     }
     // Doneタップ時に呼び出し
     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
-        guidance.text = "認識中"
-        DispatchQueue.global(qos: .userInitiated).async {
-            sleep(3)
-            self.reproduction = false
+        guidance.text = initGuidanceMessage
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+            self.openSafariVC = false
         }
     }
 }
