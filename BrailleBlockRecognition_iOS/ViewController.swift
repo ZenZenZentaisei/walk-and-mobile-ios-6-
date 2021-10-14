@@ -51,9 +51,6 @@ class ViewController: UIViewController {
         Audio().createFolder(addFolder: "message")
         Audio().createFolder(addFolder: "message_en")
         initCamera()
-
-        //URLジャンプから戻ってきたことを検知
-        NotificationCenter.default.addObserver(self, selector: #selector(ViewController.applicationWillEnterForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
        
         infoBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "info.circle"), style: .done, target: self, action: #selector(infoBarButtonTapped(_:)))
         self.navigationItem.rightBarButtonItem = infoBarButtonItem
@@ -65,6 +62,7 @@ class ViewController: UIViewController {
         let secondViewController = self.storyboard?.instantiateViewController(withIdentifier: "infoVC") as! InfoViewController
         let nav = UINavigationController(rootViewController: secondViewController)
         self.present(nav, animated: true, completion: nil)
+        
     }
     
     //値の送受信(設定画面)
@@ -133,30 +131,6 @@ class ViewController: UIViewController {
         }
         return modeList
     }
-    //進捗表示
-    func progress(){
-        var tc = UIApplication.shared.keyWindow?.rootViewController;
-        while ((tc!.presentedViewController) != nil) {
-            tc = tc!.presentedViewController;
-        }
-        var alert = tc as? UIAlertController
-
-        if alert == nil {
-            alert = UIAlertController(title: "コードデータ取得中", message: "now loading...", preferredStyle: .alert)
-            self.present(alert!, animated: true, completion: nil)
-        }
-    }
-    //opencv内初期化(応急処置)　したくない
-    func codeZero(){
-        let Image = UIImage(named: "sample")!
-        _ = self.openCV.reader(Image)
-        print("zero")
-    }
-    
-    @objc func applicationWillEnterForeground() {
-        codeZero()
-    }
-
 }
 //一応残しておく
 extension UIImage {
@@ -287,14 +261,9 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     
             // ****************************************
                 
-            //音声再生中は動作させない
-            if(self.audioPlayer.isPlaying){
-                if(resultCode != 0){
-                    self.codeZero()
-                }
-            }
+      
             //10回の処理結果中の最頻値を採用
-            else if(bufCode.count < 10){
+            if(bufCode.count < 10){
                 bufCode.append(resultCode)
                 bufAngle.append(resultAngle)
             } else {
@@ -335,6 +304,7 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
             self.cameraImageView.image = resultImg
             
             if self.playingTheGuide { return }
+            
             self.safariVC = self.reflectRecognition(angleRecognition: "\(resultCode)", codeRecognition: "\(resultAngle)")
         }
     }
@@ -349,7 +319,7 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
         code.text = angleRecognition
         angle.text = codeRecognition
         
-        if openSafariVC { return nil }
+        
         let openStartFile = "GuidanceTextHasStartedPlaying"
         let delayStartTime = fetchIntervalEffectSound(fileName: openStartFile)
         playMP3File(url: fetchMP3File(file: openStartFile))
@@ -436,8 +406,9 @@ extension ViewController: AVAudioPlayerDelegate {
     
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         guard let webView = safariVC else { return }
+        if openSafariVC { return }
         webView.delegate = self
-        self.present(webView, animated: true, completion: nil)
+        present(webView, animated: true, completion: nil)
     }
 }
 
