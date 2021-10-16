@@ -34,7 +34,7 @@ class InfoViewController: UIViewController {
         }
         
         speedLabel.text = String(loadSpeed)
-        speedLabel.accessibilityHint = "再生速度は\(loadSpeed)です"
+        speedLabel.accessibilityValue = "再生速度"
        
         decelerateButton.setTitle("−", for: .normal)
         decelerateButton.titleLabel?.font = UIFont.systemFont(ofSize: 25)
@@ -47,7 +47,7 @@ class InfoViewController: UIViewController {
         decelerateButton.layer.masksToBounds = true
         decelerateButton.layer.borderColor = UIColor.secondarySystemFill.cgColor
         decelerateButton.addTarget(self, action: #selector(decelerateDidTapped), for: .touchDown)
-        decelerateButton.accessibilityValue = "再生速度を\(loadSpeed - 0.1)にする"
+        decelerateButton.accessibilityValue = "\(loadSpeed - 0.1)"
         
         accelerationButton.setTitle("+", for: .normal)
         accelerationButton.titleLabel?.font = UIFont.systemFont(ofSize: 25)
@@ -60,13 +60,13 @@ class InfoViewController: UIViewController {
         accelerationButton.layer.masksToBounds = true
         accelerationButton.layer.borderColor = UIColor.secondarySystemFill.cgColor
         accelerationButton.addTarget(self, action: #selector(accelerationDidTapped), for: .touchDown)
-        accelerationButton.accessibilityValue = "再生速度を\(loadSpeed + 0.1)にする"
+        accelerationButton.accessibilityValue = "\(loadSpeed + 0.1)"
         
         appVersionLabel.text = "\(version)"
-        appVersionLabel.accessibilityHint = "versionは\(version)です"
+        appVersionLabel.accessibilityHint = "version"
         
-        versionItemLabel.accessibilityHint = "versionは\(version)です"
-        speedItemLabel.accessibilityHint = "再生速度は\(loadSpeed)です"
+        versionItemLabel.accessibilityHint = "\(version)"
+        speedItemLabel.accessibilityHint = "\(loadSpeed)"
     }
    
     @objc func previousVCButtonTapped(_ sender: UIBarButtonItem) {
@@ -77,13 +77,11 @@ class InfoViewController: UIViewController {
         loadSpeed -= 0.1
         speedLabel.text = "\(round(loadSpeed*10)/10)"
         UserDefaults.standard.set(round(loadSpeed*10)/10, forKey: "reproductionSpeed")
-        print("-")
     }
     
     @objc func accelerationDidTapped(_ sender : Any) {
         loadSpeed += 0.1
         speedLabel.text = "\(round(loadSpeed*10)/10)"
         UserDefaults.standard.set(round(loadSpeed*10)/10, forKey: "reproductionSpeed")
-        print("+")
     }
 }
