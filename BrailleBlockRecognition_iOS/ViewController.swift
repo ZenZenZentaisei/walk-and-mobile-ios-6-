@@ -12,11 +12,10 @@ class ViewController: UIViewController {
     
     let initGuidanceMessage = "認識中"
     let guideStatus = GuideStatusModel(message: "認識中")
+    let blockInfo = CodeBlockInfoModel()
     
     var openSafariVC = false
     var safariVC: SFSafariViewController?
-
-    let appDelegate: AppDelegate = UIApplication.shared.delegate as! AppDelegate
     
     
     var session: AVCaptureSession! //セッション
@@ -36,6 +35,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        blockInfo.fetchBlockInfo()
         //音声データ格納用フォルダ作成
         Audio().createFolder(addFolder: "message")
         Audio().createFolder(addFolder: "message_en")
@@ -186,9 +186,9 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     // 認識結果を画面に反映
     func reflectRecognition(angleRecognition: String, codeRecognition: String) -> SFSafariViewController? {
         let guidanceKey = angleRecognition + codeRecognition
-        guard let loadURL = appDelegate.voice[guidanceKey] else { return nil }
+        guard let loadURL = blockInfo.voice[guidanceKey] else { return nil }
         guard let mp3URL = URL(string: "http://18.224.144.136/tenji/" + loadURL) else { return nil }
-        guard let resultMessage = appDelegate.guidanceMessage[guidanceKey] else { return nil }
+        guard let resultMessage = blockInfo.guidanceMessage[guidanceKey] else { return nil }
         
         code.text = angleRecognition
         angle.text = codeRecognition
@@ -200,13 +200,13 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
         
         // 案内文を更新
         if resultMessage.prefix(4) == "http" {
-            guidance.text = appDelegate.callMessage[guidanceKey] ?? "未登録"
+            guidance.text = blockInfo.callMessage[guidanceKey] ?? "未登録"
         } else {
             guidance.text = resultMessage
             return nil
         }
 
-        guard let webURL = appDelegate.guidanceMessage[guidanceKey] else { return nil }
+        guard let webURL = blockInfo.guidanceMessage[guidanceKey] else { return nil }
         return SFSafariViewController(url: NSURL(string: webURL)! as URL)
     }
 }
