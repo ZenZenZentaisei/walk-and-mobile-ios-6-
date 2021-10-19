@@ -7,11 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2A4B34292716AD2A009E8545 /* GuidanceTextHasStartedPlaying.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2A4B34282716AD2A009E8545 /* GuidanceTextHasStartedPlaying.mp3 */; };
-		2A4B342B2716AD75009E8545 /* GuidanceTextHasFinishedPlaying.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2A4B342A2716AD75009E8545 /* GuidanceTextHasFinishedPlaying.mp3 */; };
-		2A4B342D2716ADF9009E8545 /* OpenTheSettingsScreen.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2A4B342C2716ADF9009E8545 /* OpenTheSettingsScreen.mp3 */; };
-		2A4B342F2716AE01009E8545 /* CloseTheSettingsScreen.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2A4B342E2716AE01009E8545 /* CloseTheSettingsScreen.mp3 */; };
 		2AACE765270D1F33009D60D0 /* InfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AACE764270D1F33009D60D0 /* InfoViewController.swift */; };
+		2AE5429C271D9F87003C9D33 /* GeneralFinish.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2AE54298271D9F87003C9D33 /* GeneralFinish.mp3 */; };
+		2AE5429D271D9F87003C9D33 /* GeneralStart.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2AE54299271D9F87003C9D33 /* GeneralStart.mp3 */; };
+		2AE5429E271D9F87003C9D33 /* EndOfDetails.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2AE5429A271D9F87003C9D33 /* EndOfDetails.mp3 */; };
+		2AE5429F271D9F87003C9D33 /* StartOfDetails.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2AE5429B271D9F87003C9D33 /* StartOfDetails.mp3 */; };
 		51A391FD39C09D56ED48F8EE /* Pods_BrailleBlockRecognition_iOSTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32DF2DDB4C94B154B1D7292C /* Pods_BrailleBlockRecognition_iOSTests.framework */; };
 		8D9CB313D6892B59B710070F /* Pods_BrailleBlockRecognition_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF79FCDCC250C931FCAFF289 /* Pods_BrailleBlockRecognition_iOS.framework */; };
 		D429DC9A256CE6770036A93B /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = D429DC99256CE6770036A93B /* Config.swift */; };
@@ -48,11 +48,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		2A4B34282716AD2A009E8545 /* GuidanceTextHasStartedPlaying.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = GuidanceTextHasStartedPlaying.mp3; sourceTree = "<group>"; };
-		2A4B342A2716AD75009E8545 /* GuidanceTextHasFinishedPlaying.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = GuidanceTextHasFinishedPlaying.mp3; sourceTree = "<group>"; };
-		2A4B342C2716ADF9009E8545 /* OpenTheSettingsScreen.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = OpenTheSettingsScreen.mp3; sourceTree = "<group>"; };
-		2A4B342E2716AE01009E8545 /* CloseTheSettingsScreen.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = CloseTheSettingsScreen.mp3; sourceTree = "<group>"; };
 		2AACE764270D1F33009D60D0 /* InfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoViewController.swift; sourceTree = "<group>"; };
+		2AE54298271D9F87003C9D33 /* GeneralFinish.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = GeneralFinish.mp3; sourceTree = "<group>"; };
+		2AE54299271D9F87003C9D33 /* GeneralStart.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = GeneralStart.mp3; sourceTree = "<group>"; };
+		2AE5429A271D9F87003C9D33 /* EndOfDetails.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = EndOfDetails.mp3; sourceTree = "<group>"; };
+		2AE5429B271D9F87003C9D33 /* StartOfDetails.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = StartOfDetails.mp3; sourceTree = "<group>"; };
 		32DF2DDB4C94B154B1D7292C /* Pods_BrailleBlockRecognition_iOSTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BrailleBlockRecognition_iOSTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		420F7E173E980EB64B240BF2 /* Pods-BrailleBlockRecognition_iOS-BrailleBlockRecognition_iOSUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BrailleBlockRecognition_iOS-BrailleBlockRecognition_iOSUITests.debug.xcconfig"; path = "Target Support Files/Pods-BrailleBlockRecognition_iOS-BrailleBlockRecognition_iOSUITests/Pods-BrailleBlockRecognition_iOS-BrailleBlockRecognition_iOSUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		4259F743859C1438448F4C31 /* Pods_BrailleBlockRecognition_iOS_BrailleBlockRecognition_iOSUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BrailleBlockRecognition_iOS_BrailleBlockRecognition_iOSUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -116,10 +116,10 @@
 		2A4B34272716AD17009E8545 /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
-				2A4B34282716AD2A009E8545 /* GuidanceTextHasStartedPlaying.mp3 */,
-				2A4B342A2716AD75009E8545 /* GuidanceTextHasFinishedPlaying.mp3 */,
-				2A4B342C2716ADF9009E8545 /* OpenTheSettingsScreen.mp3 */,
-				2A4B342E2716AE01009E8545 /* CloseTheSettingsScreen.mp3 */,
+				2AE5429A271D9F87003C9D33 /* EndOfDetails.mp3 */,
+				2AE54298271D9F87003C9D33 /* GeneralFinish.mp3 */,
+				2AE54299271D9F87003C9D33 /* GeneralStart.mp3 */,
+				2AE5429B271D9F87003C9D33 /* StartOfDetails.mp3 */,
 			);
 			path = Sounds;
 			sourceTree = "<group>";
@@ -318,12 +318,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2A4B342F2716AE01009E8545 /* CloseTheSettingsScreen.mp3 in Resources */,
 				D43116C3250614170050EA18 /* LaunchScreen.storyboard in Resources */,
-				2A4B34292716AD2A009E8545 /* GuidanceTextHasStartedPlaying.mp3 in Resources */,
 				D43116C0250614170050EA18 /* Assets.xcassets in Resources */,
-				2A4B342D2716ADF9009E8545 /* OpenTheSettingsScreen.mp3 in Resources */,
-				2A4B342B2716AD75009E8545 /* GuidanceTextHasFinishedPlaying.mp3 in Resources */,
+				2AE5429E271D9F87003C9D33 /* EndOfDetails.mp3 in Resources */,
+				2AE5429C271D9F87003C9D33 /* GeneralFinish.mp3 in Resources */,
+				2AE5429D271D9F87003C9D33 /* GeneralStart.mp3 in Resources */,
+				2AE5429F271D9F87003C9D33 /* StartOfDetails.mp3 in Resources */,
 				D43116BB250614170050EA18 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

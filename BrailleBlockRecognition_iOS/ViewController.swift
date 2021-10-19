@@ -22,13 +22,11 @@ class ViewController: UIViewController {
     let appDelegate: AppDelegate = UIApplication.shared.delegate as! AppDelegate
     
     
-    var openCV = OpenCV()
-
+    
     var session: AVCaptureSession! //セッション
     var device: AVCaptureDevice! //カメラ
     var output: AVCaptureVideoDataOutput! //出力先
     
-
     var configBool = false
     var stop_bool = false
 
@@ -37,6 +35,7 @@ class ViewController: UIViewController {
     @IBAction func stop(_ sender: Any) {
         audioPlayer.stop()
         playingTheGuide = false
+        guidance.text = initGuidanceMessage
     }
     //自動スリープを無効化
     override func viewWillAppear(_ animated: Bool) {
@@ -58,11 +57,15 @@ class ViewController: UIViewController {
         guidance.text = initGuidanceMessage
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        session.stopRunning()
+    }
+    
     @objc func infoBarButtonTapped(_ sender: UIBarButtonItem) {
         let secondViewController = self.storyboard?.instantiateViewController(withIdentifier: "infoVC") as! InfoViewController
         let nav = UINavigationController(rootViewController: secondViewController)
         self.present(nav, animated: true, completion: nil)
-        
     }
     
     //値の送受信(設定画面)
@@ -109,65 +112,8 @@ class ViewController: UIViewController {
 
         return resultImage
     }
-
-    //最頻値の算出
-    func mode(_ array:[Int])->[Int]{
-        var sameList:[Int]=[]
-        var countList:[Int]=[]
-        for item in array{
-            if let index=sameList.firstIndex(of: item){
-                countList[index] += 1
-            }else{
-                sameList.append(item)
-                countList.append(1)
-            }
-        }
-        let maxCount=countList.max(by: {$1 > $0})
-        var modeList:[Int]=[]
-        for index in 0..<countList.count{
-            if countList[index]==maxCount!{
-                modeList.append(sameList[index])
-            }
-        }
-        return modeList
-    }
 }
-//一応残しておく
-extension UIImage {
-    // resize image
-    func reSizeImage(reSize:CGSize)->UIImage {
-            //UIGraphicsBeginImageContext(reSize);
-            UIGraphicsBeginImageContextWithOptions(reSize,false,UIScreen.main.scale);
-            self.draw(in: CGRect(x: 0, y: 0, width: reSize.width, height: reSize.height));
-            let reSizeImage:UIImage! = UIGraphicsGetImageFromCurrentImageContext();
-            UIGraphicsEndImageContext();
-            return reSizeImage;
-        }
 
-    // scale the image at rates
-    func scaleImage(scaleSize:CGFloat)->UIImage {
-        let reSize = CGSize(width: self.size.width * scaleSize, height: self.size.height * scaleSize)
-        return reSizeImage(reSize: reSize)
-    }
-    
-    func cropping(to: CGRect) -> UIImage? {
-            var opaque = false
-            if let cgImage = cgImage {
-                switch cgImage.alphaInfo {
-                case .noneSkipLast, .noneSkipFirst:
-                    opaque = true
-                default:
-                    break
-                }
-            }
-
-            UIGraphicsBeginImageContextWithOptions(to.size, opaque, scale)
-            draw(at: CGPoint(x: -to.origin.x, y: -to.origin.y))
-            let result = UIGraphicsGetImageFromCurrentImageContext()
-            UIGraphicsEndImageContext()
-            return result
-        }
-}
 
 extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     // カメラの準備処理
@@ -234,77 +180,26 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
                 connection.videoOrientation = AVCaptureVideoOrientation.portrait
             }
         }
-        
         session.startRunning()
     }
 
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         DispatchQueue.main.async {
-            var img = self.captureImage(sampleBuffer) //UIImageへ変換
-            //画像拡大処理(中心から小さく切り抜く)
-            let rectX = img.size.width * 0.5
-            let rectY = img.size.height * 0.5
-
-            img = img.cropping(to: CGRect(x: (img.size.width - rectX)/2, y: (img.size.height - rectY)/2, width: rectX, height: rectY))!
-
-            //結果を格納する
-            var bufCode: [Int]  = []
-            var bufAngle: [Int]  = []
+            let openCV = OpenCV()
+            // 初期化(↓しないと何故か状態を保存し、更新されない)
+            openCV.reader(UIImage(named: "sample"))! as NSArray
+            
+            let img = self.captureImage(sampleBuffer) //UIImageへ変換z
                 
-            // *************** 画像処理 ***************
-            let result = self.openCV.reader(img)! as NSArray
+            let result = openCV.reader(img)! as NSArray
                 
-            //変換
             let resultImg = result[0] as! UIImage
-            var resultCode = result[1] as! Int
-            var resultAngle = result[2] as! Int
-    
-            // ****************************************
-                
-      
-            //10回の処理結果中の最頻値を採用
-            if(bufCode.count < 10){
-                bufCode.append(resultCode)
-                bufAngle.append(resultAngle)
-            } else {
-                resultCode = self.mode(bufCode)[0]
-                resultAngle = self.mode(bufAngle)[0]
-                //案内文取得
-                //Code=0の時、angle=-1に　同code、angleの場合でも読み込ますため
-                if(resultCode == 0){
-                    resultAngle = -1
-                }
-//                //案内音声取得
-//                if(resultCode != 0){
-//                    if(self.stop_bool == false){
-//                        //保存先ディレクトリの分岐
-//                        let mp3:String
-////                        if(self.langBool){
-////                            mp3 = String(format: "message/wm%05d_%d.mp3",resultCode,resultAngle)
-////                        } else {
-////                            mp3 = String(format: "message_en/wm%05d_%d.mp3",resultCode,resultAngle)
-////                        }
-//
-//                        if (Audio().existingFile(mp3: mp3) == false || (self.configBool == true)) {
-//                            Audio().writeAudio(mp3: mp3)
-//                        }
-//                        let data = Audio().readAudio(mp3: mp3)
-//                        do{
-//                            self.audioPlayer = try AVAudioPlayer(data:data as Data)
-//                            self.audioPlayer.play()
-//                        } catch {
-//                            print("再生エラー")
-//                        }
-//                    }
-//                }
-                bufCode.removeAll()
-                bufAngle.removeAll()
-            }
+            let resultCode = result[1] as! Int
+            let resultAngle = result[2] as! Int
 
             self.cameraImageView.image = resultImg
             
             if self.playingTheGuide { return }
-            
             self.safariVC = self.reflectRecognition(angleRecognition: "\(resultCode)", codeRecognition: "\(resultAngle)")
         }
     }
@@ -319,16 +214,35 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
         code.text = angleRecognition
         angle.text = codeRecognition
         
-        
-        let openStartFile = "GuidanceTextHasStartedPlaying"
+        let playbackSpeed = UserDefaults.standard.float(forKey: "reproductionSpeed")
+
+        // 認識開始の効果音再生
+        let openStartFile = "GeneralStart"
         let delayStartTime = fetchIntervalEffectSound(fileName: openStartFile)
         playMP3File(url: fetchMP3File(file: openStartFile))
-        
-        DispatchQueue.global(qos: .userInitiated).async {
-            Thread.sleep(forTimeInterval: delayStartTime)
-            self.playStreamingMusic(url: mp3URL)
+
+        // 案内文再生
+        DispatchQueue.main.asyncAfter(deadline: .now() + delayStartTime / Double(playbackSpeed)) {
+            print(delayStartTime,delayStartTime / Double(playbackSpeed))
+            self.requests(url: mp3URL, completion: { streamURL in
+                self.playMP3File(url: streamURL)
+            })
         }
         
+        // 認識終了の効果音再生
+        let openFinishFile = "GeneralFinish"
+        playEndEffectSound(url: mp3URL, completion: { playbackTime in
+            DispatchQueue.main.asyncAfter(deadline: .now() + (delayStartTime + playbackTime) / Double(playbackSpeed)) {
+                print("finish test start")
+                if self.playingTheGuide != true { return }
+                print("finish test end")
+                self.playMP3File(url: self.fetchMP3File(file: openFinishFile))
+                self.guidance.text = self.initGuidanceMessage
+                self.playingTheGuide = false
+            }
+        })
+        
+ 
         playingTheGuide = true
         // 案内文を更新
         if resultMessage.prefix(4) == "http" {
@@ -359,30 +273,35 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
         // 時間と分を計算
         let min = effectDuration / 60
         let sec = effectDuration % 60
-        return Double(min * 60 + sec)
+        // 誤差
+        let timeError = 0.1
+        return Double(min * 60 + sec) + timeError
     }
     
-    func playStreamingMusic(url: URL) {
-        let openFinishFile = "GuidanceTextHasFinishedPlaying"
-        let delayFinishTime = self.fetchIntervalEffectSound(fileName: openFinishFile)
+    func playEndEffectSound(url: URL, completion: @escaping (_ playbackTaime: Double) -> Void) {
         let downloadTask:URLSessionDownloadTask = URLSession.shared.downloadTask(with: url as URL) { (URL, response, error) in
-            // 案内文を再生
             do {
                 self.audioPlayer = try AVAudioPlayer(contentsOf: URL!)
-                self.playMP3File(url: URL!)
             } catch {
                 fatalError("Error \(error.localizedDescription)")
             }
-            
-            // 再生時間(mp3の再生時間切り上げ)
-            let playbackTime = TimeInterval(ceil(Double(self.audioPlayer.duration)))
-            // 案内文終了の効果音
-            DispatchQueue.main.asyncAfter(deadline: .now() + playbackTime + 1.0) {
-                self.playMP3File(url: self.fetchMP3File(file: openFinishFile))
-                Thread.sleep(forTimeInterval: delayFinishTime)
-                self.guidance.text = self.initGuidanceMessage
-                self.playingTheGuide = false
-            }
+            // 誤差(何故か再生時間をストリーミングで取得すると-2秒になるため....)
+            let timeError = 2.0
+            completion(TimeInterval(ceil(Double(self.audioPlayer.duration))) + timeError)
+        }
+        downloadTask.resume()
+    }
+    
+    func playStreamingMusic(url: URL) {
+        let downloadTask:URLSessionDownloadTask = URLSession.shared.downloadTask(with: url as URL) { (URL, response, error) in
+            self.playMP3File(url: URL!)
+        }
+        downloadTask.resume()
+    }
+    
+    func requests(url: URL, completion: @escaping (URL) -> Void) {
+        let downloadTask:URLSessionDownloadTask = URLSession.shared.downloadTask(with: url as URL) { (URL, response, error) in
+            completion(URL!)
         }
         downloadTask.resume()
     }
@@ -391,7 +310,7 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
 extension ViewController: AVAudioPlayerDelegate {
     func playMP3File(url: URL) {
         do {
-            self.audioPlayer = try AVAudioPlayer(contentsOf: url as URL)
+            audioPlayer = try AVAudioPlayer(contentsOf: url as URL)
             audioPlayer.enableRate = true
             audioPlayer.rate = UserDefaults.standard.float(forKey: "reproductionSpeed")
             audioPlayer.delegate = self
@@ -417,6 +336,7 @@ extension ViewController: SFSafariViewControllerDelegate {
     func safariViewController(_ controller: SFSafariViewController, didCompleteInitialLoad didLoadSuccessfully: Bool) {
         openSafariVC = true
     }
+    
     // Doneタップ時に呼び出し
     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
         guidance.text = initGuidanceMessage
