@@ -1,31 +1,30 @@
 class CodeBlockInfoModel {
-    var guidanceMessage: [String: String] = [:]
-    var voice: [String: String] = [:]
-    var callMessage: [String: String] = [:]
-    
-    let url = URL(string: "http://18.224.144.136/tenji/get_db2json.py?data=blockmessage")!
-    
-    func fetchBlockInfo() {
-        let task: URLSessionTask = URLSession.shared.dataTask(with: url, completionHandler: { (data, response, error) in
+    public func responseCodeBlockServer(request: URL, completion: @escaping ([String: String], [String: String], [String: String]) -> Void) {
+        var dstMessage: [String: String] = [:]
+        var dstWav: [String: String] = [:]
+        var dstReading: [String: String] = [:]
+        
+        let task: URLSessionTask = URLSession.shared.dataTask(with: request, completionHandler: { (data, response, error) in
             do{
-                let Data_I = try JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions.mutableLeaves) as! [NSDictionary]
+                let responseAllData = try JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions.mutableLeaves) as! [NSDictionary]
     
-                for data in Data_I{
-                    let code = data.value(forKey: "code") as! Int
-                    let angle = data.value(forKey: "angle") as! Int
-                    let message = data.value(forKey: "message") as! String
-                    let wav = data.value(forKey: "wav") as? String
-                    let reading = data.value(forKey: "reading") as? String
+                for data in responseAllData {
+                    let srcCode = data.value(forKey: "code") as! Int
+                    let srcAngle = data.value(forKey: "angle") as! Int
+                    let srcMessage = data.value(forKey: "message") as! String
+                    let srcWav = data.value(forKey: "wav") as? String
+                    let srcReading = data.value(forKey: "reading") as? String
                     
-                    let dataKey = String(code) + String(angle)
+                    let dataKey = String(srcCode) + String(srcAngle)
 
-                    self.guidanceMessage[dataKey] = message
-                    self.voice[dataKey] = wav
-                    self.callMessage[dataKey] = reading
+                    dstMessage[dataKey] = srcMessage
+                    dstWav[dataKey] = srcWav
+                    dstReading[dataKey] = srcReading
                 }
             } catch {
                 print(error)
             }
+            completion(dstMessage, dstWav, dstReading)
         })
         task.resume()
     }

@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2A66B732271EF08A0069EF76 /* CodeBlock+CoreDataProperties copy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A66B730271EF08A0069EF76 /* CodeBlock+CoreDataProperties copy.swift */; };
+		2A66B733271EF08A0069EF76 /* CodeBlock+CoreDataClass copy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A66B731271EF08A0069EF76 /* CodeBlock+CoreDataClass copy.swift */; };
+		2A66B735271EF0E70069EF76 /* CoreDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A66B734271EF0E70069EF76 /* CoreDataModel.swift */; };
+		2A66B738271FBB6F0069EF76 /* CodeBlockController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A66B737271FBB6F0069EF76 /* CodeBlockController.swift */; };
 		2AACE765270D1F33009D60D0 /* InfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AACE764270D1F33009D60D0 /* InfoViewController.swift */; };
 		2AE5429C271D9F87003C9D33 /* GeneralFinish.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2AE54298271D9F87003C9D33 /* GeneralFinish.mp3 */; };
 		2AE5429D271D9F87003C9D33 /* GeneralStart.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2AE54299271D9F87003C9D33 /* GeneralStart.mp3 */; };
@@ -50,6 +54,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2A66B730271EF08A0069EF76 /* CodeBlock+CoreDataProperties copy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CodeBlock+CoreDataProperties copy.swift"; sourceTree = "<group>"; };
+		2A66B731271EF08A0069EF76 /* CodeBlock+CoreDataClass copy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CodeBlock+CoreDataClass copy.swift"; sourceTree = "<group>"; };
+		2A66B734271EF0E70069EF76 /* CoreDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataModel.swift; sourceTree = "<group>"; };
+		2A66B737271FBB6F0069EF76 /* CodeBlockController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeBlockController.swift; sourceTree = "<group>"; };
 		2AACE764270D1F33009D60D0 /* InfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoViewController.swift; sourceTree = "<group>"; };
 		2AE54298271D9F87003C9D33 /* GeneralFinish.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = GeneralFinish.mp3; sourceTree = "<group>"; };
 		2AE54299271D9F87003C9D33 /* GeneralStart.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = GeneralStart.mp3; sourceTree = "<group>"; };
@@ -128,13 +136,32 @@
 			path = Sounds;
 			sourceTree = "<group>";
 		};
+		2A66B736271FBB5D0069EF76 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				2A66B737271FBB6F0069EF76 /* CodeBlockController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
 		2AE542A5271EAC01003C9D33 /* Model */ = {
 			isa = PBXGroup;
 			children = (
 				2AE542A6271EAC13003C9D33 /* GuideStatusModel.swift */,
 				2AE542A8271EB3FB003C9D33 /* CodeBlockInfoModel.swift */,
+				2A66B734271EF0E70069EF76 /* CoreDataModel.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		2AE542AA271EEF0B003C9D33 /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				2A66B730271EF08A0069EF76 /* CodeBlock+CoreDataProperties copy.swift */,
+				2A66B731271EF08A0069EF76 /* CodeBlock+CoreDataClass copy.swift */,
+				D43116BC250614170050EA18 /* BrailleBlockRecognition_iOS.xcdatamodeld */,
+			);
+			path = CoreData;
 			sourceTree = "<group>";
 		};
 		2CD9EAFDBE42DEF8DB67814E /* Frameworks */ = {
@@ -186,6 +213,8 @@
 		D43116B2250614170050EA18 /* BrailleBlockRecognition_iOS */ = {
 			isa = PBXGroup;
 			children = (
+				2A66B736271FBB5D0069EF76 /* Controller */,
+				2AE542AA271EEF0B003C9D33 /* CoreData */,
 				2AE542A5271EAC01003C9D33 /* Model */,
 				D43116B3250614170050EA18 /* AppDelegate.swift */,
 				D43116B5250614170050EA18 /* SceneDelegate.swift */,
@@ -194,7 +223,6 @@
 				D43116BF250614170050EA18 /* Assets.xcassets */,
 				D43116C1250614170050EA18 /* LaunchScreen.storyboard */,
 				D43116C4250614170050EA18 /* Info.plist */,
-				D43116BC250614170050EA18 /* BrailleBlockRecognition_iOS.xcdatamodeld */,
 				D43116E7250614FC0050EA18 /* OpenCV.mm */,
 				D43116E6250614FC0050EA18 /* BrailleBlockRecognition_iOS-Bridging-Header.h */,
 				D429DC99256CE6770036A93B /* Config.swift */,
@@ -436,12 +464,16 @@
 				D43116B8250614170050EA18 /* ViewController.swift in Sources */,
 				D43116E8250614FC0050EA18 /* OpenCV.mm in Sources */,
 				D43116BE250614170050EA18 /* BrailleBlockRecognition_iOS.xcdatamodeld in Sources */,
+				2A66B735271EF0E70069EF76 /* CoreDataModel.swift in Sources */,
+				2A66B738271FBB6F0069EF76 /* CodeBlockController.swift in Sources */,
+				2A66B733271EF08A0069EF76 /* CodeBlock+CoreDataClass copy.swift in Sources */,
 				2AE542A9271EB3FB003C9D33 /* CodeBlockInfoModel.swift in Sources */,
 				2AACE765270D1F33009D60D0 /* InfoViewController.swift in Sources */,
 				D43116B4250614170050EA18 /* AppDelegate.swift in Sources */,
 				D429DC9A256CE6770036A93B /* Config.swift in Sources */,
 				D43116B6250614170050EA18 /* SceneDelegate.swift in Sources */,
 				2AE542A7271EAC13003C9D33 /* GuideStatusModel.swift in Sources */,
+				2A66B732271EF08A0069EF76 /* CodeBlock+CoreDataProperties copy.swift in Sources */,
 				D43116ED25061C150050EA18 /* Audio.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

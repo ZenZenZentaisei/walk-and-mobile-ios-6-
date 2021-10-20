@@ -12,7 +12,7 @@ class ViewController: UIViewController {
     
     let initGuidanceMessage = "認識中"
     let guideStatus = GuideStatusModel(message: "認識中")
-    let blockInfo = CodeBlockInfoModel()
+    let modelCodeBlock = CodeBlockController()
     
     var openSafariVC = false
     var safariVC: SFSafariViewController?
@@ -35,7 +35,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        blockInfo.fetchBlockInfo()
+        modelCodeBlock.fetchGuideInformation()
         //音声データ格納用フォルダ作成
         Audio().createFolder(addFolder: "message")
         Audio().createFolder(addFolder: "message_en")
@@ -53,8 +53,10 @@ class ViewController: UIViewController {
     }
     
     @objc func infoBarButtonTapped(_ sender: UIBarButtonItem) {
-        let secondViewController = self.storyboard?.instantiateViewController(withIdentifier: "infoVC") as! InfoViewController
-        let nav = UINavigationController(rootViewController: secondViewController)
+        let infoVC = self.storyboard?.instantiateViewController(withIdentifier: "infoVC") as! InfoViewController
+        infoVC.argGuidance = modelCodeBlock.resultAllInfomation(type: .guidance)
+        infoVC.argCall = modelCodeBlock.resultAllInfomation(type: .call)
+        let nav = UINavigationController(rootViewController: infoVC)
         self.present(nav, animated: true, completion: nil)
     }
     
@@ -186,9 +188,9 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     // 認識結果を画面に反映
     func reflectRecognition(angleRecognition: String, codeRecognition: String) -> SFSafariViewController? {
         let guidanceKey = angleRecognition + codeRecognition
-        guard let loadURL = blockInfo.voice[guidanceKey] else { return nil }
+        guard let loadURL = modelCodeBlock.resultValue(key: guidanceKey, type: .streaming) else { return nil }
         guard let mp3URL = URL(string: "http://18.224.144.136/tenji/" + loadURL) else { return nil }
-        guard let resultMessage = blockInfo.guidanceMessage[guidanceKey] else { return nil }
+        guard let resultMessage = modelCodeBlock.resultValue(key: guidanceKey, type: .guidance) else { return nil }
         
         code.text = angleRecognition
         angle.text = codeRecognition
@@ -200,13 +202,13 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
         
         // 案内文を更新
         if resultMessage.prefix(4) == "http" {
-            guidance.text = blockInfo.callMessage[guidanceKey] ?? "未登録"
+            guidance.text = modelCodeBlock.resultValue(key: guidanceKey, type: .call) ?? "未登録"
         } else {
             guidance.text = resultMessage
             return nil
         }
-
-        guard let webURL = blockInfo.guidanceMessage[guidanceKey] else { return nil }
+        guard let webURL = modelCodeBlock.resultValue(key: guidanceKey, type: .guidance) else { return nil }
+        print(webURL)
         return SFSafariViewController(url: NSURL(string: webURL)! as URL)
     }
 }
@@ -214,6 +216,7 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
 extension ViewController: AVAudioPlayerDelegate {
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         guard let webView = safariVC else { return }
+        
         if openSafariVC { return }
         webView.delegate = self
         present(webView, animated: true, completion: nil)

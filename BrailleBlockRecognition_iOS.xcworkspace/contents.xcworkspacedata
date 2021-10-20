@@ -2,18 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:BBlock_en+CoreDataClass.swift">
-   </FileRef>
-   <FileRef
-      location = "group:BBlock_en+CoreDataProperties.swift">
-   </FileRef>
-   <FileRef
-      location = "group:BBlock+CoreDataClass.swift">
-   </FileRef>
-   <FileRef
-      location = "group:BBlock+CoreDataProperties.swift">
-   </FileRef>
-   <FileRef
       location = "group:BrailleBlockRecognition_iOS.xcodeproj">
    </FileRef>
    <FileRef

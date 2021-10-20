@@ -12,7 +12,7 @@ class GuideStatusModel: NSObject {
     }
     
     // 案内文を再生する
-    func startMP3Player(mp3URL: URL, completion: @escaping (_ initMessage: String) -> Void) {
+    public func startMP3Player(mp3URL: URL, completion: @escaping (_ initMessage: String) -> Void) {
         let playbackSpeed = UserDefaults.standard.float(forKey: "reproductionSpeed")
         
         // 認識開始の効果音再生
@@ -40,8 +40,15 @@ class GuideStatusModel: NSObject {
         process = true
     }
     
+    // 案内文を終了する
+    public func stopMP3File() -> String {
+        audioPlayer.stop()
+        process = false
+        return initMessage
+    }
+    
     // ローカル内のファイルを取得
-    func fetchMP3File(file: String) -> URL {
+    private func fetchMP3File(file: String) -> URL {
         guard let startedPath = Bundle.main.path(forResource: file, ofType: "mp3") else {
             fatalError("Cannot find mp3 file: GuidanceTextHasStartedPlaying")
         }
@@ -49,7 +56,7 @@ class GuideStatusModel: NSObject {
     }
     
     // 効果音(MP3)の再生時間を取得
-    func durationEffectSound(fileName: String) -> Double {
+    private func durationEffectSound(fileName: String) -> Double {
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: fetchMP3File(file: fileName))
         } catch {
@@ -66,7 +73,7 @@ class GuideStatusModel: NSObject {
     }
     
     // ストリーミング再生している案内文の再生時間を取得
-    func durationEndEffectSound(url: URL, completion: @escaping (_ playbackTaime: Double) -> Void) {
+    private func durationEndEffectSound(url: URL, completion: @escaping (_ playbackTaime: Double) -> Void) {
         let downloadTask:URLSessionDownloadTask = URLSession.shared.downloadTask(with: url as URL) { (URL, response, error) in
             do {
                 self.audioPlayer = try AVAudioPlayer(contentsOf: URL!)
@@ -81,18 +88,11 @@ class GuideStatusModel: NSObject {
     }
     
     // ストリーミンング形式で音(案内分)を再生
-    func playStreamingMusic(url: URL, completion: @escaping (URL) -> Void) {
+    private func playStreamingMusic(url: URL, completion: @escaping (URL) -> Void) {
         let downloadTask:URLSessionDownloadTask = URLSession.shared.downloadTask(with: url as URL) { (URL, response, error) in
             completion(URL!)
         }
         downloadTask.resume()
-    }
-    
-    // 案内文を終了する
-    func stopMP3File() -> String {
-        audioPlayer.stop()
-        process = false
-        return initMessage
     }
 }
 

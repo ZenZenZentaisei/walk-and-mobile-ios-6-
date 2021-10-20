@@ -9,7 +9,16 @@
         <attribute name="mp3" optional="YES" attributeType="String"/>
         <attribute name="reading" optional="YES" attributeType="String"/>
     </entity>
+    <entity name="CodeBlock" representedClassName="CodeBlock" syncable="YES">
+        <attribute name="angle" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="code" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="id" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="message" optional="YES" attributeType="String"/>
+        <attribute name="messagecategory" optional="YES" attributeType="String"/>
+        <attribute name="reading" optional="YES" attributeType="String"/>
+    </entity>
     <elements>
-        <element name="BBlock" positionX="-54" positionY="-9" width="128" height="148"/>
+        <element name="BBlock" positionX="-54" positionY="-9" width="128" height="134"/>
+        <element name="CodeBlock" positionX="-54" positionY="54" width="128" height="119"/>
     </elements>
 </model>

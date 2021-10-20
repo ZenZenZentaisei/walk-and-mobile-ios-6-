@@ -20,6 +20,9 @@ class InfoViewController: UIViewController {
     @IBOutlet weak var accelerationButton: UIButton!
     
     var loadSpeed: Float = 1.0
+
+    var argGuidance: [String: String] = [:]
+    var argCall: [String: String] = [:]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -83,5 +86,11 @@ class InfoViewController: UIViewController {
         loadSpeed += 0.1
         speedLabel.text = "\(round(loadSpeed*10)/10)"
         UserDefaults.standard.set(round(loadSpeed*10)/10, forKey: "reproductionSpeed")
+    }
+    
+    @IBAction func saveDidTapped(_ sender: Any) {
+        let coreData = CoreDataModel()
+        coreData.saveAllCoreData(guidace: argGuidance, call: argCall)
+        coreData.fetchAllCoreData()
     }
 }
