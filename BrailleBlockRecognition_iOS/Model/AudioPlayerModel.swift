@@ -1,18 +1,18 @@
 import AVFoundation
 
-class GuideStatusModel: NSObject {
-    var audioPlayer: AVAudioPlayer
-    var process: Bool
-    let initMessage: String
+protocol AudioPlayerDelegate: AnyObject {
+    func didFinshPlaying()
+}
+
+class AudioPlayerModel: NSObject {
+    weak var delegate: AudioPlayerDelegate?
     
-    init(message: String) {
-        audioPlayer = AVAudioPlayer()
-        process = false
-        initMessage = message
-    }
+    private var audioPlayer = AVAudioPlayer()
+    private let initMessage = "認識中"
+    public var process = false
     
     // 案内文を再生する
-    func startMP3Player(mp3URL: URL, completion: @escaping (_ initMessage: String) -> Void) {
+    public func startMP3Player(mp3URL: URL, completion: @escaping (String) -> Void) {
         let playbackSpeed = UserDefaults.standard.float(forKey: "reproductionSpeed")
         
         // 認識開始の効果音再生
@@ -31,17 +31,25 @@ class GuideStatusModel: NSObject {
         let openFinishFile = "GeneralFinish"
         durationEndEffectSound(url: mp3URL, completion: { playbackTime in
             DispatchQueue.main.asyncAfter(deadline: .now() + (delayStartTime + playbackTime) / Double(playbackSpeed)) {
+                // 音声停止ボタンが押されていたら終了する
                 if self.process != true { return }
+                
                 self.playMP3File(url: self.fetchMP3File(file: openFinishFile))
-                self.process = false
                 completion(self.initMessage)
             }
         })
         process = true
     }
     
+    // 案内文を終了する
+    public func stopMP3File() -> String {
+        audioPlayer.stop()
+        process = false
+        return initMessage
+    }
+    
     // ローカル内のファイルを取得
-    func fetchMP3File(file: String) -> URL {
+    private func fetchMP3File(file: String) -> URL {
         guard let startedPath = Bundle.main.path(forResource: file, ofType: "mp3") else {
             fatalError("Cannot find mp3 file: GuidanceTextHasStartedPlaying")
         }
@@ -49,7 +57,7 @@ class GuideStatusModel: NSObject {
     }
     
     // 効果音(MP3)の再生時間を取得
-    func durationEffectSound(fileName: String) -> Double {
+    private func durationEffectSound(fileName: String) -> Double {
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: fetchMP3File(file: fileName))
         } catch {
@@ -66,7 +74,7 @@ class GuideStatusModel: NSObject {
     }
     
     // ストリーミング再生している案内文の再生時間を取得
-    func durationEndEffectSound(url: URL, completion: @escaping (_ playbackTaime: Double) -> Void) {
+    private func durationEndEffectSound(url: URL, completion: @escaping (_ playbackTaime: Double) -> Void) {
         let downloadTask:URLSessionDownloadTask = URLSession.shared.downloadTask(with: url as URL) { (URL, response, error) in
             do {
                 self.audioPlayer = try AVAudioPlayer(contentsOf: URL!)
@@ -81,22 +89,15 @@ class GuideStatusModel: NSObject {
     }
     
     // ストリーミンング形式で音(案内分)を再生
-    func playStreamingMusic(url: URL, completion: @escaping (URL) -> Void) {
+    private func playStreamingMusic(url: URL, completion: @escaping (URL) -> Void) {
         let downloadTask:URLSessionDownloadTask = URLSession.shared.downloadTask(with: url as URL) { (URL, response, error) in
             completion(URL!)
         }
         downloadTask.resume()
     }
-    
-    // 案内文を終了する
-    func stopMP3File() -> String {
-        audioPlayer.stop()
-        process = false
-        return initMessage
-    }
 }
 
-extension GuideStatusModel: AVAudioPlayerDelegate {
+extension AudioPlayerModel: AVAudioPlayerDelegate {
     func playMP3File(url: URL) {
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: url as URL)
@@ -110,5 +111,9 @@ extension GuideStatusModel: AVAudioPlayerDelegate {
         } catch {
             print("AVAudioPlayer init failed")
         }
+    }
+    
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        delegate?.didFinshPlaying()
     }
 }

@@ -11,14 +11,9 @@ import CoreData
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    var guidanceMessage: [String: String] = [:]
-    var voice: [String: String] = [:]
-    var callMessage: [String: String] = [:]
+    
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
-        AppEventHandler.sharedInstance.startObserving()
-        
         return true
     }
 
@@ -81,54 +76,4 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
-}
-
-
-class AppEventHandler: NSObject {
-    static let sharedInstance = AppEventHandler()
-
-    override private init() {
-        super.init()
-    }
-
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
-
-    func startObserving() {
-        // アプリ起動時
-        NotificationCenter.default.addObserver(self, selector: #selector(self.didFinishLaunch),
-                                               name: UIApplication.didFinishLaunchingNotification, object: nil)
-    }
-
-    // アプリ起動時の処理
-    @objc func didFinishLaunch() {
-        print("kidou")
-        let appDelegate:AppDelegate = UIApplication.shared.delegate as! AppDelegate 
-
-        let url = URL(string: "http://18.224.144.136/tenji/get_db2json.py?data=blockmessage")!
-        
-        let task: URLSessionTask = URLSession.shared.dataTask(with: url, completionHandler: { (data, response, error) in
-            do{
-                let Data_I = try JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions.mutableLeaves) as! [NSDictionary]
-    
-                for data in Data_I{
-                    let code = data.value(forKey: "code") as! Int
-                    let angle = data.value(forKey: "angle") as! Int
-                    let message = data.value(forKey: "message") as! String
-                    let wav = data.value(forKey: "wav") as? String
-                    let reading = data.value(forKey: "reading") as? String
-                    
-                    let dataKey = String(code) + String(angle)
-
-                    appDelegate.guidanceMessage[dataKey] = message
-                    appDelegate.voice[dataKey] = wav
-                    appDelegate.callMessage[dataKey] = reading
-                }
-            } catch {
-                print(error)
-            }
-        })
-        task.resume()
-    }
 }
