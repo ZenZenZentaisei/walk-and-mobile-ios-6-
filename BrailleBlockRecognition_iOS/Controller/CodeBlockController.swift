@@ -4,7 +4,6 @@ enum TypeInfo {
     case call
 }
 
-// Safari 関連ここかな
 class CodeBlockController {
     private var guidanceMessage: [String: String] = [:]
     private var streamingURL: [String: String] = [:]

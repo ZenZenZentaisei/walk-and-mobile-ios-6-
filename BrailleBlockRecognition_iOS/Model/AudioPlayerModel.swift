@@ -1,4 +1,3 @@
-// ネットのオン、オフはここ
 import AVFoundation
 
 protocol AudioPlayerDelegate: AnyObject {
