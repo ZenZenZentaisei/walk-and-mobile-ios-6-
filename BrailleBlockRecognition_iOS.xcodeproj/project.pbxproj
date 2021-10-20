@@ -11,6 +11,7 @@
 		2A66B733271EF08A0069EF76 /* CodeBlock+CoreDataClass copy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A66B731271EF08A0069EF76 /* CodeBlock+CoreDataClass copy.swift */; };
 		2A66B735271EF0E70069EF76 /* CoreDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A66B734271EF0E70069EF76 /* CoreDataModel.swift */; };
 		2A66B738271FBB6F0069EF76 /* CodeBlockController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A66B737271FBB6F0069EF76 /* CodeBlockController.swift */; };
+		2A66B73C271FE7DB0069EF76 /* GuideStatusController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A66B73B271FE7DB0069EF76 /* GuideStatusController.swift */; };
 		2AACE765270D1F33009D60D0 /* InfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AACE764270D1F33009D60D0 /* InfoViewController.swift */; };
 		2AE5429C271D9F87003C9D33 /* GeneralFinish.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2AE54298271D9F87003C9D33 /* GeneralFinish.mp3 */; };
 		2AE5429D271D9F87003C9D33 /* GeneralStart.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2AE54299271D9F87003C9D33 /* GeneralStart.mp3 */; };
@@ -58,6 +59,7 @@
 		2A66B731271EF08A0069EF76 /* CodeBlock+CoreDataClass copy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CodeBlock+CoreDataClass copy.swift"; sourceTree = "<group>"; };
 		2A66B734271EF0E70069EF76 /* CoreDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataModel.swift; sourceTree = "<group>"; };
 		2A66B737271FBB6F0069EF76 /* CodeBlockController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeBlockController.swift; sourceTree = "<group>"; };
+		2A66B73B271FE7DB0069EF76 /* GuideStatusController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideStatusController.swift; sourceTree = "<group>"; };
 		2AACE764270D1F33009D60D0 /* InfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoViewController.swift; sourceTree = "<group>"; };
 		2AE54298271D9F87003C9D33 /* GeneralFinish.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = GeneralFinish.mp3; sourceTree = "<group>"; };
 		2AE54299271D9F87003C9D33 /* GeneralStart.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = GeneralStart.mp3; sourceTree = "<group>"; };
@@ -140,6 +142,7 @@
 			isa = PBXGroup;
 			children = (
 				2A66B737271FBB6F0069EF76 /* CodeBlockController.swift */,
+				2A66B73B271FE7DB0069EF76 /* GuideStatusController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -464,6 +467,7 @@
 				D43116B8250614170050EA18 /* ViewController.swift in Sources */,
 				D43116E8250614FC0050EA18 /* OpenCV.mm in Sources */,
 				D43116BE250614170050EA18 /* BrailleBlockRecognition_iOS.xcdatamodeld in Sources */,
+				2A66B73C271FE7DB0069EF76 /* GuideStatusController.swift in Sources */,
 				2A66B735271EF0E70069EF76 /* CoreDataModel.swift in Sources */,
 				2A66B738271FBB6F0069EF76 /* CodeBlockController.swift in Sources */,
 				2A66B733271EF08A0069EF76 /* CodeBlock+CoreDataClass copy.swift in Sources */,

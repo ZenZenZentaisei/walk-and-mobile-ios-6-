@@ -12,11 +12,8 @@ class ViewController: UIViewController {
     
     let initGuidanceMessage = "認識中"
     let guideStatus = GuideStatusModel(message: "認識中")
-    let modelCodeBlock = CodeBlockController()
-    
-    var openSafariVC = false
-    var safariVC: SFSafariViewController?
-    
+    let statusGuidance = GuideStatusController()
+    let codeBlock = CodeBlockController()
     
     var session: AVCaptureSession! //セッション
     var device: AVCaptureDevice! //カメラ
@@ -35,7 +32,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        modelCodeBlock.fetchGuideInformation()
+        codeBlock.fetchGuideInformation()
         //音声データ格納用フォルダ作成
         Audio().createFolder(addFolder: "message")
         Audio().createFolder(addFolder: "message_en")
@@ -54,8 +51,8 @@ class ViewController: UIViewController {
     
     @objc func infoBarButtonTapped(_ sender: UIBarButtonItem) {
         let infoVC = self.storyboard?.instantiateViewController(withIdentifier: "infoVC") as! InfoViewController
-        infoVC.argGuidance = modelCodeBlock.resultAllInfomation(type: .guidance)
-        infoVC.argCall = modelCodeBlock.resultAllInfomation(type: .call)
+        infoVC.argGuidance = codeBlock.resultAllInfomation(type: .guidance)
+        infoVC.argCall = codeBlock.resultAllInfomation(type: .call)
         let nav = UINavigationController(rootViewController: infoVC)
         self.present(nav, animated: true, completion: nil)
     }
@@ -166,6 +163,9 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
 
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         DispatchQueue.main.async {
+            
+            
+            
             let openCV = OpenCV()
             // 初期化(↓しないと何故か状態を保存し、更新されない)
             openCV.reader(UIImage(named: "sample"))! as NSArray
@@ -179,21 +179,37 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
             let resultAngle = result[2] as! Int
 
             self.cameraImageView.image = resultImg
+            self.code.text = "\(resultCode)"
+            self.angle.text = "\(resultAngle)"
+
+            let guidanceKey = "\(resultCode)" + "\(resultAngle)"
+          
+            guard let loadURL = self.codeBlock.resultValue(key: guidanceKey, type: .streaming) else { return }
+            guard let mp3URL = URL(string: "http://18.224.144.136/tenji/" + loadURL) else { return }
+            guard let resultMessage = self.codeBlock.resultValue(key: guidanceKey, type: .guidance) else { return }
+            let resultCall = self.codeBlock.resultValue(key: guidanceKey, type: .call) ?? "未登録"
+      
+            self.statusGuidance.reflectImageProcessing(url: mp3URL, message: resultMessage, call: resultCall)
             
-            if self.guideStatus.process { return }
-            self.safariVC = self.reflectRecognition(angleRecognition: "\(resultCode)", codeRecognition: "\(resultAngle)")
+            
         }
+        
+        DispatchQueue.main.async {
+            self.guidance.text = self.statusGuidance.guideText
+            guard let test = self.statusGuidance.safariURL else { return }
+            self.openSafari(url: test)
+        }
+        
+        
+    
     }
     
     // 認識結果を画面に反映
     func reflectRecognition(angleRecognition: String, codeRecognition: String) -> SFSafariViewController? {
         let guidanceKey = angleRecognition + codeRecognition
-        guard let loadURL = modelCodeBlock.resultValue(key: guidanceKey, type: .streaming) else { return nil }
+        guard let loadURL = codeBlock.resultValue(key: guidanceKey, type: .streaming) else { return nil }
         guard let mp3URL = URL(string: "http://18.224.144.136/tenji/" + loadURL) else { return nil }
-        guard let resultMessage = modelCodeBlock.resultValue(key: guidanceKey, type: .guidance) else { return nil }
-        
-        code.text = angleRecognition
-        angle.text = codeRecognition
+        guard let resultMessage = codeBlock.resultValue(key: guidanceKey, type: .guidance) else { return nil }
         
         guideStatus.startMP3Player(mp3URL: mp3URL, completion: { message in
             // 案内文を初期化
@@ -202,38 +218,33 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
         
         // 案内文を更新
         if resultMessage.prefix(4) == "http" {
-            guidance.text = modelCodeBlock.resultValue(key: guidanceKey, type: .call) ?? "未登録"
+            guidance.text = codeBlock.resultValue(key: guidanceKey, type: .call) ?? "未登録"
         } else {
             guidance.text = resultMessage
             return nil
         }
-        guard let webURL = modelCodeBlock.resultValue(key: guidanceKey, type: .guidance) else { return nil }
-        print(webURL)
+        guard let webURL = codeBlock.resultValue(key: guidanceKey, type: .guidance) else { return nil }
         return SFSafariViewController(url: NSURL(string: webURL)! as URL)
     }
-}
-
-extension ViewController: AVAudioPlayerDelegate {
-    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-        guard let webView = safariVC else { return }
-        
-        if openSafariVC { return }
-        webView.delegate = self
-        present(webView, animated: true, completion: nil)
+    
+    func openSafari(url: URL) {
+        let safariVC = SFSafariViewController(url: url)
+//        if openSafariVC { return }
+        present(safariVC, animated: true, completion: nil)
     }
 }
 
 extension ViewController: SFSafariViewControllerDelegate {
     // 画面の読み込み完了時に呼び出し
     func safariViewController(_ controller: SFSafariViewController, didCompleteInitialLoad didLoadSuccessfully: Bool) {
-        openSafariVC = true
+//        openSafariVC = true
     }
     
     // Doneタップ時に呼び出し
     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
-        guidance.text = initGuidanceMessage
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-            self.openSafariVC = false
-        }
+        session.startRunning()
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+//            self.openSafariVC = false
+//        }
     }
 }

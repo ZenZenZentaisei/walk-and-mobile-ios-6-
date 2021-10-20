@@ -12,7 +12,7 @@ class GuideStatusModel: NSObject {
     }
     
     // 案内文を再生する
-    public func startMP3Player(mp3URL: URL, completion: @escaping (_ initMessage: String) -> Void) {
+    public func startMP3Player(mp3URL: URL, completion: @escaping (String) -> Void) {
         let playbackSpeed = UserDefaults.standard.float(forKey: "reproductionSpeed")
         
         // 認識開始の効果音再生
@@ -110,5 +110,15 @@ extension GuideStatusModel: AVAudioPlayerDelegate {
         } catch {
             print("AVAudioPlayer init failed")
         }
+    }
+    
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        print("aaaaaaa")
+//        guard let webView = safariVC else { return }
+//        print("bbbbbbb")
+//        if openSafariVC { return }
+//        print("ccccccccc")
+//        webView.delegate = self
+//        present(webView, animated: true, completion: nil)
     }
 }
