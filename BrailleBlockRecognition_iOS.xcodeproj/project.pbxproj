@@ -17,11 +17,10 @@
 		2AE5429D271D9F87003C9D33 /* GeneralStart.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2AE54299271D9F87003C9D33 /* GeneralStart.mp3 */; };
 		2AE5429E271D9F87003C9D33 /* EndOfDetails.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2AE5429A271D9F87003C9D33 /* EndOfDetails.mp3 */; };
 		2AE5429F271D9F87003C9D33 /* StartOfDetails.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2AE5429B271D9F87003C9D33 /* StartOfDetails.mp3 */; };
-		2AE542A7271EAC13003C9D33 /* GuideStatusModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AE542A6271EAC13003C9D33 /* GuideStatusModel.swift */; };
+		2AE542A7271EAC13003C9D33 /* AudioPlayerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AE542A6271EAC13003C9D33 /* AudioPlayerModel.swift */; };
 		2AE542A9271EB3FB003C9D33 /* CodeBlockInfoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AE542A8271EB3FB003C9D33 /* CodeBlockInfoModel.swift */; };
 		51A391FD39C09D56ED48F8EE /* Pods_BrailleBlockRecognition_iOSTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32DF2DDB4C94B154B1D7292C /* Pods_BrailleBlockRecognition_iOSTests.framework */; };
 		8D9CB313D6892B59B710070F /* Pods_BrailleBlockRecognition_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF79FCDCC250C931FCAFF289 /* Pods_BrailleBlockRecognition_iOS.framework */; };
-		D429DC9A256CE6770036A93B /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = D429DC99256CE6770036A93B /* Config.swift */; };
 		D43116B4250614170050EA18 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43116B3250614170050EA18 /* AppDelegate.swift */; };
 		D43116B6250614170050EA18 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43116B5250614170050EA18 /* SceneDelegate.swift */; };
 		D43116B8250614170050EA18 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43116B7250614170050EA18 /* ViewController.swift */; };
@@ -32,8 +31,6 @@
 		D43116CE250614180050EA18 /* BrailleBlockRecognition_iOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43116CD250614180050EA18 /* BrailleBlockRecognition_iOSTests.swift */; };
 		D43116D9250614180050EA18 /* BrailleBlockRecognition_iOSUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43116D8250614180050EA18 /* BrailleBlockRecognition_iOSUITests.swift */; };
 		D43116E8250614FC0050EA18 /* OpenCV.mm in Sources */ = {isa = PBXBuildFile; fileRef = D43116E7250614FC0050EA18 /* OpenCV.mm */; };
-		D43116EB25061BF30050EA18 /* Reader.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43116EA25061BF30050EA18 /* Reader.swift */; };
-		D43116ED25061C150050EA18 /* Audio.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43116EC25061C150050EA18 /* Audio.swift */; };
 		EC41C639E4BD1F29C854CD91 /* Pods_BrailleBlockRecognition_iOS_BrailleBlockRecognition_iOSUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4259F743859C1438448F4C31 /* Pods_BrailleBlockRecognition_iOS_BrailleBlockRecognition_iOSUITests.framework */; };
 /* End PBXBuildFile section */
 
@@ -65,7 +62,7 @@
 		2AE54299271D9F87003C9D33 /* GeneralStart.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = GeneralStart.mp3; sourceTree = "<group>"; };
 		2AE5429A271D9F87003C9D33 /* EndOfDetails.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = EndOfDetails.mp3; sourceTree = "<group>"; };
 		2AE5429B271D9F87003C9D33 /* StartOfDetails.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = StartOfDetails.mp3; sourceTree = "<group>"; };
-		2AE542A6271EAC13003C9D33 /* GuideStatusModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideStatusModel.swift; sourceTree = "<group>"; };
+		2AE542A6271EAC13003C9D33 /* AudioPlayerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerModel.swift; sourceTree = "<group>"; };
 		2AE542A8271EB3FB003C9D33 /* CodeBlockInfoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeBlockInfoModel.swift; sourceTree = "<group>"; };
 		32DF2DDB4C94B154B1D7292C /* Pods_BrailleBlockRecognition_iOSTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BrailleBlockRecognition_iOSTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		420F7E173E980EB64B240BF2 /* Pods-BrailleBlockRecognition_iOS-BrailleBlockRecognition_iOSUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BrailleBlockRecognition_iOS-BrailleBlockRecognition_iOSUITests.debug.xcconfig"; path = "Target Support Files/Pods-BrailleBlockRecognition_iOS-BrailleBlockRecognition_iOSUITests/Pods-BrailleBlockRecognition_iOS-BrailleBlockRecognition_iOSUITests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -75,7 +72,6 @@
 		80AA82A590105E15FF963B83 /* Pods-BrailleBlockRecognition_iOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BrailleBlockRecognition_iOSTests.debug.xcconfig"; path = "Target Support Files/Pods-BrailleBlockRecognition_iOSTests/Pods-BrailleBlockRecognition_iOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		9FDF5C6B9C2D85BBE431ACA8 /* Pods-BrailleBlockRecognition_iOS-BrailleBlockRecognition_iOSUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BrailleBlockRecognition_iOS-BrailleBlockRecognition_iOSUITests.release.xcconfig"; path = "Target Support Files/Pods-BrailleBlockRecognition_iOS-BrailleBlockRecognition_iOSUITests/Pods-BrailleBlockRecognition_iOS-BrailleBlockRecognition_iOSUITests.release.xcconfig"; sourceTree = "<group>"; };
 		AF79FCDCC250C931FCAFF289 /* Pods_BrailleBlockRecognition_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BrailleBlockRecognition_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		D429DC99256CE6770036A93B /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		D43116B0250614170050EA18 /* BrailleBlockRecognition_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BrailleBlockRecognition_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D43116B3250614170050EA18 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D43116B5250614170050EA18 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -94,8 +90,6 @@
 		D43116E6250614FC0050EA18 /* BrailleBlockRecognition_iOS-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BrailleBlockRecognition_iOS-Bridging-Header.h"; sourceTree = "<group>"; };
 		D43116E7250614FC0050EA18 /* OpenCV.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OpenCV.mm; sourceTree = "<group>"; };
 		D43116E9250615580050EA18 /* OpenCV.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenCV.h; sourceTree = "<group>"; };
-		D43116EA25061BF30050EA18 /* Reader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reader.swift; sourceTree = "<group>"; };
-		D43116EC25061C150050EA18 /* Audio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Audio.swift; sourceTree = "<group>"; };
 		FAE17BA8A8334A33E0998506 /* Pods-BrailleBlockRecognition_iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BrailleBlockRecognition_iOS.release.xcconfig"; path = "Target Support Files/Pods-BrailleBlockRecognition_iOS/Pods-BrailleBlockRecognition_iOS.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -146,10 +140,19 @@
 			path = Controller;
 			sourceTree = "<group>";
 		};
+		2A66B73F2720802E0069EF76 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				D43116B7250614170050EA18 /* ViewController.swift */,
+				2AACE764270D1F33009D60D0 /* InfoViewController.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		2AE542A5271EAC01003C9D33 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				2AE542A6271EAC13003C9D33 /* GuideStatusModel.swift */,
+				2AE542A6271EAC13003C9D33 /* AudioPlayerModel.swift */,
 				2AE542A8271EB3FB003C9D33 /* CodeBlockInfoModel.swift */,
 				2A66B734271EF0E70069EF76 /* CoreDataModel.swift */,
 				2A66B73D272032670069EF76 /* VideoCaptureModel.swift */,
@@ -216,23 +219,19 @@
 		D43116B2250614170050EA18 /* BrailleBlockRecognition_iOS */ = {
 			isa = PBXGroup;
 			children = (
+				2A66B73F2720802E0069EF76 /* View */,
 				2A66B736271FBB5D0069EF76 /* Controller */,
 				2AE542AA271EEF0B003C9D33 /* CoreData */,
 				2AE542A5271EAC01003C9D33 /* Model */,
 				D43116B3250614170050EA18 /* AppDelegate.swift */,
 				D43116B5250614170050EA18 /* SceneDelegate.swift */,
-				D43116B7250614170050EA18 /* ViewController.swift */,
 				D43116B9250614170050EA18 /* Main.storyboard */,
 				D43116BF250614170050EA18 /* Assets.xcassets */,
 				D43116C1250614170050EA18 /* LaunchScreen.storyboard */,
 				D43116C4250614170050EA18 /* Info.plist */,
 				D43116E7250614FC0050EA18 /* OpenCV.mm */,
 				D43116E6250614FC0050EA18 /* BrailleBlockRecognition_iOS-Bridging-Header.h */,
-				D429DC99256CE6770036A93B /* Config.swift */,
 				D43116E9250615580050EA18 /* OpenCV.h */,
-				D43116EA25061BF30050EA18 /* Reader.swift */,
-				D43116EC25061C150050EA18 /* Audio.swift */,
-				2AACE764270D1F33009D60D0 /* InfoViewController.swift */,
 			);
 			path = BrailleBlockRecognition_iOS;
 			sourceTree = "<group>";
@@ -463,7 +462,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D43116EB25061BF30050EA18 /* Reader.swift in Sources */,
 				D43116B8250614170050EA18 /* ViewController.swift in Sources */,
 				D43116E8250614FC0050EA18 /* OpenCV.mm in Sources */,
 				D43116BE250614170050EA18 /* BrailleBlockRecognition_iOS.xcdatamodeld in Sources */,
@@ -474,11 +472,9 @@
 				2AE542A9271EB3FB003C9D33 /* CodeBlockInfoModel.swift in Sources */,
 				2AACE765270D1F33009D60D0 /* InfoViewController.swift in Sources */,
 				D43116B4250614170050EA18 /* AppDelegate.swift in Sources */,
-				D429DC9A256CE6770036A93B /* Config.swift in Sources */,
 				D43116B6250614170050EA18 /* SceneDelegate.swift in Sources */,
-				2AE542A7271EAC13003C9D33 /* GuideStatusModel.swift in Sources */,
+				2AE542A7271EAC13003C9D33 /* AudioPlayerModel.swift in Sources */,
 				2A66B732271EF08A0069EF76 /* CodeBlock+CoreDataProperties copy.swift in Sources */,
-				D43116ED25061C150050EA18 /* Audio.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

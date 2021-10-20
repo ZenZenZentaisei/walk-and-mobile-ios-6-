@@ -2,7 +2,6 @@ import AVFoundation
 
 
 protocol VideoCaptureDelegate: AnyObject {
-//    func didSet(_ display: UIImage)
     func didCaptureFrame(display: UIImage, code: String, angle: String)
 }
 

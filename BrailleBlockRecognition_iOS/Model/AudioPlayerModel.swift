@@ -1,7 +1,13 @@
 // ネットのオン、オフはここ
 import AVFoundation
 
-class GuideStatusModel: NSObject {
+protocol AudioPlayerDelegate: AnyObject {
+    func didFinshPlaying()
+}
+
+class AudioPlayerModel: NSObject {
+    weak var delegate: AudioPlayerDelegate?
+    
     private var audioPlayer = AVAudioPlayer()
     private let initMessage = "認識中"
     public var process = false
@@ -30,7 +36,6 @@ class GuideStatusModel: NSObject {
                 if self.process != true { return }
                 
                 self.playMP3File(url: self.fetchMP3File(file: openFinishFile))
-                self.process = false
                 completion(self.initMessage)
             }
         })
@@ -93,7 +98,7 @@ class GuideStatusModel: NSObject {
     }
 }
 
-extension GuideStatusModel: AVAudioPlayerDelegate {
+extension AudioPlayerModel: AVAudioPlayerDelegate {
     func playMP3File(url: URL) {
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: url as URL)
@@ -110,12 +115,6 @@ extension GuideStatusModel: AVAudioPlayerDelegate {
     }
     
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-        print("aaaaaaa")
-//        guard let webView = safariVC else { return }
-//        print("bbbbbbb")
-//        if openSafariVC { return }
-//        print("ccccccccc")
-//        webView.delegate = self
-//        present(webView, animated: true, completion: nil)
+        delegate?.didFinshPlaying()
     }
 }

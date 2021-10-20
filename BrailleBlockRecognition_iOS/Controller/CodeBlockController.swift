@@ -10,30 +10,6 @@ class CodeBlockController {
     private var streamingURL: [String: String] = [:]
     private var callMessage: [String: String] = [:]
     
-    var safariURL: URL?
-    private let status = GuideStatusModel()
-    public var guideText = "認識中"
-    
-    public func reflectImageProcessing(url: URL, message: String, call: String) {
-        if status.process { return }
-        
-        status.process = true
-        status.startMP3Player(mp3URL: url, completion: { initText in
-            // 案内文を初期化
-            self.guideText = initText
-            guard let webURL = NSURL(string: message) as URL? else { return }
-            self.safariURL = webURL
-            self.status.process = true
-        })
-        
-        // 案内文を更新
-        if message.prefix(4) == "http" {
-            guideText = call
-        } else {
-            guideText = message
-        }
-    }
-    
     public func fetchGuideInformation() {
         let modelCodeBlockInfo = CodeBlockInfoModel()
         let url = URL(string: "http://18.224.144.136/tenji/get_db2json.py?data=blockmessage")!
