@@ -10,18 +10,14 @@ class ViewController: UIViewController {
     
     var infoBarButtonItem: UIBarButtonItem!     // 編集ボタン
     
-    let initGuidanceMessage = "認識中"
-    let guideStatus = GuideStatusModel(message: "認識中")
-    let statusGuidance = GuideStatusController()
+    let statusGuide = GuideStatusModel()
     let codeBlock = CodeBlockController()
+    let videoCapture = VideoCaptureModel()
     
-    var session: AVCaptureSession! //セッション
-    var device: AVCaptureDevice! //カメラ
-    var output: AVCaptureVideoDataOutput! //出力先
-
+    
     //音声停止ボタン 現在の再生、同code、angleでの連続再生を停止させる。
     @IBAction func stop(_ sender: Any) {
-        guidance.text = guideStatus.stopMP3File()
+        guidance.text = statusGuide.stopMP3File()
     }
     //自動スリープを無効化
     override func viewWillAppear(_ animated: Bool) {
@@ -33,20 +29,18 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         codeBlock.fetchGuideInformation()
-        //音声データ格納用フォルダ作成
-        Audio().createFolder(addFolder: "message")
-        Audio().createFolder(addFolder: "message_en")
-        initCamera()
+        videoCapture.startCapturing()
+        videoCapture.delegate = self
        
         infoBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "info.circle"), style: .done, target: self, action: #selector(infoBarButtonTapped(_:)))
         self.navigationItem.rightBarButtonItem = infoBarButtonItem
         
-        guidance.text = initGuidanceMessage
+        guidance.text = codeBlock.guideText
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        session.stopRunning()
+        videoCapture.stopCapturing()
     }
     
     @objc func infoBarButtonTapped(_ sender: UIBarButtonItem) {
@@ -56,181 +50,22 @@ class ViewController: UIViewController {
         let nav = UINavigationController(rootViewController: infoVC)
         self.present(nav, animated: true, completion: nil)
     }
-    
-    // sampleBufferからUIImageを作成
-    func captureImage(_ sampleBuffer:CMSampleBuffer) -> UIImage {
-        let imageBuffer: CVImageBuffer! = CMSampleBufferGetImageBuffer(sampleBuffer)
-
-        // ベースアドレスをロック
-        CVPixelBufferLockBaseAddress(imageBuffer, CVPixelBufferLockFlags(rawValue: 0))
-
-        // 画像データの情報を取得
-        let baseAddress: UnsafeMutableRawPointer = CVPixelBufferGetBaseAddressOfPlane(imageBuffer, 0)!
-
-        let bytesPerRow: Int = CVPixelBufferGetBytesPerRow(imageBuffer)
-        let width: Int = CVPixelBufferGetWidth(imageBuffer)
-        let height: Int = CVPixelBufferGetHeight(imageBuffer)
-
-        // RGB色空間を作成
-        let colorSpace: CGColorSpace! = CGColorSpaceCreateDeviceRGB()
-
-        // Bitmap graphic contextを作成
-        let bitsPerCompornent: Int = 8
-        let bitmapInfo = CGBitmapInfo(rawValue: (CGBitmapInfo.byteOrder32Little.rawValue | CGImageAlphaInfo.premultipliedFirst.rawValue) as UInt32)
-        let newContext: CGContext! = CGContext(data: baseAddress, width: width, height: height, bitsPerComponent: bitsPerCompornent, bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: bitmapInfo.rawValue) as CGContext?
-
-        // Quartz imageを作成
-        let imageRef: CGImage! = newContext!.makeImage()
-
-        // ベースアドレスをアンロック
-        CVPixelBufferUnlockBaseAddress(imageBuffer, CVPixelBufferLockFlags(rawValue: 0))
-
-        // UIImageを作成
-        let resultImage: UIImage = UIImage(cgImage: imageRef)
-
-        return resultImage
-    }
 }
 
-
-extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
-    // カメラの準備処理
-    func initCamera() {
-        // セッションの作成.
-        session = AVCaptureSession()
-        // 解像度の指定.
-        session.sessionPreset = .photo
-        // デバイス取得.
-        device = AVCaptureDevice.default(AVCaptureDevice.DeviceType.builtInWideAngleCamera,
-                                         for: .video,
-                                         position: .back)
-
-        // VideoInputを取得.
-        var input: AVCaptureDeviceInput! = nil
-        do {
-            input = try AVCaptureDeviceInput(device: device) as AVCaptureDeviceInput
-        } catch let error {
-            print(error)
-            return
-        }
-
-        // セッションに追加.
-        if session.canAddInput(input) {
-            session.addInput(input)
-        } else {
-            return
-        }
-
-        // 出力先を設定
-        output = AVCaptureVideoDataOutput()
-
-        //ピクセルフォーマットを設定
-        output.videoSettings =
-            [ kCVPixelBufferPixelFormatTypeKey as AnyHashable as! String : Int(kCVPixelFormatType_32BGRA) ]
-
-        //サブスレッド用のシリアルキューを用意
-        output.setSampleBufferDelegate(self, queue: DispatchQueue.main)
-
-        // 遅れてきたフレームは無視する
-        //怪しい
-        output.alwaysDiscardsLateVideoFrames = true
-
-        // FPSを設定
-        do {
-            try device.lockForConfiguration()
-
-            device.activeVideoMinFrameDuration = CMTimeMake(value: 1, timescale: 20) //フレームレート
-            device.unlockForConfiguration()
-        } catch {
-            return
-        }
-
-        // セッションに追加.
-        if session.canAddOutput(output) {
-            session.addOutput(output)
-        } else {
-            return
-        }
-
-        // カメラの向きを合わせる
-        for connection in output.connections {
-            if connection.isVideoOrientationSupported {
-                connection.videoOrientation = AVCaptureVideoOrientation.portrait
-            }
-        }
-        session.startRunning()
-    }
-
-    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        DispatchQueue.main.async {
-            
-            
-            
-            let openCV = OpenCV()
-            // 初期化(↓しないと何故か状態を保存し、更新されない)
-            openCV.reader(UIImage(named: "sample"))! as NSArray
-            
-            let img = self.captureImage(sampleBuffer) //UIImageへ変換z
-                
-            let result = openCV.reader(img)! as NSArray
-                
-            let resultImg = result[0] as! UIImage
-            let resultCode = result[1] as! Int
-            let resultAngle = result[2] as! Int
-
-            self.cameraImageView.image = resultImg
-            self.code.text = "\(resultCode)"
-            self.angle.text = "\(resultAngle)"
-
-            let guidanceKey = "\(resultCode)" + "\(resultAngle)"
-          
-            guard let loadURL = self.codeBlock.resultValue(key: guidanceKey, type: .streaming) else { return }
-            guard let mp3URL = URL(string: "http://18.224.144.136/tenji/" + loadURL) else { return }
-            guard let resultMessage = self.codeBlock.resultValue(key: guidanceKey, type: .guidance) else { return }
-            let resultCall = self.codeBlock.resultValue(key: guidanceKey, type: .call) ?? "未登録"
-      
-            self.statusGuidance.reflectImageProcessing(url: mp3URL, message: resultMessage, call: resultCall)
-            
-            
-        }
+extension ViewController: VideoCaptureDelegate {
+    func didCaptureFrame(display: UIImage, code: String, angle: String) {
+        cameraImageView.image = display
+        self.code.text = code
+        self.angle.text = angle
+        guidance.text = codeBlock.guideText
         
-        DispatchQueue.main.async {
-            self.guidance.text = self.statusGuidance.guideText
-            guard let test = self.statusGuidance.safariURL else { return }
-            self.openSafari(url: test)
-        }
+        let guidanceKey = code + angle
         
-        
-    
-    }
-    
-    // 認識結果を画面に反映
-    func reflectRecognition(angleRecognition: String, codeRecognition: String) -> SFSafariViewController? {
-        let guidanceKey = angleRecognition + codeRecognition
-        guard let loadURL = codeBlock.resultValue(key: guidanceKey, type: .streaming) else { return nil }
-        guard let mp3URL = URL(string: "http://18.224.144.136/tenji/" + loadURL) else { return nil }
-        guard let resultMessage = codeBlock.resultValue(key: guidanceKey, type: .guidance) else { return nil }
-        
-        guideStatus.startMP3Player(mp3URL: mp3URL, completion: { message in
-            // 案内文を初期化
-            self.guidance.text = message
-        })
-        
-        // 案内文を更新
-        if resultMessage.prefix(4) == "http" {
-            guidance.text = codeBlock.resultValue(key: guidanceKey, type: .call) ?? "未登録"
-        } else {
-            guidance.text = resultMessage
-            return nil
-        }
-        guard let webURL = codeBlock.resultValue(key: guidanceKey, type: .guidance) else { return nil }
-        return SFSafariViewController(url: NSURL(string: webURL)! as URL)
-    }
-    
-    func openSafari(url: URL) {
-        let safariVC = SFSafariViewController(url: url)
-//        if openSafariVC { return }
-        present(safariVC, animated: true, completion: nil)
+        guard let loadURL = codeBlock.resultValue(key: guidanceKey, type: .streaming) else { return }
+        guard let mp3URL = URL(string: "http://18.224.144.136/tenji/" + loadURL) else { return }
+        guard let resultMessage = codeBlock.resultValue(key: guidanceKey, type: .guidance) else { return }
+        let resultCall = codeBlock.resultValue(key: guidanceKey, type: .call) ?? "未登録"
+        codeBlock.reflectImageProcessing(url: mp3URL, message: resultMessage, call: resultCall)
     }
 }
 
@@ -242,7 +77,6 @@ extension ViewController: SFSafariViewControllerDelegate {
     
     // Doneタップ時に呼び出し
     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
-        session.startRunning()
 //        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
 //            self.openSafariVC = false
 //        }

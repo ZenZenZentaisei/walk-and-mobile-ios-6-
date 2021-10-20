@@ -1,15 +1,10 @@
+// ネットのオン、オフはここ
 import AVFoundation
 
 class GuideStatusModel: NSObject {
-    var audioPlayer: AVAudioPlayer
-    var process: Bool
-    let initMessage: String
-    
-    init(message: String) {
-        audioPlayer = AVAudioPlayer()
-        process = false
-        initMessage = message
-    }
+    private var audioPlayer = AVAudioPlayer()
+    private let initMessage = "認識中"
+    public var process = false
     
     // 案内文を再生する
     public func startMP3Player(mp3URL: URL, completion: @escaping (String) -> Void) {
@@ -31,7 +26,9 @@ class GuideStatusModel: NSObject {
         let openFinishFile = "GeneralFinish"
         durationEndEffectSound(url: mp3URL, completion: { playbackTime in
             DispatchQueue.main.asyncAfter(deadline: .now() + (delayStartTime + playbackTime) / Double(playbackSpeed)) {
+                // 音声停止ボタンが押されていたら終了する
                 if self.process != true { return }
+                
                 self.playMP3File(url: self.fetchMP3File(file: openFinishFile))
                 self.process = false
                 completion(self.initMessage)
