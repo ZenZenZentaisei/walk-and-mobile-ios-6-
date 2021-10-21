@@ -25,8 +25,8 @@ class AudioPlayerModel: NSObject {
         DispatchQueue.main.asyncAfter(deadline: .now() + delayStartTime / Double(playbackSpeed)) {
             self.playStreamingMusic(url: mp3URL, completion: { globalMP3, playbackTime  in
                 self.playMP3File(url: globalMP3, speed: self.playbackSpeed)
-                Thread.sleep(forTimeInterval: (self.delayStartTime + playbackTime) / Double(self.playbackSpeed))
                 completion(self.initMessage)
+                Thread.sleep(forTimeInterval: (self.delayStartTime + playbackTime) / Double(self.playbackSpeed))
             })
         }
     }
