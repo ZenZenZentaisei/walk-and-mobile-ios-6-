@@ -31,6 +31,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         codeBlock.fetchGuideInformation()
+        
         videoCapture.startCapturing()
         videoCapture.delegate = self
         guideVoice.delegate = self

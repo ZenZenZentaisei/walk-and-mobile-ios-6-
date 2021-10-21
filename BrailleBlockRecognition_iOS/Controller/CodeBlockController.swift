@@ -1,3 +1,5 @@
+import Network
+
 enum TypeInfo {
     case guidance
     case streaming
@@ -9,14 +11,26 @@ class CodeBlockController {
     private var streamingURL: [String: String] = [:]
     private var callMessage: [String: String] = [:]
     
+    private let networkMonitor = NWPathMonitor()
+    private let queue = DispatchQueue(label: "com.networkconfig")
+    
+    private var url = URL(string: "http://18.224.144.136/tenji/get_db2json.py?data=blockmessage")!
+    
     public func fetchGuideInformation() {
-        let modelCodeBlockInfo = CodeBlockInfoModel()
-        let url = URL(string: "http://18.224.144.136/tenji/get_db2json.py?data=blockmessage")!
-        modelCodeBlockInfo.responseCodeBlockServer(request: url, completion: { guide, streaming, call in
-            self.guidanceMessage = guide
-            self.streamingURL = streaming
-            self.callMessage = call
-        })
+        networkMonitor.pathUpdateHandler = { path in
+            if path.status == .satisfied {
+                print("Connected")
+                let globalDataBase = CodeBlockInfoModel()
+                globalDataBase.responseCodeBlockServer(request: self.url, completion: { guide, streaming, call in
+                    self.guidanceMessage = guide
+                    self.streamingURL = streaming
+                    self.callMessage = call
+                })
+            } else {
+                print("Not Connected")
+            }
+        }
+        networkMonitor.start(queue: queue)
     }
     
     public func resultValue(key: String, type: TypeInfo) -> String? {
