@@ -31,6 +31,7 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         codeBlock.fetchGuideInformation()
+        
         videoCapture.startCapturing()
         videoCapture.delegate = self
         guideVoice.delegate = self
@@ -47,8 +48,7 @@ class ViewController: UIViewController {
     
     @objc func infoBarButtonTapped(_ sender: UIBarButtonItem) {
         let infoVC = self.storyboard?.instantiateViewController(withIdentifier: "infoVC") as! InfoViewController
-        infoVC.argGuidance = codeBlock.resultAllInfomation(type: .guidance)
-        infoVC.argCall = codeBlock.resultAllInfomation(type: .call)
+        infoVC.infoCodeData = codeBlock
         let nav = UINavigationController(rootViewController: infoVC)
         self.present(nav, animated: true, completion: nil)
     }
@@ -62,14 +62,19 @@ extension ViewController: VideoCaptureDelegate {
         guidance.text = guideText
         
         let guidanceKey = code + angle
-        
-        guard let loadURL = codeBlock.resultValue(key: guidanceKey, type: .streaming) else { return }
-        guard let mp3URL = URL(string: "http://18.224.144.136/tenji/" + loadURL) else { return }
-        guard let resultMessage = codeBlock.resultValue(key: guidanceKey, type: .guidance) else { return }
         let resultCall = codeBlock.resultValue(key: guidanceKey, type: .call) ?? "未登録"
-        if guideVoice.process { return }
-        guideVoice.process = true
-        reflectImageProcessing(url: mp3URL, message: resultMessage, call: resultCall)
+        guard let resultMessage = codeBlock.resultValue(key: guidanceKey, type: .guidance) else { return }
+        
+        if let loadURL = codeBlock.resultValue(key: guidanceKey, type: .streaming)  {
+            // online
+            guard let mp3URL = URL(string: "http://18.224.144.136/tenji/" + loadURL) else { return }
+            if guideVoice.process { return }
+            guideVoice.process = true
+            reflectImageProcessing(url: mp3URL, message: resultMessage, call: resultCall)
+        } else {
+            // offline
+            reflectImageProcessing(message: resultMessage, call: resultCall)
+        }
     }
     
     private func reflectImageProcessing(url: URL, message: String, call: String) {
@@ -86,6 +91,15 @@ extension ViewController: VideoCaptureDelegate {
             }
         })
         
+        // 案内文を更新
+        if message.prefix(4) == "http" {
+            guideText = call
+        } else {
+            guideText = message
+        }
+    }
+    
+    private func reflectImageProcessing(message: String, call: String) {
         // 案内文を更新
         if message.prefix(4) == "http" {
             guideText = call

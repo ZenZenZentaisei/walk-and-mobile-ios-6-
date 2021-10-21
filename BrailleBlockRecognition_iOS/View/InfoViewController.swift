@@ -1,3 +1,4 @@
+
 //
 //  InfoViewController.swift
 //  BrailleBlockRecognition_iOS
@@ -21,8 +22,7 @@ class InfoViewController: UIViewController {
     
     var loadSpeed: Float = 1.0
 
-    var argGuidance: [String: String] = [:]
-    var argCall: [String: String] = [:]
+    var infoCodeData: CodeBlockController?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -89,8 +89,7 @@ class InfoViewController: UIViewController {
     }
     
     @IBAction func saveDidTapped(_ sender: Any) {
-        let coreData = CoreDataModel()
-        coreData.saveAllCoreData(guidace: argGuidance, call: argCall)
-        coreData.fetchAllCoreData()
+        guard let setData = infoCodeData else { return }
+        setData.saveLocalDataBase()
     }
 }
