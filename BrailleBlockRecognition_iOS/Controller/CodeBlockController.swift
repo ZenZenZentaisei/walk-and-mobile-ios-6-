@@ -6,13 +6,17 @@ enum TypeInfo {
     case call
 }
 
+typealias CodeDict = [String: String]
+
 class CodeBlockController {
-    private var guidanceMessage: [String: String] = [:]
-    private var streamingURL: [String: String] = [:]
-    private var callMessage: [String: String] = [:]
+    private var guidanceMessage:CodeDict = [:]
+    private var streamingURL:CodeDict = [:]
+    private var callMessage:CodeDict = [:]
     
     private let networkMonitor = NWPathMonitor()
     private let queue = DispatchQueue(label: "com.networkconfig")
+    
+    private let database = DataBaseModel()
     
     private var url = URL(string: "http://18.224.144.136/tenji/get_db2json.py?data=blockmessage")!
     
@@ -20,17 +24,26 @@ class CodeBlockController {
         networkMonitor.pathUpdateHandler = { path in
             if path.status == .satisfied {
                 print("Connected")
-                let globalDataBase = CodeBlockInfoModel()
-                globalDataBase.responseCodeBlockServer(request: self.url, completion: { guide, streaming, call in
+                self.database.responseCodeBlockServer(request: self.url, completion: { guide, streaming, call in
                     self.guidanceMessage = guide
                     self.streamingURL = streaming
                     self.callMessage = call
                 })
             } else {
                 print("Not Connected")
+                self.setLocalData(data: self.database.fetchAllData())
             }
         }
         networkMonitor.start(queue: queue)
+    }
+    
+    private func setLocalData(data: (CodeDict, CodeDict)){
+        guidanceMessage = data.0
+        callMessage = data.1
+    }
+    
+    public func saveLocalDataBase() {
+        database.saveAllData(guidace: guidanceMessage, call: callMessage)
     }
     
     public func resultValue(key: String, type: TypeInfo) -> String? {
@@ -44,7 +57,7 @@ class CodeBlockController {
         }
     }
     
-    public func resultAllInfomation(type: TypeInfo) -> [String: String] {
+    public func resultAllInfomation(type: TypeInfo) ->CodeDict {
         switch type {
         case .guidance:
             return guidanceMessage
