@@ -73,19 +73,18 @@ class InfoViewController: UIViewController {
     }
    
     @objc func previousVCButtonTapped(_ sender: UIBarButtonItem) {
+        UserDefaults.standard.set(round(loadSpeed*10)/10, forKey: "reproductionSpeed")
         self.dismiss(animated: true, completion: nil)
     }
     
     @objc func decelerateDidTapped(_ sender : Any) {
         loadSpeed -= 0.1
         speedLabel.text = "\(round(loadSpeed*10)/10)"
-        UserDefaults.standard.set(round(loadSpeed*10)/10, forKey: "reproductionSpeed")
     }
     
     @objc func accelerationDidTapped(_ sender : Any) {
         loadSpeed += 0.1
         speedLabel.text = "\(round(loadSpeed*10)/10)"
-        UserDefaults.standard.set(round(loadSpeed*10)/10, forKey: "reproductionSpeed")
     }
     
     @IBAction func saveDidTapped(_ sender: Any) {

@@ -19,7 +19,7 @@ class ViewController: UIViewController {
     
     //音声停止ボタン 現在の再生、同code、angleでの連続再生を停止させる。
     @IBAction func stop(_ sender: Any) {
-        guidance.text = guideVoice.stopMP3File()
+        guideText = guideVoice.stopMP3File()
     }
     //自動スリープを無効化
     override func viewWillAppear(_ animated: Bool) {
@@ -65,11 +65,12 @@ extension ViewController: VideoCaptureDelegate {
         let resultCall = codeBlock.resultValue(key: guidanceKey, type: .call) ?? "未登録"
         guard let resultMessage = codeBlock.resultValue(key: guidanceKey, type: .guidance) else { return }
         
+        if guideVoice.process { return }
+        guideVoice.process = true
+        
         if let loadURL = codeBlock.resultValue(key: guidanceKey, type: .streaming)  {
             // online
             guard let mp3URL = URL(string: "http://18.224.144.136/tenji/" + loadURL) else { return }
-            if guideVoice.process { return }
-            guideVoice.process = true
             reflectImageProcessing(url: mp3URL, message: resultMessage, call: resultCall)
         } else {
             // offline
@@ -106,6 +107,7 @@ extension ViewController: VideoCaptureDelegate {
         } else {
             guideText = message
         }
+        guideVoice.local(manuscript: call)
     }
 }
 

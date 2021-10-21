@@ -8,6 +8,7 @@ class AudioPlayerModel: NSObject {
     weak var delegate: AudioPlayerDelegate?
     
     private var audioPlayer = AVAudioPlayer()
+    private let textToSpeech = AVSpeechSynthesizer()
     private let initMessage = "認識中"
     public var process = false
     
@@ -18,27 +19,24 @@ class AudioPlayerModel: NSObject {
         // 認識開始の効果音再生
         let openStartFile = "GeneralStart"
         let delayStartTime = durationEffectSound(fileName: openStartFile)
-        playMP3File(url: fetchMP3File(file: openStartFile))
+        playSoundEffect(url: fetchMP3File(file: openStartFile))
         
         // 案内文再生
         DispatchQueue.main.asyncAfter(deadline: .now() + delayStartTime / Double(playbackSpeed)) {
-            self.playStreamingMusic(url: mp3URL, completion: { streamURL in
-                self.playMP3File(url: streamURL)
+            self.playStreamingMusic(url: mp3URL, completion: { globalMP3, playbackTime  in
+                self.playMP3File(url: globalMP3, speed: playbackSpeed)
+                Thread.sleep(forTimeInterval: (delayStartTime + playbackTime) / Double(playbackSpeed))
+                completion(self.initMessage)
             })
         }
-    
-        // 認識終了の効果音再生
-        let openFinishFile = "GeneralFinish"
-        durationEndEffectSound(url: mp3URL, completion: { playbackTime in
-            DispatchQueue.main.asyncAfter(deadline: .now() + (delayStartTime + playbackTime) / Double(playbackSpeed)) {
-                // 音声停止ボタンが押されていたら終了する
-                if self.process != true { return }
-                
-                self.playMP3File(url: self.fetchMP3File(file: openFinishFile))
-                completion(self.initMessage)
-            }
-        })
         process = true
+    }
+    
+    public func local(manuscript: String) {
+        textToSpeech.delegate = self
+        let read = AVSpeechUtterance(string: manuscript)
+        read.voice = AVSpeechSynthesisVoice(language: "ja-JP")
+        textToSpeech.speak(read)
     }
     
     // 案内文を終了する
@@ -47,7 +45,7 @@ class AudioPlayerModel: NSObject {
         process = false
         return initMessage
     }
-    
+
     // ローカル内のファイルを取得
     private func fetchMP3File(file: String) -> URL {
         guard let startedPath = Bundle.main.path(forResource: file, ofType: "mp3") else {
@@ -73,8 +71,8 @@ class AudioPlayerModel: NSObject {
         return Double(min * 60 + sec) + timeError
     }
     
-    // ストリーミング再生している案内文の再生時間を取得
-    private func durationEndEffectSound(url: URL, completion: @escaping (_ playbackTaime: Double) -> Void) {
+    // ストリーミンング形式で音(案内分)を再生
+    private func playStreamingMusic(url: URL, completion: @escaping (URL, Double) -> Void) {
         let downloadTask:URLSessionDownloadTask = URLSession.shared.downloadTask(with: url as URL) { (URL, response, error) in
             do {
                 self.audioPlayer = try AVAudioPlayer(contentsOf: URL!)
@@ -83,26 +81,30 @@ class AudioPlayerModel: NSObject {
             }
             // 誤差(何故か再生時間をストリーミングで取得すると-2秒になるため....)
             let timeError = 2.0
-            completion(TimeInterval(ceil(Double(self.audioPlayer.duration))) + timeError)
-        }
-        downloadTask.resume()
-    }
-    
-    // ストリーミンング形式で音(案内分)を再生
-    private func playStreamingMusic(url: URL, completion: @escaping (URL) -> Void) {
-        let downloadTask:URLSessionDownloadTask = URLSession.shared.downloadTask(with: url as URL) { (URL, response, error) in
-            completion(URL!)
+            completion(URL!, TimeInterval(ceil(Double(self.audioPlayer.duration))) + timeError)
         }
         downloadTask.resume()
     }
 }
 
 extension AudioPlayerModel: AVAudioPlayerDelegate {
-    func playMP3File(url: URL) {
+    func playSoundEffect(url: URL) {
+        do {
+            audioPlayer = try AVAudioPlayer(contentsOf: url as URL)
+            audioPlayer.delegate = self
+            audioPlayer.play()
+        } catch let error as NSError {
+            print(error.localizedDescription)
+        } catch {
+            print("AVAudioPlayer init failed")
+        }
+    }
+    
+    func playMP3File(url: URL, speed: Float) {
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: url as URL)
             audioPlayer.enableRate = true
-            audioPlayer.rate = UserDefaults.standard.float(forKey: "reproductionSpeed")
+            audioPlayer.rate = speed
             audioPlayer.delegate = self
             audioPlayer.prepareToPlay()
             audioPlayer.play()
@@ -115,5 +117,12 @@ extension AudioPlayerModel: AVAudioPlayerDelegate {
     
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         delegate?.didFinshPlaying()
+    }
+}
+
+extension AudioPlayerModel: AVSpeechSynthesizerDelegate {
+    // 読み上げ終了
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
+        process = false
     }
 }
