@@ -79,7 +79,7 @@ extension ViewController: VideoCaptureDelegate {
     }
     
     private func reflectImageProcessing(url: URL, message: String, call: String) {
-        guideVoice.startMP3Player(mp3URL: url, completion: { initText in
+        guideVoice.onlineReadGuide(mp3URL: url, completion: { initText in
             // 案内文を初期化
             self.guideText = initText
             
@@ -107,7 +107,7 @@ extension ViewController: VideoCaptureDelegate {
         } else {
             guideText = message
         }
-        guideVoice.local(manuscript: call)
+        guideVoice.offlineReadGuide(manuscript: call)
     }
 }
 
@@ -117,6 +117,12 @@ extension ViewController: AudioPlayerDelegate {
         guard let webView = safariVC else { return }
         webView.delegate = self
         present(webView, animated: false, completion: nil)
+    }
+    
+    // 文字を読み終えたら呼び出される
+    func didFinishReading() {
+        guideVoice.process = false
+        guideText = "認識中"
     }
 }
 

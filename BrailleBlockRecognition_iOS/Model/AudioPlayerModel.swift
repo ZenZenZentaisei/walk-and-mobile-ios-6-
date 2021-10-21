@@ -2,6 +2,7 @@ import AVFoundation
 
 protocol AudioPlayerDelegate: AnyObject {
     func didFinshPlaying()
+    func didFinishReading()
 }
 
 class AudioPlayerModel: NSObject {
@@ -12,38 +13,52 @@ class AudioPlayerModel: NSObject {
     private let initMessage = "認識中"
     public var process = false
     
+    private var playbackSpeed: Float = 0.0
+    private var delayStartTime: Double = 0.0
+    
     // 案内文を再生する
-    public func startMP3Player(mp3URL: URL, completion: @escaping (String) -> Void) {
-        let playbackSpeed = UserDefaults.standard.float(forKey: "reproductionSpeed")
-        
-        // 認識開始の効果音再生
-        let openStartFile = "GeneralStart"
-        let delayStartTime = durationEffectSound(fileName: openStartFile)
-        playSoundEffect(url: fetchMP3File(file: openStartFile))
+    public func onlineReadGuide(mp3URL: URL, completion: @escaping (String) -> Void) {
+        beginSoundEffect()
+        process = true
         
         // 案内文再生
         DispatchQueue.main.asyncAfter(deadline: .now() + delayStartTime / Double(playbackSpeed)) {
             self.playStreamingMusic(url: mp3URL, completion: { globalMP3, playbackTime  in
-                self.playMP3File(url: globalMP3, speed: playbackSpeed)
-                Thread.sleep(forTimeInterval: (delayStartTime + playbackTime) / Double(playbackSpeed))
+                self.playMP3File(url: globalMP3, speed: self.playbackSpeed)
+                Thread.sleep(forTimeInterval: (self.delayStartTime + playbackTime) / Double(self.playbackSpeed))
                 completion(self.initMessage)
             })
         }
-        process = true
     }
     
-    public func local(manuscript: String) {
+    public func offlineReadGuide(manuscript: String) {
+        beginSoundEffect()
+        
         textToSpeech.delegate = self
         let read = AVSpeechUtterance(string: manuscript)
         read.voice = AVSpeechSynthesisVoice(language: "ja-JP")
-        textToSpeech.speak(read)
+        read.rate = 0.5
+        
+        // 案内文を読み上げ
+        DispatchQueue.main.asyncAfter(deadline: .now() + delayStartTime / Double(playbackSpeed)) {
+            self.textToSpeech.speak(read)
+        }
     }
     
     // 案内文を終了する
     public func stopMP3File() -> String {
         audioPlayer.stop()
+        textToSpeech.stopSpeaking(at: .immediate)
         process = false
         return initMessage
+    }
+    
+    // 認識開始の効果音再生
+    private func beginSoundEffect() {
+        let openStartFile = "GeneralStart"
+        playbackSpeed = UserDefaults.standard.float(forKey: "reproductionSpeed")
+        delayStartTime = durationEffectSound(fileName: openStartFile)
+        playSoundEffect(url: fetchMP3File(file: openStartFile))
     }
 
     // ローカル内のファイルを取得
@@ -123,6 +138,6 @@ extension AudioPlayerModel: AVAudioPlayerDelegate {
 extension AudioPlayerModel: AVSpeechSynthesizerDelegate {
     // 読み上げ終了
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
-        process = false
+        delegate?.didFinishReading()
     }
 }

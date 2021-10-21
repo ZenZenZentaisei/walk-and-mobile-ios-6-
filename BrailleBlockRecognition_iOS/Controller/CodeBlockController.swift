@@ -39,6 +39,7 @@ class CodeBlockController {
     
     private func setLocalData(data: (CodeDict, CodeDict)){
         guidanceMessage = data.0
+        streamingURL = [:]
         callMessage = data.1
     }
     
