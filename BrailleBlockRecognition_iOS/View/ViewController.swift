@@ -80,7 +80,7 @@ extension ViewController: VideoCaptureDelegate {
             reflectImageProcessing(url: URL(string: "http://18.224.144.136/tenji/" + mp3URL)!, message: resultMessage, call: resultCall)
         } else {
             // offline
-            guideVoice.offlineReadGuide(manuscript: guideText)
+            guideVoice.offlineReadGuide(manuscript: guideText, lang: codeBlock.language!)
         }
         
         self.code.text = code
@@ -89,7 +89,6 @@ extension ViewController: VideoCaptureDelegate {
     
     private func reflectImageProcessing(url: URL, message: String, call: String) {
         guideVoice.onlineReadGuide(mp3URL: url, completion: { initText, delay in
-            print(delay)
             DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
                 // 案内文を初期化
                 self.guideText = initText

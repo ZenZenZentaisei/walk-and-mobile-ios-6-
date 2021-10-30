@@ -18,6 +18,8 @@ class CodeBlockController {
     
     private let database = DataBaseModel()
     
+    public  let language = NSLocale.preferredLanguages.first?.components(separatedBy: "-").first 
+    
     public func fetchGuideInformation() {
         networkMonitor.pathUpdateHandler = { path in
             if path.status == .satisfied {
@@ -38,8 +40,7 @@ class CodeBlockController {
     
     private func checkDeviceLocation() -> URL {
         let standard = "http://18.224.144.136/tenji/get_db2json.py?data=blockmessage"
-        guard let language = NSLocale.preferredLanguages.first?.components(separatedBy: "-").first else { return URL(string: standard)! }
-        print(language)
+
         switch language {
         case "ja":
             return URL(string: standard)!

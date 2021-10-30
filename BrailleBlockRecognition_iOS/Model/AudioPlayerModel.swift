@@ -29,12 +29,12 @@ class AudioPlayerModel: NSObject {
         }
     }
     
-    public func offlineReadGuide(manuscript: String) {
+    public func offlineReadGuide(manuscript: String, lang: String) {
         beginSoundEffect()
         
         textToSpeech.delegate = self
         let read = AVSpeechUtterance(string: manuscript)
-        read.voice = AVSpeechSynthesisVoice(language: "ja-JP")
+        read.voice = AVSpeechSynthesisVoice(language: lang)
         read.rate = 0.5
         
         // 案内文を読み上げ
@@ -91,7 +91,6 @@ class AudioPlayerModel: NSObject {
     
     // ストリーミンング形式で音(案内分)を再生
     private func durationStreamingMusic(url: URL, completion: @escaping (URL, Double) -> Void) {
-        print(url)
         let downloadTask:URLSessionDownloadTask = URLSession.shared.downloadTask(with: url as URL) { (URL, response, error) in
             do {
                 self.audioPlayer = try AVAudioPlayer(contentsOf: URL!)
