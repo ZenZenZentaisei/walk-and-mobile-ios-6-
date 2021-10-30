@@ -1,0 +1,42 @@
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "4Yc-Xz-0Iz"; */
+"4Yc-Xz-0Iz.text" = "Label";
+
+/* Class = "UIButton"; normalTitle = "Voice Stop"; ObjectID = "576-bx-X5l"; */
+"576-bx-X5l.normalTitle" = "음성 정지";
+
+/* Class = "UILabel"; text = "version"; ObjectID = "Aee-H6-sjD"; */
+"Aee-H6-sjD.text" = "version";
+
+/* Class = "UIButton"; configuration.title = "Save Data"; ObjectID = "Kpp-z4-qn1"; */
+"Kpp-z4-qn1.configuration.title" = "데이터를 저장";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "Kpp-z4-qn1"; */
+"Kpp-z4-qn1.normalTitle" = "데이터를 저장";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "PF7-zc-oJY"; */
+"PF7-zc-oJY.text" = "Label";
+
+/* Class = "UIButton"; configuration.title = "Button"; ObjectID = "TXQ-ph-hIe"; */
+"TXQ-ph-hIe.configuration.title" = "Button";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "TXQ-ph-hIe"; */
+"TXQ-ph-hIe.normalTitle" = "Button";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "dlc-M0-hiY"; */
+"dlc-M0-hiY.text" = "Label";
+
+/* Class = "UILabel"; text = "CODE"; ObjectID = "m6e-aH-Pza"; */
+"m6e-aH-Pza.text" = "CODE";
+
+/* Class = "UITextView"; text = "Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda."; ObjectID = "nDR-f1-vqN"; */
+"nDR-f1-vqN.text" = "Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.";
+
+/* Class = "UIButton"; configuration.title = "Button"; ObjectID = "tOa-gh-nx6"; */
+"tOa-gh-nx6.configuration.title" = "Button";
+
+/* Class = "UIButton"; normalTitle = "Button"; ObjectID = "tOa-gh-nx6"; */
+"tOa-gh-nx6.normalTitle" = "Button";
+
+/* Class = "UILabel"; text = "ANGLE"; ObjectID = "vUO-fc-lQA"; */
+"vUO-fc-lQA.text" = "ANGLE";

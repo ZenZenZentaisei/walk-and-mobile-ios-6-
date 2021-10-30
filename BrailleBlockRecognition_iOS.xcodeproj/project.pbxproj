@@ -61,6 +61,12 @@
 		2ADAACA5272CE7240006628C /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Main.strings; sourceTree = "<group>"; };
 		2ADAACA6272CE7240006628C /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		2ADAACAA272CE7A40006628C /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
+		2ADAACAC272D0CD20006628C /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Main.strings; sourceTree = "<group>"; };
+		2ADAACAD272D0CD20006628C /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		2ADAACAE272D0D5D0006628C /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Localizable.strings; sourceTree = "<group>"; };
+		2ADAACAF272D1A730006628C /* zh-HK */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-HK"; path = "zh-HK.lproj/Main.strings"; sourceTree = "<group>"; };
+		2ADAACB0272D1A730006628C /* zh-HK */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-HK"; path = "zh-HK.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
+		2ADAACB1272D1A820006628C /* zh-HK */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-HK"; path = "zh-HK.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		2AE54298271D9F87003C9D33 /* GeneralFinish.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = GeneralFinish.mp3; sourceTree = "<group>"; };
 		2AE54299271D9F87003C9D33 /* GeneralStart.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = GeneralStart.mp3; sourceTree = "<group>"; };
 		2AE5429A271D9F87003C9D33 /* EndOfDetails.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = EndOfDetails.mp3; sourceTree = "<group>"; };
@@ -347,6 +353,8 @@
 				en,
 				Base,
 				ja,
+				ko,
+				"zh-HK",
 			);
 			mainGroup = D43116A7250614170050EA18;
 			productRefGroup = D43116B1250614170050EA18 /* Products */;
@@ -517,6 +525,8 @@
 			isa = PBXVariantGroup;
 			children = (
 				2ADAACAA272CE7A40006628C /* ja */,
+				2ADAACAE272D0D5D0006628C /* ko */,
+				2ADAACB1272D1A820006628C /* zh-HK */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -526,6 +536,8 @@
 			children = (
 				D43116BA250614170050EA18 /* Base */,
 				2ADAACA5272CE7240006628C /* ja */,
+				2ADAACAC272D0CD20006628C /* ko */,
+				2ADAACAF272D1A730006628C /* zh-HK */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -535,6 +547,8 @@
 			children = (
 				D43116C2250614170050EA18 /* Base */,
 				2ADAACA6272CE7240006628C /* ja */,
+				2ADAACAD272D0CD20006628C /* ko */,
+				2ADAACB0272D1A730006628C /* zh-HK */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";

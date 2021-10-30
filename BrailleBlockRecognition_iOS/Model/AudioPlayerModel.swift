@@ -91,6 +91,7 @@ class AudioPlayerModel: NSObject {
     
     // ストリーミンング形式で音(案内分)を再生
     private func durationStreamingMusic(url: URL, completion: @escaping (URL, Double) -> Void) {
+        print(url)
         let downloadTask:URLSessionDownloadTask = URLSession.shared.downloadTask(with: url as URL) { (URL, response, error) in
             do {
                 self.audioPlayer = try AVAudioPlayer(contentsOf: URL!)

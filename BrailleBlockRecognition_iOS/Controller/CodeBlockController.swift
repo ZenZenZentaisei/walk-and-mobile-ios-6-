@@ -38,13 +38,17 @@ class CodeBlockController {
     
     private func checkDeviceLocation() -> URL {
         let standard = "http://18.224.144.136/tenji/get_db2json.py?data=blockmessage"
-        print(standard + "_en")
         guard let language = NSLocale.preferredLanguages.first?.components(separatedBy: "-").first else { return URL(string: standard)! }
+        print(language)
         switch language {
         case "ja":
             return URL(string: standard)!
         case "en":
             return URL(string: standard + "_en")!
+        case "ko":
+            return URL(string: standard + "_ko")!
+        case "zh":
+            return URL(string: standard + "_zh")!
         default:
             return URL(string: standard)!
         }
