@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19162" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="WsK-EH-cZa">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="WsK-EH-cZa">
     <device id="retina6_0" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19144"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -44,9 +44,9 @@
                                 </constraints>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="576-bx-X5l">
-                                <rect key="frame" x="300" y="555" width="70" height="33"/>
+                                <rect key="frame" x="288" y="555" width="82" height="33"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <state key="normal" title="音声停止"/>
+                                <state key="normal" title="Voice Stop"/>
                                 <connections>
                                     <action selector="stop:" destination="BYZ-38-t0r" eventType="touchUpInside" id="RY5-LJ-FJT"/>
                                 </connections>
@@ -142,50 +142,83 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="再生速度" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4Yc-Xz-0Iz">
-                                <rect key="frame" x="10" y="125" width="70" height="21"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4Yc-Xz-0Iz">
+                                <rect key="frame" x="10" y="124.99999999999999" width="380" height="20.333333333333329"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dlc-M0-hiY" userLabel="speedLabel">
-                                <rect key="frame" x="10" y="151" width="266" height="19.333333333333343"/>
+                                <rect key="frame" x="0.0" y="150.33333333333334" width="208.66666666666666" height="20.333333333333343"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="UM5-TZ-EkF">
-                                <rect key="frame" x="286" y="151" width="94" height="32"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tOa-gh-nx6">
+                                <rect key="frame" x="304.33333333333331" y="145.33333333333334" width="75.666666666666686" height="35"/>
+                                <color key="backgroundColor" red="0.35294117650000001" green="0.94901960780000005" blue="0.77647058820000003" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="tOa-gh-nx6" secondAttribute="height" multiplier="67:31" id="G1h-q7-rl6"/>
+                                    <constraint firstAttribute="height" constant="35" id="LD0-ys-90l"/>
+                                </constraints>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TXQ-ph-hIe">
+                                <rect key="frame" x="228.66666666666666" y="145.33333333333334" width="75.666666666666657" height="35"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="35" id="UhS-MD-UzU"/>
+                                    <constraint firstAttribute="width" secondItem="TXQ-ph-hIe" secondAttribute="height" multiplier="67:31" id="WqO-Hb-gPs"/>
+                                </constraints>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Kpp-z4-qn1">
+                                <rect key="frame" x="10" y="200.66666666666666" width="370" height="31"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="Save Data"/>
                                 <connections>
-                                    <action selector="speedAdjustmentDidTapped:" destination="fbY-h6-gsi" eventType="valueChanged" id="pTy-QN-5J5"/>
+                                    <action selector="saveDidTapped:" destination="fbY-h6-gsi" eventType="touchUpInside" id="bDP-CI-Kyw"/>
                                 </connections>
-                            </stepper>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="TDM-Kb-Pvw"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="UM5-TZ-EkF" firstAttribute="leading" secondItem="dlc-M0-hiY" secondAttribute="trailing" constant="10" id="2Ft-aT-vpY"/>
-                            <constraint firstItem="UM5-TZ-EkF" firstAttribute="top" secondItem="4Yc-Xz-0Iz" secondAttribute="bottom" constant="5" id="6Dc-s0-gJI"/>
-                            <constraint firstItem="TDM-Kb-Pvw" firstAttribute="trailing" secondItem="UM5-TZ-EkF" secondAttribute="trailing" constant="10" id="BXM-YD-EJl"/>
-                            <constraint firstItem="Aee-H6-sjD" firstAttribute="leading" secondItem="TDM-Kb-Pvw" secondAttribute="leading" constant="10" id="Jam-LQ-zfd"/>
-                            <constraint firstItem="dlc-M0-hiY" firstAttribute="top" secondItem="4Yc-Xz-0Iz" secondAttribute="bottom" constant="5" id="V8H-ZW-J3d"/>
-                            <constraint firstItem="TDM-Kb-Pvw" firstAttribute="trailing" secondItem="PF7-zc-oJY" secondAttribute="trailing" constant="10" id="XNV-el-8Y3"/>
+                            <constraint firstItem="tOa-gh-nx6" firstAttribute="leading" secondItem="TXQ-ph-hIe" secondAttribute="trailing" id="25C-4X-IKv"/>
+                            <constraint firstItem="Kpp-z4-qn1" firstAttribute="top" secondItem="dlc-M0-hiY" secondAttribute="bottom" constant="30" id="3f3-PO-v0R"/>
+                            <constraint firstItem="TDM-Kb-Pvw" firstAttribute="trailing" secondItem="Kpp-z4-qn1" secondAttribute="trailing" constant="10" id="A7N-mx-GRb"/>
+                            <constraint firstItem="TXQ-ph-hIe" firstAttribute="top" secondItem="4Yc-Xz-0Iz" secondAttribute="bottom" id="Kwl-1f-YQo"/>
+                            <constraint firstItem="dlc-M0-hiY" firstAttribute="leading" secondItem="TDM-Kb-Pvw" secondAttribute="leading" id="MGv-vA-lVI"/>
+                            <constraint firstItem="Kpp-z4-qn1" firstAttribute="leading" secondItem="TDM-Kb-Pvw" secondAttribute="leading" constant="10" id="P0E-Wr-ILu"/>
+                            <constraint firstItem="Aee-H6-sjD" firstAttribute="top" secondItem="TDM-Kb-Pvw" secondAttribute="top" constant="30" id="REg-HP-yB3"/>
+                            <constraint firstItem="4Yc-Xz-0Iz" firstAttribute="top" secondItem="PF7-zc-oJY" secondAttribute="bottom" constant="30" id="Sh2-dx-ifW"/>
+                            <constraint firstItem="TXQ-ph-hIe" firstAttribute="leading" secondItem="dlc-M0-hiY" secondAttribute="trailing" constant="20" id="V6c-bt-Dfe"/>
                             <constraint firstItem="4Yc-Xz-0Iz" firstAttribute="leading" secondItem="TDM-Kb-Pvw" secondAttribute="leading" constant="10" id="Xnl-sb-gjD"/>
-                            <constraint firstItem="PF7-zc-oJY" firstAttribute="top" secondItem="TDM-Kb-Pvw" secondAttribute="top" constant="30" id="dfB-E4-h2Y"/>
-                            <constraint firstItem="4Yc-Xz-0Iz" firstAttribute="top" secondItem="Aee-H6-sjD" secondAttribute="bottom" constant="30" id="jxA-tR-7GF"/>
-                            <constraint firstItem="dlc-M0-hiY" firstAttribute="leading" secondItem="TDM-Kb-Pvw" secondAttribute="leading" constant="10" id="tEy-t3-inZ"/>
-                            <constraint firstItem="Aee-H6-sjD" firstAttribute="top" secondItem="TDM-Kb-Pvw" secondAttribute="top" constant="30" id="zaP-hU-2PP"/>
+                            <constraint firstItem="TDM-Kb-Pvw" firstAttribute="trailing" secondItem="tOa-gh-nx6" secondAttribute="trailing" constant="10" id="caA-tt-fkH"/>
+                            <constraint firstItem="tOa-gh-nx6" firstAttribute="leading" secondItem="TXQ-ph-hIe" secondAttribute="trailing" id="gEw-Be-JHI"/>
+                            <constraint firstItem="TDM-Kb-Pvw" firstAttribute="trailing" secondItem="4Yc-Xz-0Iz" secondAttribute="trailing" id="lSX-a9-1tb"/>
+                            <constraint firstItem="4Yc-Xz-0Iz" firstAttribute="top" secondItem="Aee-H6-sjD" secondAttribute="bottom" constant="30" id="mak-wJ-Vwt"/>
+                            <constraint firstItem="PF7-zc-oJY" firstAttribute="top" secondItem="TDM-Kb-Pvw" secondAttribute="top" constant="30" id="oh3-MR-PCD"/>
+                            <constraint firstItem="Aee-H6-sjD" firstAttribute="leading" secondItem="TDM-Kb-Pvw" secondAttribute="leading" constant="10" id="qPy-BZ-0OL"/>
+                            <constraint firstItem="dlc-M0-hiY" firstAttribute="top" secondItem="4Yc-Xz-0Iz" secondAttribute="bottom" constant="5" id="rgg-wv-V5Q"/>
+                            <constraint firstItem="tOa-gh-nx6" firstAttribute="top" secondItem="4Yc-Xz-0Iz" secondAttribute="bottom" id="sUu-s8-AxH"/>
+                            <constraint firstItem="TDM-Kb-Pvw" firstAttribute="trailing" secondItem="PF7-zc-oJY" secondAttribute="trailing" constant="10" id="yrO-Q4-YHx"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="appVersionLabel" destination="PF7-zc-oJY" id="Izt-qg-GyA"/>
+                        <outlet property="accelerationButton" destination="tOa-gh-nx6" id="y2b-OY-oLw"/>
+                        <outlet property="appVersionLabel" destination="PF7-zc-oJY" id="s8g-ay-ZSO"/>
+                        <outlet property="decelerateButton" destination="TXQ-ph-hIe" id="tmw-Ik-WXd"/>
+                        <outlet property="speedItemLabel" destination="4Yc-Xz-0Iz" id="IdX-7s-tw9"/>
                         <outlet property="speedLabel" destination="dlc-M0-hiY" id="0pw-KM-9kf"/>
-                        <outlet property="speedStepper" destination="UM5-TZ-EkF" id="1JA-AK-crl"/>
+                        <outlet property="versionItemLabel" destination="Aee-H6-sjD" id="ah2-yN-cPF"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="189-YK-QFQ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1894" y="122"/>
+            <point key="canvasLocation" x="1893.8461538461538" y="121.56398104265402"/>
         </scene>
     </scenes>
     <resources>

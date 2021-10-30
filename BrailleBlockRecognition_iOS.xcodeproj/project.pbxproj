@@ -7,10 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2A66B732271EF08A0069EF76 /* CodeBlock+CoreDataProperties copy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A66B730271EF08A0069EF76 /* CodeBlock+CoreDataProperties copy.swift */; };
+		2A66B733271EF08A0069EF76 /* CodeBlock+CoreDataClass copy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A66B731271EF08A0069EF76 /* CodeBlock+CoreDataClass copy.swift */; };
+		2A66B735271EF0E70069EF76 /* DataBaseModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A66B734271EF0E70069EF76 /* DataBaseModel.swift */; };
+		2A66B738271FBB6F0069EF76 /* CodeBlockController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A66B737271FBB6F0069EF76 /* CodeBlockController.swift */; };
+		2A66B73E272032670069EF76 /* VideoCaptureModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A66B73D272032670069EF76 /* VideoCaptureModel.swift */; };
 		2AACE765270D1F33009D60D0 /* InfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AACE764270D1F33009D60D0 /* InfoViewController.swift */; };
+		2ADAACA9272CE7A40006628C /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2ADAACAB272CE7A40006628C /* Localizable.strings */; };
+		2AE5429C271D9F87003C9D33 /* GeneralFinish.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2AE54298271D9F87003C9D33 /* GeneralFinish.mp3 */; };
+		2AE5429D271D9F87003C9D33 /* GeneralStart.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2AE54299271D9F87003C9D33 /* GeneralStart.mp3 */; };
+		2AE5429E271D9F87003C9D33 /* EndOfDetails.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2AE5429A271D9F87003C9D33 /* EndOfDetails.mp3 */; };
+		2AE5429F271D9F87003C9D33 /* StartOfDetails.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 2AE5429B271D9F87003C9D33 /* StartOfDetails.mp3 */; };
+		2AE542A7271EAC13003C9D33 /* AudioPlayerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AE542A6271EAC13003C9D33 /* AudioPlayerModel.swift */; };
 		51A391FD39C09D56ED48F8EE /* Pods_BrailleBlockRecognition_iOSTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 32DF2DDB4C94B154B1D7292C /* Pods_BrailleBlockRecognition_iOSTests.framework */; };
 		8D9CB313D6892B59B710070F /* Pods_BrailleBlockRecognition_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF79FCDCC250C931FCAFF289 /* Pods_BrailleBlockRecognition_iOS.framework */; };
-		D429DC9A256CE6770036A93B /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = D429DC99256CE6770036A93B /* Config.swift */; };
 		D43116B4250614170050EA18 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43116B3250614170050EA18 /* AppDelegate.swift */; };
 		D43116B6250614170050EA18 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43116B5250614170050EA18 /* SceneDelegate.swift */; };
 		D43116B8250614170050EA18 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43116B7250614170050EA18 /* ViewController.swift */; };
@@ -21,8 +31,6 @@
 		D43116CE250614180050EA18 /* BrailleBlockRecognition_iOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43116CD250614180050EA18 /* BrailleBlockRecognition_iOSTests.swift */; };
 		D43116D9250614180050EA18 /* BrailleBlockRecognition_iOSUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43116D8250614180050EA18 /* BrailleBlockRecognition_iOSUITests.swift */; };
 		D43116E8250614FC0050EA18 /* OpenCV.mm in Sources */ = {isa = PBXBuildFile; fileRef = D43116E7250614FC0050EA18 /* OpenCV.mm */; };
-		D43116EB25061BF30050EA18 /* Reader.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43116EA25061BF30050EA18 /* Reader.swift */; };
-		D43116ED25061C150050EA18 /* Audio.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43116EC25061C150050EA18 /* Audio.swift */; };
 		EC41C639E4BD1F29C854CD91 /* Pods_BrailleBlockRecognition_iOS_BrailleBlockRecognition_iOSUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4259F743859C1438448F4C31 /* Pods_BrailleBlockRecognition_iOS_BrailleBlockRecognition_iOSUITests.framework */; };
 /* End PBXBuildFile section */
 
@@ -44,7 +52,20 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2A66B730271EF08A0069EF76 /* CodeBlock+CoreDataProperties copy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CodeBlock+CoreDataProperties copy.swift"; sourceTree = "<group>"; };
+		2A66B731271EF08A0069EF76 /* CodeBlock+CoreDataClass copy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CodeBlock+CoreDataClass copy.swift"; sourceTree = "<group>"; };
+		2A66B734271EF0E70069EF76 /* DataBaseModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataBaseModel.swift; sourceTree = "<group>"; };
+		2A66B737271FBB6F0069EF76 /* CodeBlockController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeBlockController.swift; sourceTree = "<group>"; };
+		2A66B73D272032670069EF76 /* VideoCaptureModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCaptureModel.swift; sourceTree = "<group>"; };
 		2AACE764270D1F33009D60D0 /* InfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoViewController.swift; sourceTree = "<group>"; };
+		2ADAACA5272CE7240006628C /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Main.strings; sourceTree = "<group>"; };
+		2ADAACA6272CE7240006628C /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		2ADAACAA272CE7A40006628C /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
+		2AE54298271D9F87003C9D33 /* GeneralFinish.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = GeneralFinish.mp3; sourceTree = "<group>"; };
+		2AE54299271D9F87003C9D33 /* GeneralStart.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = GeneralStart.mp3; sourceTree = "<group>"; };
+		2AE5429A271D9F87003C9D33 /* EndOfDetails.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = EndOfDetails.mp3; sourceTree = "<group>"; };
+		2AE5429B271D9F87003C9D33 /* StartOfDetails.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = StartOfDetails.mp3; sourceTree = "<group>"; };
+		2AE542A6271EAC13003C9D33 /* AudioPlayerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerModel.swift; sourceTree = "<group>"; };
 		32DF2DDB4C94B154B1D7292C /* Pods_BrailleBlockRecognition_iOSTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BrailleBlockRecognition_iOSTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		420F7E173E980EB64B240BF2 /* Pods-BrailleBlockRecognition_iOS-BrailleBlockRecognition_iOSUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BrailleBlockRecognition_iOS-BrailleBlockRecognition_iOSUITests.debug.xcconfig"; path = "Target Support Files/Pods-BrailleBlockRecognition_iOS-BrailleBlockRecognition_iOSUITests/Pods-BrailleBlockRecognition_iOS-BrailleBlockRecognition_iOSUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		4259F743859C1438448F4C31 /* Pods_BrailleBlockRecognition_iOS_BrailleBlockRecognition_iOSUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BrailleBlockRecognition_iOS_BrailleBlockRecognition_iOSUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -53,7 +74,6 @@
 		80AA82A590105E15FF963B83 /* Pods-BrailleBlockRecognition_iOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BrailleBlockRecognition_iOSTests.debug.xcconfig"; path = "Target Support Files/Pods-BrailleBlockRecognition_iOSTests/Pods-BrailleBlockRecognition_iOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		9FDF5C6B9C2D85BBE431ACA8 /* Pods-BrailleBlockRecognition_iOS-BrailleBlockRecognition_iOSUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BrailleBlockRecognition_iOS-BrailleBlockRecognition_iOSUITests.release.xcconfig"; path = "Target Support Files/Pods-BrailleBlockRecognition_iOS-BrailleBlockRecognition_iOSUITests/Pods-BrailleBlockRecognition_iOS-BrailleBlockRecognition_iOSUITests.release.xcconfig"; sourceTree = "<group>"; };
 		AF79FCDCC250C931FCAFF289 /* Pods_BrailleBlockRecognition_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BrailleBlockRecognition_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		D429DC99256CE6770036A93B /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		D43116B0250614170050EA18 /* BrailleBlockRecognition_iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BrailleBlockRecognition_iOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D43116B3250614170050EA18 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D43116B5250614170050EA18 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -72,8 +92,6 @@
 		D43116E6250614FC0050EA18 /* BrailleBlockRecognition_iOS-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BrailleBlockRecognition_iOS-Bridging-Header.h"; sourceTree = "<group>"; };
 		D43116E7250614FC0050EA18 /* OpenCV.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OpenCV.mm; sourceTree = "<group>"; };
 		D43116E9250615580050EA18 /* OpenCV.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenCV.h; sourceTree = "<group>"; };
-		D43116EA25061BF30050EA18 /* Reader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reader.swift; sourceTree = "<group>"; };
-		D43116EC25061C150050EA18 /* Audio.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Audio.swift; sourceTree = "<group>"; };
 		FAE17BA8A8334A33E0998506 /* Pods-BrailleBlockRecognition_iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BrailleBlockRecognition_iOS.release.xcconfig"; path = "Target Support Files/Pods-BrailleBlockRecognition_iOS/Pods-BrailleBlockRecognition_iOS.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -105,6 +123,54 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2A4B34272716AD17009E8545 /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				2AE5429A271D9F87003C9D33 /* EndOfDetails.mp3 */,
+				2AE54298271D9F87003C9D33 /* GeneralFinish.mp3 */,
+				2AE54299271D9F87003C9D33 /* GeneralStart.mp3 */,
+				2AE5429B271D9F87003C9D33 /* StartOfDetails.mp3 */,
+			);
+			path = Sounds;
+			sourceTree = "<group>";
+		};
+		2A66B736271FBB5D0069EF76 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				2A66B737271FBB6F0069EF76 /* CodeBlockController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		2A66B73F2720802E0069EF76 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				D43116B7250614170050EA18 /* ViewController.swift */,
+				2AACE764270D1F33009D60D0 /* InfoViewController.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		2AE542A5271EAC01003C9D33 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				2AE542A6271EAC13003C9D33 /* AudioPlayerModel.swift */,
+				2A66B734271EF0E70069EF76 /* DataBaseModel.swift */,
+				2A66B73D272032670069EF76 /* VideoCaptureModel.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		2AE542AA271EEF0B003C9D33 /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+				2A66B730271EF08A0069EF76 /* CodeBlock+CoreDataProperties copy.swift */,
+				2A66B731271EF08A0069EF76 /* CodeBlock+CoreDataClass copy.swift */,
+				D43116BC250614170050EA18 /* BrailleBlockRecognition_iOS.xcdatamodeld */,
+			);
+			path = CoreData;
+			sourceTree = "<group>";
+		};
 		2CD9EAFDBE42DEF8DB67814E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -131,6 +197,8 @@
 		D43116A7250614170050EA18 = {
 			isa = PBXGroup;
 			children = (
+				2ADAACAB272CE7A40006628C /* Localizable.strings */,
+				2A4B34272716AD17009E8545 /* Sounds */,
 				D43116B2250614170050EA18 /* BrailleBlockRecognition_iOS */,
 				D43116CC250614180050EA18 /* BrailleBlockRecognition_iOSTests */,
 				D43116D7250614180050EA18 /* BrailleBlockRecognition_iOSUITests */,
@@ -153,21 +221,19 @@
 		D43116B2250614170050EA18 /* BrailleBlockRecognition_iOS */ = {
 			isa = PBXGroup;
 			children = (
+				2A66B73F2720802E0069EF76 /* View */,
+				2A66B736271FBB5D0069EF76 /* Controller */,
+				2AE542AA271EEF0B003C9D33 /* CoreData */,
+				2AE542A5271EAC01003C9D33 /* Model */,
 				D43116B3250614170050EA18 /* AppDelegate.swift */,
 				D43116B5250614170050EA18 /* SceneDelegate.swift */,
-				D43116B7250614170050EA18 /* ViewController.swift */,
 				D43116B9250614170050EA18 /* Main.storyboard */,
 				D43116BF250614170050EA18 /* Assets.xcassets */,
 				D43116C1250614170050EA18 /* LaunchScreen.storyboard */,
 				D43116C4250614170050EA18 /* Info.plist */,
-				D43116BC250614170050EA18 /* BrailleBlockRecognition_iOS.xcdatamodeld */,
 				D43116E7250614FC0050EA18 /* OpenCV.mm */,
 				D43116E6250614FC0050EA18 /* BrailleBlockRecognition_iOS-Bridging-Header.h */,
-				D429DC99256CE6770036A93B /* Config.swift */,
 				D43116E9250615580050EA18 /* OpenCV.h */,
-				D43116EA25061BF30050EA18 /* Reader.swift */,
-				D43116EC25061C150050EA18 /* Audio.swift */,
-				2AACE764270D1F33009D60D0 /* InfoViewController.swift */,
 			);
 			path = BrailleBlockRecognition_iOS;
 			sourceTree = "<group>";
@@ -280,6 +346,7 @@
 			knownRegions = (
 				en,
 				Base,
+				ja,
 			);
 			mainGroup = D43116A7250614170050EA18;
 			productRefGroup = D43116B1250614170050EA18 /* Products */;
@@ -300,6 +367,11 @@
 			files = (
 				D43116C3250614170050EA18 /* LaunchScreen.storyboard in Resources */,
 				D43116C0250614170050EA18 /* Assets.xcassets in Resources */,
+				2AE5429E271D9F87003C9D33 /* EndOfDetails.mp3 in Resources */,
+				2AE5429C271D9F87003C9D33 /* GeneralFinish.mp3 in Resources */,
+				2AE5429D271D9F87003C9D33 /* GeneralStart.mp3 in Resources */,
+				2ADAACA9272CE7A40006628C /* Localizable.strings in Resources */,
+				2AE5429F271D9F87003C9D33 /* StartOfDetails.mp3 in Resources */,
 				D43116BB250614170050EA18 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -394,15 +466,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D43116EB25061BF30050EA18 /* Reader.swift in Sources */,
 				D43116B8250614170050EA18 /* ViewController.swift in Sources */,
 				D43116E8250614FC0050EA18 /* OpenCV.mm in Sources */,
 				D43116BE250614170050EA18 /* BrailleBlockRecognition_iOS.xcdatamodeld in Sources */,
+				2A66B73E272032670069EF76 /* VideoCaptureModel.swift in Sources */,
+				2A66B735271EF0E70069EF76 /* DataBaseModel.swift in Sources */,
+				2A66B738271FBB6F0069EF76 /* CodeBlockController.swift in Sources */,
+				2A66B733271EF08A0069EF76 /* CodeBlock+CoreDataClass copy.swift in Sources */,
 				2AACE765270D1F33009D60D0 /* InfoViewController.swift in Sources */,
 				D43116B4250614170050EA18 /* AppDelegate.swift in Sources */,
-				D429DC9A256CE6770036A93B /* Config.swift in Sources */,
 				D43116B6250614170050EA18 /* SceneDelegate.swift in Sources */,
-				D43116ED25061C150050EA18 /* Audio.swift in Sources */,
+				2AE542A7271EAC13003C9D33 /* AudioPlayerModel.swift in Sources */,
+				2A66B732271EF08A0069EF76 /* CodeBlock+CoreDataProperties copy.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -438,10 +513,19 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		2ADAACAB272CE7A40006628C /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2ADAACAA272CE7A40006628C /* ja */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 		D43116B9250614170050EA18 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
 				D43116BA250614170050EA18 /* Base */,
+				2ADAACA5272CE7240006628C /* ja */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -450,6 +534,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				D43116C2250614170050EA18 /* Base */,
+				2ADAACA6272CE7240006628C /* ja */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -461,6 +546,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -522,6 +608,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -584,7 +671,7 @@
 				CURRENT_PROJECT_VERSION = 1.0.8;
 				DEVELOPMENT_TEAM = 72S23KX6NZ;
 				INFOPLIST_FILE = BrailleBlockRecognition_iOS/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -611,7 +698,7 @@
 				CURRENT_PROJECT_VERSION = 1.0.8;
 				DEVELOPMENT_TEAM = 72S23KX6NZ;
 				INFOPLIST_FILE = BrailleBlockRecognition_iOS/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
