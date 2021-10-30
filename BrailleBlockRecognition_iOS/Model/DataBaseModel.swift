@@ -72,6 +72,7 @@ class DataBaseModel {
         return (argGuidance, argCall)
     }
     
+        
     public func saveAllData(guidace:CodeDict, call:CodeDict) {
         clearAllData()
         for (key, value) in guidace {

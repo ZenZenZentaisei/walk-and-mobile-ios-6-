@@ -1,0 +1,13 @@
+/* 
+  Localizable.strings
+  BrailleBlockRecognition_iOS
+
+  Created by RyoNishimura on 2021/10/30.
+  Copyright © 2021 matuilab. All rights reserved.
+*/
+"Playback Speed" = "再生速度";
+"Save Data" = "データを保存する";
+"Latest data" = "最新のデータ";
+"I was able to install the latest data." = "最新のデータをインストールすることができました。";
+"Verification" = "確認中";
+"Unregistered" = "未登録";

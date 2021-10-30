@@ -37,7 +37,7 @@ class InfoViewController: UIViewController {
         }
         
         speedLabel.text = String(loadSpeed)
-        speedLabel.accessibilityValue = "再生速度"
+        speedLabel.accessibilityValue = NSLocalizedString("Playback Speed", comment: "")
        
         decelerateButton.setTitle("−", for: .normal)
         decelerateButton.titleLabel?.font = UIFont.systemFont(ofSize: 25)
@@ -69,6 +69,8 @@ class InfoViewController: UIViewController {
         appVersionLabel.accessibilityHint = "version"
         
         versionItemLabel.accessibilityHint = "\(version)"
+        
+        speedItemLabel.text = NSLocalizedString("Playback Speed", comment: "")
         speedItemLabel.accessibilityHint = "\(loadSpeed)"
     }
    
@@ -90,5 +92,16 @@ class InfoViewController: UIViewController {
     @IBAction func saveDidTapped(_ sender: Any) {
         guard let setData = infoCodeData else { return }
         setData.saveLocalDataBase()
+        alertDownloadCompleted(title: NSLocalizedString("Latest data", comment: ""),
+              message: NSLocalizedString("I was able to install the latest data.", comment: ""))
     }
+    
+    func alertDownloadCompleted(title:String, message:String) {
+        var alertController: UIAlertController!
+        
+        alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(alertController, animated: true)
+    }
+
 }

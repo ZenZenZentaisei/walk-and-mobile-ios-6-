@@ -15,11 +15,13 @@ class ViewController: UIViewController {
     
     var safariVC: SFSafariViewController?
     
-    var guideText = "認識中"
+    var guideText = NSLocalizedString("Verification", comment: "")
     
     //音声停止ボタン 現在の再生、同code、angleでの連続再生を停止させる。
     @IBAction func stop(_ sender: Any) {
         guideText = guideVoice.stopMP3File()
+        code.text = "\(0)"
+        angle.text = "\(0)"
     }
     //自動スリープを無効化
     override func viewWillAppear(_ animated: Bool) {
@@ -57,57 +59,47 @@ class ViewController: UIViewController {
 extension ViewController: VideoCaptureDelegate {
     func didCaptureFrame(display: UIImage, code: String, angle: String) {
         cameraImageView.image = display
-        self.code.text = code
-        self.angle.text = angle
         guidance.text = guideText
         
         let guidanceKey = code + angle
-        let resultCall = codeBlock.resultValue(key: guidanceKey, type: .call) ?? "未登録"
+        let resultCall = codeBlock.resultValue(key: guidanceKey, type: .call) ?? NSLocalizedString("Unregistered", comment: "")
         guard let resultMessage = codeBlock.resultValue(key: guidanceKey, type: .guidance) else { return }
         
         if guideVoice.process { return }
         guideVoice.process = true
         
-        if let loadURL = codeBlock.resultValue(key: guidanceKey, type: .streaming)  {
+        // 案内文を更新
+        if resultMessage.prefix(4) == "http" {
+            guideText = resultCall
+        } else {
+            guideText = resultMessage
+        }
+        
+        if let mp3URL = codeBlock.resultValue(key: guidanceKey, type: .streaming)  {
             // online
-            guard let mp3URL = URL(string: "http://18.224.144.136/tenji/" + loadURL) else { return }
-            reflectImageProcessing(url: mp3URL, message: resultMessage, call: resultCall)
+            reflectImageProcessing(url: URL(string: "http://18.224.144.136/tenji/" + mp3URL)!, message: resultMessage, call: resultCall)
         } else {
             // offline
-            reflectImageProcessing(message: resultMessage, call: resultCall)
+            guideVoice.offlineReadGuide(manuscript: guideText)
         }
+        
+        self.code.text = code
+        self.angle.text = angle
     }
     
     private func reflectImageProcessing(url: URL, message: String, call: String) {
-        guideVoice.onlineReadGuide(mp3URL: url, completion: { initText in
-            // 案内文を初期化
-            self.guideText = initText
-            
-            if let web = NSURL(string: message) {
-                let config = SFSafariViewController.Configuration()
-                config.entersReaderIfAvailable = true
-                self.safariVC = SFSafariViewController(url: web as URL, configuration: config)
-            } else {
+        guideVoice.onlineReadGuide(mp3URL: url, completion: { initText, delay in
+            print(delay)
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                // 案内文を初期化
+                self.guideText = initText
                 self.guideVoice.process = false
             }
+            guard let web = NSURL(string: message) else { return }
+            let config = SFSafariViewController.Configuration()
+            config.entersReaderIfAvailable = true
+            self.safariVC = SFSafariViewController(url: web as URL, configuration: config)
         })
-        
-        // 案内文を更新
-        if message.prefix(4) == "http" {
-            guideText = call
-        } else {
-            guideText = message
-        }
-    }
-    
-    private func reflectImageProcessing(message: String, call: String) {
-        // 案内文を更新
-        if message.prefix(4) == "http" {
-            guideText = call
-        } else {
-            guideText = message
-        }
-        guideVoice.offlineReadGuide(manuscript: call)
     }
 }
 
@@ -122,7 +114,9 @@ extension ViewController: AudioPlayerDelegate {
     // 文字を読み終えたら呼び出される
     func didFinishReading() {
         guideVoice.process = false
-        guideText = "認識中"
+        guideText = NSLocalizedString("Verification", comment: "")
+        code.text = "\(0)"
+        angle.text = "\(0)"
     }
 }
 

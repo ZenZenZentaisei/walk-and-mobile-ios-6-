@@ -18,13 +18,12 @@ class CodeBlockController {
     
     private let database = DataBaseModel()
     
-    private var url = URL(string: "http://18.224.144.136/tenji/get_db2json.py?data=blockmessage")!
-    
     public func fetchGuideInformation() {
         networkMonitor.pathUpdateHandler = { path in
             if path.status == .satisfied {
                 print("Connected")
-                self.database.responseCodeBlockServer(request: self.url, completion: { guide, streaming, call in
+                let url = self.checkDeviceLocation()
+                self.database.responseCodeBlockServer(request: url, completion: { guide, streaming, call in
                     self.guidanceMessage = guide
                     self.streamingURL = streaming
                     self.callMessage = call
@@ -35,6 +34,20 @@ class CodeBlockController {
             }
         }
         networkMonitor.start(queue: queue)
+    }
+    
+    private func checkDeviceLocation() -> URL {
+        let standard = "http://18.224.144.136/tenji/get_db2json.py?data=blockmessage"
+        print(standard + "_en")
+        guard let language = NSLocale.preferredLanguages.first?.components(separatedBy: "-").first else { return URL(string: standard)! }
+        switch language {
+        case "ja":
+            return URL(string: standard)!
+        case "en":
+            return URL(string: standard + "_en")!
+        default:
+            return URL(string: standard)!
+        }
     }
     
     private func setLocalData(data: (CodeDict, CodeDict)){

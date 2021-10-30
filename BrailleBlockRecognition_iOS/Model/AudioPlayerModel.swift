@@ -10,23 +10,21 @@ class AudioPlayerModel: NSObject {
     
     private var audioPlayer = AVAudioPlayer()
     private let textToSpeech = AVSpeechSynthesizer()
-    private let initMessage = "認識中"
+    private let initMessage = NSLocalizedString("Verification", comment: "")
     public var process = false
     
     private var playbackSpeed: Float = 0.0
     private var delayStartTime: Double = 0.0
     
     // 案内文を再生する
-    public func onlineReadGuide(mp3URL: URL, completion: @escaping (String) -> Void) {
+    public func onlineReadGuide(mp3URL: URL, completion: @escaping (String, Double) -> Void) {
         beginSoundEffect()
-        process = true
-        
+
         // 案内文再生
         DispatchQueue.main.asyncAfter(deadline: .now() + delayStartTime / Double(playbackSpeed)) {
-            self.playStreamingMusic(url: mp3URL, completion: { globalMP3, playbackTime  in
+            self.durationStreamingMusic(url: mp3URL, completion: { globalMP3, duration  in
                 self.playMP3File(url: globalMP3, speed: self.playbackSpeed)
-                completion(self.initMessage)
-                Thread.sleep(forTimeInterval: (self.delayStartTime + playbackTime) / Double(self.playbackSpeed))
+                completion(self.initMessage, (self.delayStartTime + duration) / Double(self.playbackSpeed))
             })
         }
     }
@@ -56,7 +54,12 @@ class AudioPlayerModel: NSObject {
     // 認識開始の効果音再生
     private func beginSoundEffect() {
         let openStartFile = "GeneralStart"
-        playbackSpeed = UserDefaults.standard.float(forKey: "reproductionSpeed")
+        if UserDefaults.standard.float(forKey: "reproductionSpeed") != 0.0 {
+            playbackSpeed = UserDefaults.standard.float(forKey: "reproductionSpeed")
+        } else {
+            playbackSpeed = 1.0
+        }
+        
         delayStartTime = durationEffectSound(fileName: openStartFile)
         playSoundEffect(url: fetchMP3File(file: openStartFile))
     }
@@ -87,7 +90,7 @@ class AudioPlayerModel: NSObject {
     }
     
     // ストリーミンング形式で音(案内分)を再生
-    private func playStreamingMusic(url: URL, completion: @escaping (URL, Double) -> Void) {
+    private func durationStreamingMusic(url: URL, completion: @escaping (URL, Double) -> Void) {
         let downloadTask:URLSessionDownloadTask = URLSession.shared.downloadTask(with: url as URL) { (URL, response, error) in
             do {
                 self.audioPlayer = try AVAudioPlayer(contentsOf: URL!)
