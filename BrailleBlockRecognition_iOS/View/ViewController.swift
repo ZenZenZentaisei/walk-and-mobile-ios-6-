@@ -89,9 +89,11 @@ extension ViewController: VideoCaptureDelegate {
     
     private func reflectImageProcessing(url: URL, message: String, call: String) {
         guideVoice.onlineReadGuide(mp3URL: url, completion: { initText, delay in
-            DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [self] in
                 // 案内文を初期化
                 self.guideText = initText
+                self.code.text = "\(0)"
+                self.angle.text = "\(0)"
                 self.guideVoice.process = false
             }
             guard let web = NSURL(string: message) else { return }

@@ -92,16 +92,12 @@ class VideoCaptureModel: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate 
     
     private func openCVImageProcessing(image: UIImage) {
         let openCV = OpenCV()
-        // 初期化(↓しないと何故か状態を保存し、更新されない)
-        openCV.reader(UIImage(named: "sample"))! as NSArray
-        
         let result = openCV.reader(image)! as NSArray
-            
-        let imageResult = result[0] as! UIImage
-        let codeResult = result[1] as! Int
-        let angleResult = result[2] as! Int
         
-        delegate?.didCaptureFrame(display: imageResult, code: "\(codeResult)", angle: "\(angleResult)")
+        let codeResult = result[0]
+        let angleResult = result[1]
+        
+        delegate?.didCaptureFrame(display: image, code: "\(codeResult)", angle: "\(angleResult)")
     }
     
     // sampleBufferからUIImageを作成
