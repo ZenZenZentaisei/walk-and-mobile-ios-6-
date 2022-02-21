@@ -75,7 +75,7 @@ extension ViewController: VideoCaptureDelegate {
             guideText = resultMessage
         }
         
-        if let mp3URL = codeBlock.resultValue(key: guidanceKey, type: .streaming)  {
+        if let mp3URL = codeBlock.resultValue(key: guidanceKey, type: .streaming) {
             // online
             reflectImageProcessing(url: URL(string: "http://18.224.144.136/tenji/" + mp3URL)!, message: resultMessage, call: resultCall)
         } else {

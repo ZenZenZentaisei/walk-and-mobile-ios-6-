@@ -22,7 +22,7 @@ const int SQmin = 15000; // buffalo = 16000;//25000から変更9/2  18000
 const int SQmax = 170000;//ele 100000 135000------> 100000 ----->150000 andoroid Pixel XL---->170000
 const int TRmin = 80;//log=200 el=120// 2018-10-26 変更テスト　120---> 100--->80  2019-2-7 変更　７０（６０でもいける） 80---->android Pixel XL
 const int TRmax = 900;//Log=900(1m) el=800// 2018-10-26 変更テスト900-->600-----//2020-1-14 700--->900
-
+const int MaxblackPiont = 700; //2021-9-17 通常＝450 ring での試行　追加
 //MAT型変換(→8UC3)
 cv::Mat cvMatC3(cv::Mat cvMat){
     cv::Mat cvMatC3(cvMat.rows, cvMat.cols,CV_8UC3);
@@ -34,18 +34,18 @@ cv::Mat cvMatC3(cv::Mat cvMat){
 @implementation OpenCV : NSObject
 - (NSArray *) reader:(UIImage *)img {
     CGColorSpaceRef colorSpace = CGImageGetColorSpace(img.CGImage);
-        
+
         //切り抜きサイズに合わせるため、拡大
         //固定値でないと重くなる..
         CGFloat cols = img.size.width;
         CGFloat rows = img.size.height;
         //CGFloat cols = 800;
         //CGFloat rows = 1065
-        
+
         //printf("%f",cols);
         //printf("%f",rows);
-        
-        
+
+
         cv::Mat Img(rows, cols, CV_8UC4);
         cv::Mat image0(rows, cols, CV_8UC3);
         CGContextRef contextRef = CGBitmapContextCreate(Img.data,
@@ -58,11 +58,11 @@ cv::Mat cvMatC3(cv::Mat cvMat){
                                                         kCGBitmapByteOrderDefault);
 
         CGContextDrawImage(contextRef, CGRectMake(0, 0, cols, rows), img.CGImage);
-        
+
         CGContextRelease(contextRef);
         CGColorSpaceRelease(colorSpace);
-        
-        
+
+
         image0 = cvMatC3(Img);
         Img.release();
 //    cv::Mat *image0 = (__bridge cv::Mat*)img;
@@ -90,16 +90,16 @@ cv::Mat cvMatC3(cv::Mat cvMat){
     vector<vector<cv::Point> > sq;// ４角形　エリア 座標 duplicate check
     sq.resize(40);
     sq.clear();
-  
+
 
 //    cv::Rect rect(0,0,800,720);
-    cv::Rect rect(0,0,400,360);
+//    cv::Rect rect(0,0,400,360);
 
-    cv::Mat image1(image0,rect);
+//    cv::Mat image1(image0,rect);
 
-    Mat image2(image1.size(),CV_8UC3);
-    cvtColor(image1, image2, COLOR_RGBA2BGR);
-    int invmean0=mean(image2)[0];
+//    Mat image2(image1.size(),CV_8UC3);
+//    cvtColor(image1, image2, COLOR_RGBA2BGR);
+//    int invmean0=mean(image2)[0];
     ///////////////////////////////////////////////////////////////////////////////
 
     ///////////////////ここまで/////////////////////////////////////////////////////
@@ -108,7 +108,7 @@ cv::Mat cvMatC3(cv::Mat cvMat){
     Mat image=Mat(image0.size(),CV_8UC3);
 //    cv::cvtColor(*image0, image, COLOR_RGBA2BGR);
     cv::cvtColor(image0, image, COLOR_RGBA2BGR);
-    
+
 //////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////
 
@@ -138,28 +138,39 @@ cv::Mat cvMatC3(cv::Mat cvMat){
     Angl=-1;
     int invmeanf;
     int ret = FHomo(image, sq, sqindex, tr, trindex, invmeanf);//image--->image0
- 
+
+    if (ret<0){
+      Code=0;
+      Angl=-1;
+    }
+
     cv::cvtColor(image, image0, COLOR_BGR2RGBA);
     /////////////////////////////////////////////
 
 //    Ret[0]=ret;
 //    Ret[3]=invmean;//画像全体の輝度
 //    Ret[4]=invmeanf;//Get_codeへの画像輝度
-    if ((ret == 1) || (ret == 0)) {// 1:２個取れた時 0:１個取れた時
+    if ((ret == 1) || (ret == 0))
+    {  // 1:２個取れた時 0:１個取れた時
 //        Ret[1] = Code;
 //        Ret[2] = Angl;
         if (ret == 0) {// 1個のみ
-
+          ////////////////右上黒　平面ブロックコードは一個だけでもOK 2020-12-15
+          if  ((Code < 1048576)||(Code > 2097152)){ // 追加2022/02/19
+              Code=0; Angl=-1;
+          }
         }
-        if (ret == 1) {//２個以上取れた時
-
-        }
+        if (ret == 1) {  }//２個以上取れた時}
     }
-    
- 
+
     NSNumber *code_n = [NSNumber numberWithLong:Code];
     NSNumber *angle_n = [NSNumber numberWithInt:Angl];
-        
+    
+    // MARK:-- 緑の線を表示させる
+    // 現状、負荷が大きすぎて認識がうまくいかない
+//    UIImage *resultImg = MatToUIImage(image0);
+//    NSArray *result = [NSArray arrayWithObjects:resultImg,code_n,angle_n,nil];
+
     NSArray *result = [NSArray arrayWithObjects:code_n,angle_n,nil];
     return result;
 }
@@ -196,7 +207,7 @@ static int mask( const Mat& img1, const Mat& image, const Mat& imageGR ,vector<v
     medianBlur(img1,n0,5);// 変更2020/01/20　for andoroid
     //cvtColor(gray, gray1, COLOR_BGR2GRAY);
     cvtColor(n0, gray1, COLOR_BGR2GRAY);
-    
+
     adaptiveThreshold(gray1,nh,255,ADAPTIVE_THRESH_MEAN_C,THRESH_BINARY_INV,11,5);// orignal 下は暗い時はより良いが　影の場合は不明
 
     cvtColor(n0, nh2, COLOR_BGR2Lab);
@@ -302,9 +313,9 @@ static int mask( const Mat& img1, const Mat& image, const Mat& imageGR ,vector<v
 
     cvtColor(yellow,gray, COLOR_BGR2GRAY);
     threshold(gray,nh,5,255,THRESH_BINARY);
-    
+
     bitwise_or(mask0, nh, nh);//これがないとマスクが真っ黒になる　c270 C525で。エレコムは大丈夫
-    
+
     img1.copyTo(image,mask0);// Original　image はCV_8UC3にしないと背景色指定できない c1だといつも黒
     img1.copyTo(imageGR,nh);
     return s1;
@@ -391,7 +402,7 @@ static int findSq( const Mat& image, const Mat& imageGR, vector<vector<cv::Point
                     sq[s].push_back(cv::Point(approx[1].x, approx[1].y));
                     sq[s].push_back(cv::Point(approx[2].x, approx[2].y));
                     sq[s].push_back(cv::Point(approx[3].x, approx[3].y));// 修正
-      
+
                     s++;s3++;
                 }
             }
@@ -1053,18 +1064,6 @@ static int FHomo(const Mat& image, vector<vector<cv::Point> >& sq, int sqindex, 
             int idx=0;
             double S;
 
-            /////////////// 検討　ＳＱとＴＲの面積比率によるチェック//////////////////////////////////
-            //// 以下　計算とは全然違う　検討要す
-            //  areaT = contourArea(tr[m]);
-            //  printf( "Tr Area=%lf \n", areaT );
-            //  if ((areaS > (areaT*300)) || ((areaS < areaT*100)) ){ // SQ = TR*15000
-            // １７０倍してもＳＱが大きければＴＲが小さすぎ　１３０倍してＳＱが小さければＴＲ大きすぎ　２０１９－６－３０
-            //          printf( "ERR  SQ Area%d=%lf TR-area%d=%lf \n",n,areaS,m,areaT );
-            //          continue;
-            //  }
-            ////////////////////////////////////////////////
-            /////////////////////////////////////////////////////
-
             for ( int i=0; i<3; i++){ // ３角形の頂点座標　３点とも４角形内にあるか? この部分おかしいバグあり１１－２７
                 tx[i]=(int)tr[m][i].x;
                 ty[i]=(int)tr[m][i].y;
@@ -1152,42 +1151,14 @@ static int FHomo(const Mat& image, vector<vector<cv::Point> >& sq, int sqindex, 
                 //printf("B=%lf \n ttx0 tty0 =%d %d  ttx1 tty1= %d %d ttx2 tty2= %d %d\n",B,ttx[0],tty[0],ttx[1],tty[1],ttx[2],tty[2]);
                 //////////////// 三角の最も角度が大きい点が直角点　追加必要　２０１９－６－３０
                 //////////////// とはいかない-----横からだと２等辺三角形になるのでうまくいかない。　最も小さい角度の点が上のij の時のみ除外する
-                double cosine[3];
-                int minc;
-                cosine[0] = fabs( a_angle(tr[m][(ij+1)%3], tr[m][(ij+2)%3], tr[m][ij]) );//ij の角度
-                cosine[1] = fabs( a_angle(tr[m][(ij+2)%3], tr[m][ij], tr[m][(ij+1)%3]) );//ij+1の角度
-                cosine[2] = fabs( a_angle(tr[m][ij], tr[m][(ij+1)%3], tr[m][(ij+2)%3]) );
-                //minc = mintd_return(cosine);
-                minc = maxtd_return(cosine);
-                //printf("IJ=%d Max-cos = %d  %lf %lf %lf \n",ij,minc,cosine[0],cosine[1],cosine[2]);
-                //if (minc != 0)
-                if (minc == 0){ printf("Tr-Angle NG! \n");
-                    continue;}
 
-                //////////////////////////////
-                /////////ブロックに近づいて行った時にビープ音　///////////////////　9/2 追加　/////////////////////////
-                //double area;
-                //area = contourArea(sq[n]);
-                //printf( "SQ Area=%lf", area );
-                //if(area < SQsmall){ // SQsmall = 35000
-                //PlaySound("beep.wav",NULL,SND_FILENAME | SND_ASYNC | SND_NOSTOP);
-                //        printf( "SQ Area=%lf", area );
-                //PlaySound("test_2.wav",NULL,SND_FILENAME | SND_ASYNC | SND_NOSTOP);
-                //break;//
-                //        continue;
-                //}
                 /////////////////////////　ii は角度情報ではない///////
                 // 0(-45-45) 1(-45-135) 2(-135- 135) 3(135-45)左周り
                 angl=-1;// 判断できない時追加　境界の時　幅を持たせる必要あり
                 ///// 以下　アングルの新しいルーチン　２０１９－２－２５
                 //long LL[4];
-                int p;
-                //for (int i=0; i<4; i++)// ax bx  は右回りだよ！！！
-                //  LL[i] = (ax[i]-tx[0])*(ax[i]-tx[0]) + (bx[i]-ty[0])*(bx[i]-ty[0]);
-                p = ii;
-                //p = minl_return(LL);// ax[p] が三角形に一番近い四角の頂点
-                //printf("  PX PY = %d %d ", ax[p],bx[p]);
-                //printf("  P = %d  ", p);
+                int p=ii;
+
                 if (ax[0] < ax[2]){
                     if (p==0) angl=0;
                     if (p==1) angl=3;
@@ -1199,7 +1170,6 @@ static int FHomo(const Mat& image, vector<vector<cv::Point> >& sq, int sqindex, 
                     if (p==1) angl=2;
                     if (p==2) angl=1;
                     if (p==3) angl=0;
-                    //angl = pp;printf("  Angle = %d ", angl);
                 }
 
                 if (angl < 0) //break;//
@@ -1248,34 +1218,64 @@ static int FHomo(const Mat& image, vector<vector<cv::Point> >& sq, int sqindex, 
 
                 //printf("gx0 gy0= %d %d  gx1 gy1= %d %d  gx2 gy2= %d %d",gx[0],gy[0],gx[1],gy[1],gx[2],gy[2]);
 ////////////////////////////////////////////////////
-                // 以下は　理論的には　gx,gy = 25,42
-                if ((gx[0]<15)||(gx[0]>30)||(gy[0]<25)||(gy[0]>50)){//////直角点範囲　ここではじかれることが多い
-                    //　斜め画像で三角形が奥の場合のgyに対して gy を変更したがgy<20 はありえない　元に戻す　2019-2-12
-                    //if ((gx<15)||(gx>30)||(gy<30)||(gy>50)){/////// gx15 なら gy32 が正しい
-                    //PlaySound("beep.wav",NULL,SND_FILENAME | SND_ASYNC | SND_NOSTOP);// Add 11-27
-                    //printf("After homo ERR gx gy =%d %d \n",gx,gy);//waitKey(0);
-                    //polylines(image, sq[n], true, Scalar(255, 0, 0), 2);
-                    //polylines(image, tr[m], true, Scalar(255, 0, 0), 2);
-                    //imshow("gx-gy error", image);
-                    //  PlaySound("test_3.wav",NULL,SND_FILENAME | SND_ASYNC | SND_NOSTOP);
-                    //break;//
-                    continue;//射影点が範囲内にない時
-                }
-                //////////////////////////以下　三角形のチェック　その他　追加必要？
-                if( ( (gx[1]-gx[0]) > 55 ) || ( (gx[1]-gx[0]) < 30) ) continue;// X方向　５０まで
-                if( ( (gy[2]-gy[0]) > 20 ) || ( (gy[2]-gy[0]) < 10) ) continue;// Y方向　１７まで
+////////////////////////////////////////////////////
+        int LR=1;////////////////////// この部分に三角形のLRの判断////////x座標で下の頂点が上辺の中点より小さければ右向き////
+        if((gx[1]+gx[0]) > 2*gx[2]) LR=0;// left
+/////////////////////////////////////////////////////////////
+        if(LR==0){
+// 以下は　理論的には　gx,gy = 25,42
+            if ((gx[0]<15)||(gx[0]>35)||(gy[0]<25)||(gy[0]>50)){//////直角点範囲　ここではじかれることが多い
+    //　斜め画像で三角形が奥の場合のgyに対して gy を変更したがgy<20 はありえない　元に戻す　2019-2-12
+    //if ((gx<15)||(gx>30)||(gy<30)||(gy>50)){/////// gx15 なら gy32 が正しい
+              continue;//射影点が範囲内にない時
+            }
+//////////////////////////以下　三角形のチェック　その他　追加必要？
+            if( ( (gx[1]-gx[0]) > 55 ) || ( (gx[1]-gx[0]) < 30) ) continue;// X方向　５０まで
+            if( ( (gy[2]-gy[0]) > 20 ) || ( (gy[2]-gy[0]) < 10) ) continue;// Y方向　１７まで
 
-                if(gy[0]<gy[1]){
-                    if( (gy[1]-gy[0]) > TRC ) continue;// gy[0]+-5 以内にgy[1]がない場合エラー
-                }
-                else if( (gy[0]-gy[1]) > TRC ) continue;
+            if(gy[0]<gy[1]){
+              if( (gy[1]-gy[0]) > TRC ) continue;// gy[0]+-5 以内にgy[1]がない場合エラー
+            }
+            else if( (gy[0]-gy[1]) > TRC ) continue;
 
-                if(gx[0]<gx[2]){
-                    if( (gx[2]-gx[0]) > TRC ) continue;// gx[0]+-5 以内にgx[2]がない場合エラー
-                }
-                else if( (gx[0]-gx[2]) > TRC ) continue;
+            if(gx[0]<gx[2]){
+                if( (gx[2]-gx[0]) > TRC ) continue;// gx[0]+-5 以内にgx[2]がない場合エラー
+            }
+            else if( (gx[0]-gx[2]) > TRC ) continue;
+          }
+//////////////////////////////////////////////////////////////////////////
+          if (LR == 1){
+//if((gx[1]<65)||(gx[1]>80)||(gy[1]<25)||(gy[1]>50)){// 逆三角の直角点　座標 5✕5
+//if((gx[1]<57)||(gx[1]>68)||(gy[1]<30)||(gy[1]>45)){// 逆三角の直角点　座標 6✕6 三角小
+              if((gx[1]<40)||(gx[1]>53)||(gy[1]<30)||(gy[1]>45)){// 逆三角の直角点　座標 6✕6　三角20✕40 (48,38)*****************
+                printf("homo TR1-ERR gx gy =%d %d \n",gx[1],gy[1]);
+              continue;
+          }
 
-                //////////////////////////////////////////////////////////////////////////
+//if( ( (gx[1]-gx[0]) > 55 ) || ( (gx[1]-gx[0]) < 30) ) continue;// X方向　５０まで 5✕5
+//if( ( (gy[2]-gy[1]) > 20 ) || ( (gy[2]-gy[1]) < 10) ) continue;// Y方向　１７まで 5✕5
+//if( ( (gx[1]-gx[0]) > 45 ) || ( (gx[1]-gx[0]) < 25) ) {// length (50mm)
+          if( ( (gx[1]-gx[0]) > 42 ) || ( (gx[1]-gx[0]) < 20) ) {// length 33.3(40mm✕5%6)  X方向　33まで    42---->39
+              printf("homo TR1-ERR2 gx0 gx1 =%d %d \n",gx[0],gx[1]);
+              continue;// X方向　6✕6
+          }
+//if( ( (gy[2]-gy[1]) > 15 ) || ( (gy[2]-gy[1]) < 7) ) {
+          if( ( (gy[2]-gy[1]) > 20 ) || ( (gy[2]-gy[1]) < 10) ) {//Y方向　16.7
+              printf("homo TR1-ERR3 gy1 gy2 =%d %d \n",gy[1],gy[2]);
+              continue;//
+          }
+          if(gy[0]<gy[1]){
+            if( (gy[1]-gy[0]) > TRC ) continue;// gy[1]+-5 以内にgy[0]がない場合エラー
+            }
+          else if( (gy[0]-gy[1]) > TRC ) continue;
+
+          if(gx[1]<gx[2]){
+            if( (gx[2]-gx[1]) > TRC ) continue;// gx[1]+-5 以内にgx[2]がない場合エラー
+          }
+          else if( (gx[1]-gx[2]) > TRC ) continue;
+        }
+////////////
+//////////////////////////////////////////////////////////////////
 
                 polylines(image, sq[n], true, Scalar(0,255, 0), 2);
 
@@ -1283,7 +1283,7 @@ static int FHomo(const Mat& image, vector<vector<cv::Point> >& sq, int sqindex, 
                 warpPerspective(image, im_out, h, cv::Size(250, 250));
 
                 int invmean=0;
-                code[cindex] = Getcode(im_out,gx,gy,invmean);// 三角形の直角頂点を使うかは検討要す
+                code[cindex] = Getcode(im_out,gx,gy,invmean,LR);// 三角形の直角頂点を使うかは検討要す
                 invmeanf=invmean;
                 if (code[cindex] > 0){
                     tmx[cindex] = m;// m番目の３角形を記録
@@ -1500,7 +1500,7 @@ static int minl_return(long *a)
 
 
 // MARK: -- ３角形の直角頂点を使ったコード取得  ３角形の白黒判定
-static long Getcode( const Mat& image, int *X, int *Y,int &invmean)
+static long Getcode( const Mat& image, int *X, int *Y,int &invmean, int LR)
 {
     int black[5][5];
 
@@ -1558,8 +1558,9 @@ static long Getcode( const Mat& image, int *X, int *Y,int &invmean)
     }
     ////////////////////////////////////////////////////
     //////// 三角形直角点 座標
-    int ret = GfindTr(gray,xx,yy);
-    if(ret < 1){ xx=X[0]; yy=Y[0];}// xx yy がとれない場合　旧来の座標使用　・・・return -1 でもよいかも
+    int ret = GfindTr1(gray,xx,yy,LR);
+    if(ret < 1) return -1;
+    //{ xx=X[0]; yy=Y[0];}// xx yy がとれない場合　旧来の座標使用　・・・return -1 でもよいかも
     //////////////////////////////////////////////
     pyrDown(gray, pyr, cv::Size(image.cols/2, image.rows/2));
     pyrUp(pyr, ygray, image.size());//ある程度影がなくなる　　ぼやけるが
@@ -1578,8 +1579,16 @@ static long Getcode( const Mat& image, int *X, int *Y,int &invmean)
 
         adaptiveThreshold(ygray0,mt,255,ADAPTIVE_THRESH_MEAN_C,THRESH_BINARY_INV,67,35);//BEST
     }
-
-    Black_point(mt,black,xx,yy);
+    //////////////////////////////////////
+    if(LR==0){
+          Black_point0(mt,black);
+          //printf("\n 7: Black-point055");
+          }
+      if(LR==1){
+          //printf("\n 7: Black-point066\n");
+          Black_point(mt,black);// ここで6✕6ブロックに対応
+          }
+    //Black_point(mt,black,xx,yy);
 
     max = 0;
     black[0][0]=0;  black[0][1]=0;  black[1][0]=0;  // 一番左とその隣、その下は使わない
@@ -1591,14 +1600,12 @@ static long Getcode( const Mat& image, int *X, int *Y,int &invmean)
 ////////////////////////////////////////////////////////
     //if ((max < 150) || (max > 350)) return -1;/// max < 450 は大きすぎ?? 2019-2-18
     //if ((max < 120) || (max > 450)) return -1;/// min 150 はちいさい　350から380へ変更　2019-11-4
-    if ((max < 120) || (max > 600)) return -1;/// min 150 はちいさい　450から600へ変更　2020-8
+    if ((max < 120) || (max > MaxblackPiont)) return -1;/// min 150 はちいさい　450から600へ変更　2020-8
 //////////////////////////////////以下　黒点数により　０か１に変換/////////////////////
     for ( int j=0; j<5; j++)
         for (int k=0; k<5; k++)
-            //if ( (black[j][k] > ( max - 100)) || (black[j][k] > 150) ) B[5*j+k]=0x31;// ２分の１よりよい　影があると半分以上は黒くなる
-            //if ( (black[j][k] > ( max - 100)) || (black[j][k] > 120) ) B[5*j+k]=0x31;//150--->120 2019-11-16 変更
             //if ( (black[j][k] > ( max - 100)) && (black[j][k] > 120) ) B[5*j+k]=0x31;//or---- >  && バグ　2019-12-14
-            if ( (black[j][k] > ( max - 250)) && (black[j][k] > 120) ) B[5*j+k]=0x31;//or---- >  && バグ　2019-12-14 ///max-200---->-250 12-26
+            if ( (black[j][k] < MaxblackPiont) && (black[j][k] > 120) ) B[5*j+k]=0x31;//or---- >  && バグ　2019-12-14 ///max-200---->-250 12-26
             else B[5*j+k]=0x30;// -100 は適当
 
 
@@ -1624,13 +1631,13 @@ static long Getcode( const Mat& image, int *X, int *Y,int &invmean)
 
 
 // MARK: -- FindTR for Get_Code
-static int GfindTr( const Mat& gray, int &X, int &Y )
-{
-    vector<vector<cv::Point> > contours;
-    vector<vector<cv::Point> > contours1;
+///////////////////////////New GfindTr1/////add 6*6//////////2022
+static int GfindTr1( const Mat& gray, int &X, int &Y, int LR )
+{  vector<vector<cv::Point> > contours;
+   vector<vector<cv::Point> > contours1;
 
     vector<cv::Point> approx;
-    Mat element = getStructuringElement(MORPH_RECT,cv::Size(3,3));
+    Mat element = getStructuringElement(MORPH_RECT, cv::Size(3,3));
     double area;
     Mat mt,mt0;
     //Mat img1 = image.clone();
@@ -1641,104 +1648,171 @@ static int GfindTr( const Mat& gray, int &X, int &Y )
     int ij;
     ////////////////////////////////////////////////
     // Rect rect(X, Y, xl, yl);
-    cv::Rect rect(10,20,80,80);//三角形の場所 X,Yは直角点
-    Mat imgSub(gray, rect);
-    //imshow("imgSub", imgSub);
+      cv::Rect rect(10,20,80,80);//三角形の場所 X,Yは直角点
+      Mat imgSub(gray, rect);
+      //imshow("imgSub", imgSub);
 
 //////////////////////////Canny
-    Canny( imgSub, gray0, 60, 180,3 );
-    //imshow("FT-Canny",gray0);
-    morphologyEx(gray0,mt0,MORPH_CLOSE,element,cv::Point(-1,-1),1);// 三角頂点がつながらないケースあり必要2019-12-29
-    //imshow("Mor-TRCanny",mt0);
+      Canny( imgSub, gray0, 60, 180,3 );
+        //imshow("FT-Canny",gray0);
+      morphologyEx(gray0,mt0,MORPH_CLOSE,element, cv::Point(-1,-1),1);// 三角頂点がつながらないケースあり必要2019-12-29
+        //imshow("Mor-TRCanny",mt0);
 
-    findContours(mt0, contours, RETR_LIST, CHAIN_APPROX_SIMPLE);
+        findContours(mt0, contours, RETR_LIST, CHAIN_APPROX_SIMPLE);
 
-    int t=0;              // 三角形個数
+        int t=0;              // 三角形個数
 
-    for( size_t i = 0; i < contours.size(); i++ )
-    {
-        if (t > 3) break;
-        area = contourArea(contours[i]);
-        if (area > 300 && area < 600){   //三角画像サイズ　416.7
+      for( size_t i = 0; i < contours.size(); i++ )
+      {
+          if (t > 3) break;
+          area = contourArea(contours[i]);
+          //if (area > 300 && area < 600){   //三角画像サイズ　416.7
+          if (area > 200 && area < 600){   //三角画像サイズ変更　6✕6の三角は小さい為
             // 直線近似
-            //  approxPolyDP(Mat(contours[i]), approx, arcLength(Mat(contours[i]), true)*0.05, true);//0.05
-            approxPolyDP(Mat(contours[i]), approx, arcLength(Mat(contours[i]), true)*0.05, true);
+          //  approxPolyDP(Mat(contours[i]), approx, arcLength(Mat(contours[i]), true)*0.05, true);//0.05
+          approxPolyDP(Mat(contours[i]), approx, arcLength(Mat(contours[i]), true)*0.05, true);
             if (approx.size() == 3 && t < 4 ){
-                t++;
-                ////////////// 左上の頂点に最も近い三角形の頂点を探す　直角点　ij
-                for(int j=0;j<3;j++)
-                    ll[j] =(int)approx[j].x * (int)approx[j].x + (int)approx[j].y * (int)approx[j].y;
-                ij = minl_return(ll);
-                X=(int)approx[ij].x +10;
-                Y=(int)approx[ij].y +20;
-                return 1;
-                //////////////////
+                  t++;
+              ////////////// 左上の頂点に最も近い三角形の頂点を探す　直角点　ij
+              if(LR==0){
+                  for(int j=0;j<3;j++)
+                      ll[j] =(int)approx[j].x * (int)approx[j].x + (int)approx[j].y * (int)approx[j].y;
+                  ij = minl_return(ll);
+                  X=(int)approx[ij].x +10;
+                  Y=(int)approx[ij].y +20;
+                  //printf( "\n Canny TR-R X=%d Y=%d \n", X,Y );
+                  return 1;
+              }
+              if(LR==1){// 三角左向き
+                  for(int j=0;j<3;j++)
+                      ll[j] =(80-(int)approx[j].x) * (80-(int)approx[j].x) + (int)approx[j].y * (int)approx[j].y;
+                  ij = minl_return(ll);
+                  //X=(int)approx[ij].x +10 -50;// 三角の左の頂点座標
+                  //X=(int)approx[ij].x +10 -41;// 三角の左の頂点座標
+                  X=(int)approx[ij].x +10;// 直角点とする　2022/01/18
+                  Y=(int)approx[ij].y +20;
+                  //printf( "\n Canny TR-L X=%d Y=%d \n", X,Y );
+                  return 1;
+              }
+
             }
+          }
         }
-    }
-    //////////////////
-    if(t==0){
+      //////////////////
+      if(t==0){
         //adaptiveThreshold(gray,mt1,255,ADAPTIVE_THRESH_MEAN_C,THRESH_BINARY_INV,67,35);// 通常の黒三角はこれでOK　従来どおり
-        adaptiveThreshold(imgSub,mt,255,ADAPTIVE_THRESH_MEAN_C,THRESH_BINARY_INV,67,35);
+          adaptiveThreshold(imgSub,mt,255,ADAPTIVE_THRESH_MEAN_C,THRESH_BINARY_INV,67,35);
         //imshow("FT-Adap", mt1);
         //adaptiveThreshold(imgsub,mt1,255,ADAPTIVE_THRESH_MEAN_C,THRESH_BINARY_INV,41,15);//白三角はこちらの方がよいかも？
         //imshow("TR-White-41-15", mt1);
-        findContours(mt, contours1, RETR_LIST, CHAIN_APPROX_SIMPLE);
-        for( size_t i = 0; i < contours1.size(); i++ )
-        {
+          findContours(mt, contours1, RETR_LIST, CHAIN_APPROX_SIMPLE);
+          for( size_t i = 0; i < contours1.size(); i++ )
+          {
             if (t > 3) break;
             area = contourArea(contours1[i]);
-            if (area > 300 && area < 600){   //画像サイズ640の時100　1000なら200
-                //  approxPolyDP(Mat(contours1[i]), approx, arcLength(Mat(contours1[i]), true)*0.05, true);//0.05
-                approxPolyDP(Mat(contours1[i]), approx, arcLength(Mat(contours1[i]), true)*0.05, true);
-                if (approx.size() == 3 && t < 4 ){
-                    t++;
-                    for(int j=0;j<3;j++)
-                        ll[j] =(int)approx[j].x * (int)approx[j].x + (int)approx[j].y * (int)approx[j].y;
-                    ij = minl_return(ll);
-                    X=(int)approx[ij].x +10;
-                    Y=(int)approx[ij].y +20;
-                    return 1;
-                }
+            //if (area > 300 && area < 600){   //画像サイズ640の時100　1000なら200
+            if (area > 200 && area < 600){   //三角画像サイズ変更　6✕6の三角は小さい為
+          //  approxPolyDP(Mat(contours1[i]), approx, arcLength(Mat(contours1[i]), true)*0.05, true);//0.05
+            approxPolyDP(Mat(contours1[i]), approx, arcLength(Mat(contours1[i]), true)*0.05, true);
+              if (approx.size() == 3 && t < 4 ){
+              //printf( "TRA-Area=%f\n", area );
+    //polylines(imgSub, approx, true, Scalar(255), 2);// Test表示はここ
+    //imshow("FT-apl-adap", imgSub);
+                  t++;
+                  if(LR==0){
+                      for(int j=0;j<3;j++)
+                          ll[j] =(int)approx[j].x * (int)approx[j].x + (int)approx[j].y * (int)approx[j].y;
+                      ij = minl_return(ll);
+                      X=(int)approx[ij].x +10;
+                      Y=(int)approx[ij].y +20;
+                      return 1;
+                  }
+                  if(LR==1){
+                      for(int j=0;j<3;j++)
+                          ll[j] =(80-(int)approx[j].x) * (80-(int)approx[j].x) + (int)approx[j].y * (int)approx[j].y;
+                      ij = minl_return(ll);
+                      //X=(int)approx[ij].x +10 -50;// 三角の左の頂点座標
+                      //X=(int)approx[ij].x +10 -41;// 三角の左の頂点座標 直角ではない
+                      X=(int)approx[ij].x +10;// 直角点とする　2022/01/18
+                      Y=(int)approx[ij].y +20;
+                      return 1;
+                  }
+
+              }
             }
         }
-    }
-    //////////////////////////////////////////
+      }
+  //////////////////////////////////////////
 
     if (t == 0)  return -1;
-    return 0;
+  return 0;
 }
-
-// MARK: -- ２５個の突起の黒点数算出/////Get_codeよりcall
-static void Black_point(const Mat& mt, int black[5][5], int X, int Y)
+////////////////////
+///////////////////////////////　6✕6ブロック　２５個の突起の黒点数算出/////Get_codeよりcall
+static void Black_point(const Mat& mt, int black[5][5])
 {
-
     int x,y,x0,y0;
-    //int black[5][5];
     //////////////////// 周囲の枠を塗りつぶし/////// これは効果的　////////////////////
     // Red，太さ3，4近傍連結
     rectangle(mt, cv::Point(0,0), cv::Point(250, 250), Scalar(0,0,0), 5, 4);
+      //imshow("Rectangle-RRR",mt);
+    for(  int j = 0; j < 5; j++ )
+        for( int k = 0; k < 5; k++)
+          {
+            x0 = 42*k + 42;// 50*5%6 300--->250の為　41.6
+            y0 = 42*j + 42;
+            ///////////////////////
+            int XL=15,XR=15,YU=15,YD=15;// 30✕30の範囲でカウント
+            // エリア外参照チェックは省く
+            ////////////////////////
+            black[j][k]=0;
+          /////////////////////////////////////////////////////////////////
+            for (y=y0-YU; y<y0+YD; y++)
+              for (x=x0-XL; x<x0+XR; x++)
+                {
+                  int color0 = mt.at<unsigned char>(y,x);// このｘ、ｙがエリア外参照？
+                  if (color0 > 200) //黒カウント 実際は反転なので白をカウント ２００
+                    black[j][k]++;
+                }
+          }
+  //////////////////////////////////////// ここまでは通常　////////////
+  ////////////// 以下　一様に影がある場合　真ん中をリファレンスにする試行
+      int ref = black[2][2];
+    if((ref > 85)&&(ref < 190)){//70だとオリジナルでとれるものもエラーになる場合あり
+      //100前後は突起内の影　西日などによる突起をはみ出した突起の本体の影は180を超えるケースあり
+        for (int i=0;i<5;i++){
+              //  printf(" \n");
+                  for(int j=0;j<5;j++){
+                    black[i][j]=black[i][j]-ref;
+                    if (black[i][j]<0) black[i][j]=0;
+                    //printf(" %3d ",black[i][j]);//// -ref 2019-12-26
+                  }
+            }
+      }
+      ///////////////////////////////////
+}
+// MARK: -- ２５個の突起の黒点数算出/////Get_codeよりcall
+static void Black_point0(const Mat& mt, int black[5][5])
+{
+    int x,y,x0,y0;
+    //////////////////// 周囲の枠を塗りつぶし/////// これは効果的　////////////////////
+    // Red，太さ3，4近傍連結
+    rectangle(mt, cv::Point(0,0), cv::Point(250, 250), Scalar(0,0,0), 5, 4);
+    //imshow("Rectangle-0",mt);
 
     for(  int j = 0; j < 5; j++ )
         for( int k = 0; k < 5; k++)
         {
-            ////////////////////////////////////////
-            x0=50*k + X ;
-            y0=50*j + Y -17;
-            ///////////////////////
-            int XL=25,XR=25,YU=25,YD=25;
-            if ((j==0)&&(Y<42))  YU=Y-17;
-            if ((j==4)&&(Y>=42)) YD=67-Y;    //50-Y;
-            if ((k==0)&&(X<25))  XL=X;
-            if ((k==4)&&(X>=25)) XR=50-X;
+            x0 = 50*k;
+            y0 = 50*j;
             ////////////////////////
             black[j][k]=0;
             /////////////////////////////////////////////////////////////////
-            for (y=y0-YU; y<y0+YD; y++)
-                for (x=x0-XL; x<x0+XR; x++)//  2019-2-11
+            for (y=y0; y<y0+50; y++)
+                for (x=x0; x<x0+50; x++)
                 {
-                    int color0 = mt.at<unsigned char>(y,x);// このｘ、ｙがエリア外参照？
-                    if (color0 > 200) //黒カウント 実際は反転なので白をカウント
+                    int color0 = mt.at<unsigned char>(y,x);
+                    if (color0 > 200) //黒カウント 実際は反転なので白をカウント ２００
                         black[j][k]++;
                 }
         }
@@ -1748,14 +1822,16 @@ static void Black_point(const Mat& mt, int black[5][5], int X, int Y)
     if((ref > 85)&&(ref < 190)){//70だとオリジナルでとれるものもエラーになる場合あり
         //100前後は突起内の影　西日などによる突起をはみ出した突起の本体の影は180を超えるケースあり
         for (int i=0;i<5;i++){//print only
+            //printf(" \n");
             for(int j=0;j<5;j++){
+                //int bll=black[i][j]-black[2][2];
+                //if (bll<0) bll=0;
+                //printf(" %3d ",bll);//// -ref 2019-12-26
                 black[i][j]=black[i][j]-ref;
                 if (black[i][j]<0) black[i][j]=0;
+                //printf(" %3d ",black[i][j]);//// -ref 2019-12-26
             }
         }
     }
-    ///////////////////////////////////
-
 }
-
 @end

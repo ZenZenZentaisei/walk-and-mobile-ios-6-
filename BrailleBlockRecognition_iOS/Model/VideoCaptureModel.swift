@@ -93,6 +93,7 @@ class VideoCaptureModel: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate 
     private func openCVImageProcessing(image: UIImage) {
         let openCV = OpenCV()
         let result = openCV.reader(image)! as NSArray
+        print(result);
         
         let codeResult = result[0]
         let angleResult = result[1]
