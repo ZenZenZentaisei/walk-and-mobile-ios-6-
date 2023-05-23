@@ -2,6 +2,14 @@
 "Playback Speed" = "재생 속도";
 "Save Data" = "데이터를 저장";
 "Latest data" = "최신 데이터";
-"I was able to install the latest data." = "최신 데이터를 설치할 수 있었습니다.";
+"The latest data could be installed." = "최신 데이터를 설치할 수 있었습니다.";
 "Verification" = "확인";
 "Unregistered" = "미등록";
+"normal" = "정상";
+"detail" = "세부 사항";
+"evacuation" = "소개";
+"exclusive" = "독점적인";
+"Fontsize" = "글꼴 크기";
+"Small" = "소형";
+"Medium" = "중형";
+"Large" = "대형";

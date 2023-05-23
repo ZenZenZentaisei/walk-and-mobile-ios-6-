@@ -2,7 +2,6 @@ import Network
 
 enum TypeInfo {
     case guidance
-    case streaming
     case call
 }
 
@@ -10,7 +9,6 @@ typealias CodeDict = [String: String]
 
 class CodeBlockController {
     private var guidanceMessage:CodeDict = [:]
-    private var streamingURL:CodeDict = [:]
     private var callMessage:CodeDict = [:]
     
     private let networkMonitor = NWPathMonitor()
@@ -24,10 +22,10 @@ class CodeBlockController {
         networkMonitor.pathUpdateHandler = { path in
             if path.status == .satisfied {
                 print("Connected")
+                
                 let url = self.checkDeviceLocation()
-                self.database.responseCodeBlockServer(request: url, completion: { guide, streaming, call in
+                self.database.responseCodeBlockServer(request: url, completion: { guide, call in
                     self.guidanceMessage = guide
-                    self.streamingURL = streaming
                     self.callMessage = call
                 })
             } else {
@@ -39,7 +37,10 @@ class CodeBlockController {
     }
     
     private func checkDeviceLocation() -> URL {
+        //AWS
         let standard = "http://18.224.144.136/tenji/get_db2json.py?data=blockmessage"
+        //研究室サーバー
+            //let standard = "http://202.13.160.89:50003/tenji/get_db2json.py?data=blockmessage"
 
         switch language {
         case "ja":
@@ -54,10 +55,9 @@ class CodeBlockController {
             return URL(string: standard)!
         }
     }
-    
+    // 用はargGuidanceとargCallのこと
     private func setLocalData(data: (CodeDict, CodeDict)){
         guidanceMessage = data.0
-        streamingURL = [:]
         callMessage = data.1
     }
     
@@ -65,14 +65,26 @@ class CodeBlockController {
         database.saveAllData(guidace: guidanceMessage, call: callMessage)
     }
     
-    public func resultValue(key: String, type: TypeInfo) -> String? {
+    public func resultValue(key: String, type: TypeInfo) -> (key: String, String?) {
         switch type {
         case .guidance:
-            return guidanceMessage[key]
-        case .streaming:
-            return streamingURL[key]
+            if guidanceMessage.keys.contains(key){
+                return (key, guidanceMessage[key])
+            }
+            else{
+                let codeAngle = key.prefix(key.count - 1)
+                let key = codeAngle + "0"
+                return (String(key), guidanceMessage[String(key)])
+            }
         case .call:
-            return callMessage[key]
+            if callMessage.keys.contains(key){
+                return (key, callMessage[key])
+            }
+            else{
+                let codeAngle = key.prefix(key.count - 1)
+                let key = codeAngle + "0"
+                return (String(key), callMessage[String(key)])
+            }
         }
     }
     
@@ -80,8 +92,6 @@ class CodeBlockController {
         switch type {
         case .guidance:
             return guidanceMessage
-        case .streaming:
-            return streamingURL
         case .call:
             return callMessage
         }

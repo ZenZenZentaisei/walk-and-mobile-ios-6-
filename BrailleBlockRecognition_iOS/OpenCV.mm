@@ -1,3 +1,5 @@
+// 2022-5-26　受信
+// cv::が必要　
 #import <opencv2/opencv.hpp>
 #import <opencv2/core.hpp>
 #import <opencv2/highgui.hpp>
@@ -165,13 +167,13 @@ cv::Mat cvMatC3(cv::Mat cvMat){
 
     NSNumber *code_n = [NSNumber numberWithLong:Code];
     NSNumber *angle_n = [NSNumber numberWithInt:Angl];
-    
+
     // MARK:-- 緑の線を表示させる
     // 現状、負荷が大きすぎて認識がうまくいかない
-//    UIImage *resultImg = MatToUIImage(image0);
-//    NSArray *result = [NSArray arrayWithObjects:resultImg,code_n,angle_n,nil];
+    UIImage *resultImg = MatToUIImage(image0);
+    NSArray *result = [NSArray arrayWithObjects:code_n,angle_n,resultImg,nil];
 
-    NSArray *result = [NSArray arrayWithObjects:code_n,angle_n,nil];
+    //NSArray *result = [NSArray arrayWithObjects:code_n,angle_n,nil];
     return result;
 }
 
@@ -299,6 +301,89 @@ static int mask( const Mat& img1, const Mat& image, const Mat& imageGR ,vector<v
             }
         }
     }
+
+    for( size_t k = 0; k < contours0.size(); k++ )
+    {
+        if (s1 > 10) break;
+        area = contourArea(contours0[k]);
+        if (area >SQmin && area < SQmax){// 25000  95000
+            approxPolyDP(Mat(contours0[k]), approx, arcLength(Mat(contours0[k]), true)*0.01, true);// 0.01
+            aps = approx.size();
+
+    //    printf("APS=%d ",aps);
+              if (aps == 4 ){// 左右周りは不明6-13
+                  maxCosine = 0;
+                  for( int j = 0; j < 4; j++ )
+                      {
+                          cosine = fabs(a_angle(approx[j], approx[(j+2)%4], approx[(j+3)%4]));
+                          maxCosine = MAX(maxCosine, cosine);
+                        }
+                  int check = sqch(approx);
+                  if(( maxCosine < MCosine )&&(check == 0)){
+                    //    printf("Q1 \n");
+                       sqa[s1].push_back(cv::Point(approx[0].x, approx[0].y));
+                       sqa[s1].push_back(cv::Point(approx[1].x, approx[1].y));
+                       sqa[s1].push_back(cv::Point(approx[2].x, approx[2].y));
+                       sqa[s1].push_back(cv::Point(approx[3].x, approx[3].y));
+                        // 右周りの座標?
+                      drawContours(mask0,contours0,k,Scalar(255),FILLED);
+                      s1++;s2++;
+                  }
+              }
+              if ((aps > 4 )&&(aps <= 20 )){// 20は適当　検討要する？１０にしたらダメ？２－４
+              //convexHull(approx, approx_con);
+                  convexHull(Mat(contours0[k]), approx_con);
+                  area2 = contourArea(approx_con);
+                  if ((approx_con.size() == 4 ) && (area2 < SQmax)){
+                    maxCosine = 0;
+                    for( int j = 0; j < 4; j++ )
+                        {
+                            //cosine = fabs(a_angle(approx_con[j%4], approx_con[j-2], approx_con[j-1]));
+                            cosine = fabs(a_angle(approx_con[j], approx_con[(j+2)%4], approx_con[(j+3)%4]));
+                            maxCosine = MAX(maxCosine, cosine);
+                          }
+                    int check = sqch(approx_con);
+                    if(( maxCosine < MCosine )&&(check == 0)){
+                    //  printf("Q2 \n");
+                        sqa[s1].push_back(cv::Point(approx_con[0].x,approx_con[0].y));
+                        sqa[s1].push_back(cv::Point(approx_con[3].x,approx_con[3].y));
+                        sqa[s1].push_back(cv::Point(approx_con[2].x,approx_con[2].y));
+                        sqa[s1].push_back(cv::Point(approx_con[1].x,approx_con[1].y));
+                        drawContours(mask0,contours0,k,Scalar(255),FILLED);
+                      //sqa[s1].push_back(approx_con);// この部分不完全６－２１
+                        s1++;s3++;
+                        //polylines(img1, approx_con, true, Scalar(0, 0, 255), 2);//
+                    }
+                  }
+                  if (approx_con.size() > 4 ){
+                      approxPolyDP(approx_con, approx_con1, arcLength(approx_con, true)*0.005, true);
+                      if ((approx_con1.size() == 4 ) && (area2 < SQmax)){
+                        maxCosine = 0;
+                        for( int j = 0; j < 4; j++ )
+                            {
+                                //cosine = fabs(a_angle(approx[j%4], approx[j-2], approx[j-1]));
+                                cosine = fabs(a_angle(approx_con1[j], approx_con1[(j+2)%4], approx_con1[(j+3)%4]));
+                                maxCosine = MAX(maxCosine, cosine);
+                              }
+                        int check = sqch(approx_con1);
+                        if(( maxCosine < MCosine )&&(check == 0)){
+                        //  printf("Q3 \n");
+                        //if( maxCosine < MCosine ){
+                              sqa[s1].push_back(cv::Point(approx_con1[0].x,approx_con1[0].y));
+                              sqa[s1].push_back(cv::Point(approx_con1[1].x,approx_con1[1].y));
+                              sqa[s1].push_back(cv::Point(approx_con1[2].x,approx_con1[2].y));
+                              sqa[s1].push_back(cv::Point(approx_con1[3].x,approx_con1[3].y));
+
+                          //drawContours(mask0,sqa,-1,Scalar(255),CV_FILLED);
+                          drawContours(mask0,contours0,k,Scalar(255),FILLED);
+                          s1++;s4++;
+                        }
+                      }
+                  }
+              }
+        }
+    }
+    //imshow("adp-Mask0-approx",mask0);
     //////////////////以下　黄色領域抽出　////////////////////////////////////////
 
     split(n0, plane);
@@ -1148,9 +1233,6 @@ static int FHomo(const Mat& image, vector<vector<cv::Point> >& sq, int sqindex, 
                     ttx[2]=tx[(ij+2)%3];
                     tty[2]=ty[(ij+2)%3];
                 }
-                //printf("B=%lf \n ttx0 tty0 =%d %d  ttx1 tty1= %d %d ttx2 tty2= %d %d\n",B,ttx[0],tty[0],ttx[1],tty[1],ttx[2],tty[2]);
-                //////////////// 三角の最も角度が大きい点が直角点　追加必要　２０１９－６－３０
-                //////////////// とはいかない-----横からだと２等辺三角形になるのでうまくいかない。　最も小さい角度の点が上のij の時のみ除外する
 
                 /////////////////////////　ii は角度情報ではない///////
                 // 0(-45-45) 1(-45-135) 2(-135- 135) 3(135-45)左周り
@@ -1224,9 +1306,9 @@ static int FHomo(const Mat& image, vector<vector<cv::Point> >& sq, int sqindex, 
 /////////////////////////////////////////////////////////////
         if(LR==0){
 // 以下は　理論的には　gx,gy = 25,42
-            if ((gx[0]<15)||(gx[0]>35)||(gy[0]<25)||(gy[0]>50)){//////直角点範囲　ここではじかれることが多い
+            if ((gx[0]<15)||(gx[0]>40)||(gy[0]<25)||(gy[0]>60)){//////直角点範囲　ここではじかれることが多い
     //　斜め画像で三角形が奥の場合のgyに対して gy を変更したがgy<20 はありえない　元に戻す　2019-2-12
-    //if ((gx<15)||(gx>30)||(gy<30)||(gy>50)){/////// gx15 なら gy32 が正しい
+            //if ((gx<15)||(gx>35)||(gy<25)||(gy>50)){/////// gx15 なら gy32 が正しい
               continue;//射影点が範囲内にない時
             }
 //////////////////////////以下　三角形のチェック　その他　追加必要？
@@ -1610,8 +1692,10 @@ static long Getcode( const Mat& image, int *X, int *Y,int &invmean, int LR)
 
 
     B[0]=0x30;//一番左上は使わない　取りあえず　　三角マーカーの黒を拾うため
-    B[1]=0x30;// ２番目も使わない　１２－２５
-    B[5]=0x30;// ２列目左も使わない　２０１８－５－２２
+    if(LR==0) {
+      B[1]=0x30;// ２番目も使わない　１２－２５
+      B[5]=0x30;// ２列目左も使わない　２０１８－５－２２
+    }
     ///////////////////////////////////////////////////////////
     long val=0;
     for ( int j=0; j<25; j++){
@@ -1778,7 +1862,7 @@ static void Black_point(const Mat& mt, int black[5][5])
   //////////////////////////////////////// ここまでは通常　////////////
   ////////////// 以下　一様に影がある場合　真ん中をリファレンスにする試行
       int ref = black[2][2];
-    if((ref > 85)&&(ref < 190)){//70だとオリジナルでとれるものもエラーになる場合あり
+    if((ref > 85)&&(ref < 400)){//70だとオリジナルでとれるものもエラーになる場合あり
       //100前後は突起内の影　西日などによる突起をはみ出した突起の本体の影は180を超えるケースあり
         for (int i=0;i<5;i++){
               //  printf(" \n");

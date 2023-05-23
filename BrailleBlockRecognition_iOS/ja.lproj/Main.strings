@@ -3,10 +3,37 @@
 "4Yc-Xz-0Iz.text" = "再生速度";
 
 /* Class = "UIButton"; normalTitle = "音声停止"; ObjectID = "576-bx-X5l"; */
-"576-bx-X5l.normalTitle" = "音声停止";
+"576-bx-X5l.normalTitle" = "停止";
+
+/* Class = "UIButton"; normalTitle = "音声一時停止"; ObjectID = "Jxi-Fu-bLd"; */
+"Jxi-Fu-bLd.normalTitle" = "一時停止";
+
+/* Class = "UIButton"; normalTitle = "音声再開"; ObjectID = "yzo-fk-agB"; */
+"yzo-fk-agB.normalTitle" = "再開";
+
+/* Class = "UIButton"; normalTitle = "もう一度; ObjectID = "hJ6-sU-hpB"; */
+"hJ6-sU-hpB.normalTitle" = "もう一度";
+
+/* Class = "UIButton"; normalTitle = "ジャンル"; ObjectID = "n0V-Ei-BPr"; */
+"n0V-Ei-BPr.normalTitle" = "ジャンル";
 
 /* Class = "UILabel"; text = "version"; ObjectID = "Aee-H6-sjD"; */
 "Aee-H6-sjD.text" = "version";
+
+/* Class = "UILabel"; text = "文字の大きさ"; ObjectID = "vM3-GF-Bke"; */
+"vM3-GF-Bke.text" = "文字の大きさ";
+
+/* Class = "UILabel"; text = "文字の大きさ"; ObjectID = "C1s-Sh-du0"; */
+"C1s-Sh-du0.text" = "文字の大きさ";
+
+/* Class = "UIButton"; text = "小"; ObjectID = "eng-YR-yHd"; */
+"eng-YR-yHd.text" = "小";
+
+/* Class = "UIButton"; text = "中"; ObjectID = "9CM-n9-ewr"; */
+"9CM-n9-ewr.text" = "中";
+
+/* Class = "UIButton"; text = "大"; ObjectID = "08T-Ro-yAF"; */
+"08T-Ro-yAF.text" = "大";
 
 /* Class = "UIButton"; configuration.title = "データを保存する"; ObjectID = "Kpp-z4-qn1"; */
 "Kpp-z4-qn1.configuration.title" = "データを保存する";

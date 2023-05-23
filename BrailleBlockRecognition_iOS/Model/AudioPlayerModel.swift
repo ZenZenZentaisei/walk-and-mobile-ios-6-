@@ -1,63 +1,95 @@
 import AVFoundation
 
 protocol AudioPlayerDelegate: AnyObject {
-    func didFinshPlaying()
     func didFinishReading()
+    // どこで呼んでいるかわからない、
+    func didFinishPlaying()
 }
 
 class AudioPlayerModel: NSObject {
     weak var delegate: AudioPlayerDelegate?
-    
     private var audioPlayer = AVAudioPlayer()
     private let textToSpeech = AVSpeechSynthesizer()
     private let initMessage = NSLocalizedString("Verification", comment: "")
     public var process = false
+
+    //var alreadyread = ""
+    //var fulltext = ""
     
     private var playbackSpeed: Float = 0.0
     private var delayStartTime: Double = 0.0
     
-    // 案内文を再生する
-    public func onlineReadGuide(mp3URL: URL, completion: @escaping (String, Double) -> Void) {
-        beginSoundEffect()
+    public func readGuide(manuscript: String, genre: String, lang: String) {
+        //全文取得
+        //fulltext = manuscript
+        //開始効果音の関数
+        beginSoundEffect(genre: genre)
 
-        // 案内文再生
-        DispatchQueue.main.asyncAfter(deadline: .now() + delayStartTime / Double(playbackSpeed)) {
-            self.durationStreamingMusic(url: mp3URL, completion: { globalMP3, duration  in
-                self.playMP3File(url: globalMP3, speed: self.playbackSpeed)
-                completion(self.initMessage, (self.delayStartTime + duration) / Double(self.playbackSpeed))
-            })
-        }
-    }
-    
-    public func offlineReadGuide(manuscript: String, lang: String) {
-        beginSoundEffect()
-        
         textToSpeech.delegate = self
+        //iPhoneの読み上げ機能を指定している
         let read = AVSpeechUtterance(string: manuscript)
         read.voice = AVSpeechSynthesisVoice(language: lang)
-        read.rate = 0.5
-        
+        //読み上げ速度：Min0.1~Max1.0 標準0.5
+        read.rate = self.playbackSpeed
         // 案内文を読み上げ
         DispatchQueue.main.asyncAfter(deadline: .now() + delayStartTime / Double(playbackSpeed)) {
             self.textToSpeech.speak(read)
         }
     }
     
-    // 案内文を終了する
-    public func stopMP3File() -> String {
-        audioPlayer.stop()
+    // 途中で案内文を終了する
+    public func stop(){
         textToSpeech.stopSpeaking(at: .immediate)
         process = false
-        return initMessage
+    }
+    
+    // 再生を一時停止する
+    public func pause(){
+        if textToSpeech.isSpeaking{
+            textToSpeech.pauseSpeaking(at: .immediate)
+        }
+    }
+    
+    // 再生を再開する
+    public func playback(){
+        if textToSpeech.isPaused{
+            textToSpeech.continueSpeaking()
+        }
+    }
+    
+    // 再生をリピートする(関数名repeat使えんかった)
+    public func echo(manuscript: String, lang: String) {
+        //fulltext = manuscript
+        //alreadyread = ""
+        
+        let read = AVSpeechUtterance(string: manuscript)
+        read.voice = AVSpeechSynthesisVoice(language: lang)
+        playbackSpeed = UserDefaults.standard.float(forKey: "reproductionSpeed")
+        read.rate = playbackSpeed
+        
+        textToSpeech.speak(read)
+        process = false
     }
     
     // 認識開始の効果音再生
-    private func beginSoundEffect() {
-        let openStartFile = "GeneralStart"
+    private func beginSoundEffect(genre: String) {
+        var openStartFile = "generalStart"
+        // ジャンル別で効果音を変更
+        switch genre {
+        case "1":
+            openStartFile = "detailStart"
+        case "2":
+            openStartFile = "evacuationStart"
+        case "3":
+            openStartFile = "exclusiveStart"
+        default:
+            openStartFile = "generalStart"
+        }
+        
         if UserDefaults.standard.float(forKey: "reproductionSpeed") != 0.0 {
             playbackSpeed = UserDefaults.standard.float(forKey: "reproductionSpeed")
         } else {
-            playbackSpeed = 1.0
+            playbackSpeed = 0.5
         }
         
         delayStartTime = durationEffectSound(fileName: openStartFile)
@@ -88,21 +120,6 @@ class AudioPlayerModel: NSObject {
         let timeError = 0.1
         return Double(min * 60 + sec) + timeError
     }
-    
-    // ストリーミンング形式で音(案内分)を再生
-    private func durationStreamingMusic(url: URL, completion: @escaping (URL, Double) -> Void) {
-        let downloadTask:URLSessionDownloadTask = URLSession.shared.downloadTask(with: url as URL) { (URL, response, error) in
-            do {
-                self.audioPlayer = try AVAudioPlayer(contentsOf: URL!)
-            } catch {
-                fatalError("Error \(error.localizedDescription)")
-            }
-            // 誤差(何故か再生時間をストリーミングで取得すると-2秒になるため....)
-            let timeError = 2.0
-            completion(URL!, TimeInterval(ceil(Double(self.audioPlayer.duration))) + timeError)
-        }
-        downloadTask.resume()
-    }
 }
 
 extension AudioPlayerModel: AVAudioPlayerDelegate {
@@ -110,37 +127,46 @@ extension AudioPlayerModel: AVAudioPlayerDelegate {
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: url as URL)
             audioPlayer.delegate = self
+            audioPlayer.volume = 1.0
             audioPlayer.play()
         } catch let error as NSError {
             print(error.localizedDescription)
         } catch {
             print("AVAudioPlayer init failed")
         }
-    }
-    
-    func playMP3File(url: URL, speed: Float) {
-        do {
-            audioPlayer = try AVAudioPlayer(contentsOf: url as URL)
-            audioPlayer.enableRate = true
-            audioPlayer.rate = speed
-            audioPlayer.delegate = self
-            audioPlayer.prepareToPlay()
-            audioPlayer.play()
-        } catch let error as NSError {
-            print(error.localizedDescription)
-        } catch {
-            print("AVAudioPlayer init failed")
-        }
-    }
-    
-    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-        delegate?.didFinshPlaying()
     }
 }
 
 extension AudioPlayerModel: AVSpeechSynthesizerDelegate {
-    // 読み上げ終了
+    // 読み上げ終了時呼ばれる
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
         delegate?.didFinishReading()
     }
+    
+    
+    /*
+    // 一時停止→音声速度ボタン→再開で再生速度変化
+    // 文章の切れ目問題が解消できないため不採用？
+    // 読み上げ中に呼ばれる
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, willSpeakRangeOfSpeechString characterRange: NSRange, utterance: AVSpeechUtterance) {
+        // 既読を抽出
+        let reading = (utterance.speechString as NSString).substring(with: characterRange)
+        alreadyread = alreadyread + reading
+        //print(alreadyread)
+    }
+    // 再開時に呼ばれる
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didContinue utterance: AVSpeechUtterance) {
+        //　未読 = 全文　- 既読 (たまにエラー)
+        let unread: String = String(fulltext.suffix(fulltext.count - alreadyread.count))
+        //読み上げ文差し替え
+        stop()
+        let read = AVSpeechUtterance(string: unread)
+        //再生速度変化
+        playbackSpeed = UserDefaults.standard.float(forKey: "reproductionSpeed")
+        read.rate = playbackSpeed
+        //読み上げ
+        textToSpeech.speak(read)
+    }
+     */
 }
+

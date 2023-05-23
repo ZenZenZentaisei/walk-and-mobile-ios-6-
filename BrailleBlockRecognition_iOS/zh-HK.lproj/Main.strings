@@ -5,8 +5,35 @@
 /* Class = "UIButton"; normalTitle = "Voice Stop"; ObjectID = "576-bx-X5l"; */
 "576-bx-X5l.normalTitle" = "語音停止";
 
+/* Class = "UIButton"; normalTitle = "Voice Pause"; ObjectID = "Jxi-Fu-bLd"; */
+"Jxi-Fu-bLd.normalTitle" = "語音暫停";
+
+/* Class = "UIButton"; normalTitle = "Voice Remsume"; ObjectID = "yzo-fk-agB"; */
+"yzo-fk-agB.normalTitle" = "語音恢復";
+
+/* Class = "UIButton"; normalTitle = "Voice Repeat"; ObjectID = "hJ6-sU-hpB"; */
+"hJ6-sU-hpB.normalTitle" = "語音重複";
+
+/* Class = "UIButton"; normalTitle = "gnere; ObjectID = "n0V-Ei-BPr"; */
+"n0V-Ei-BPr.normalTitle" = "類型";
+
 /* Class = "UILabel"; text = "version"; ObjectID = "Aee-H6-sjD"; */
 "Aee-H6-sjD.text" = "version";
+
+/* Class = "UILabel"; text = "Font size"; ObjectID = "vM3-GF-Bke"; */
+"vM3-GF-Bke.text" = "字體大小";
+
+/* Class = "UILabel"; text = "Font size"; ObjectID = "C1s-Sh-du0"; */
+"vM3-GF-Bke.text" = "字體大小";
+
+/* Class = "UIButton"; text = "Small"; ObjectID = "eng-YR-yHd"; */
+"eng-YR-yHd.text" = "小";
+
+/* Class = "UIButton"; text = "Medium"; ObjectID = "eng-YR-yHd"; */
+"eng-YR-yHd.text" = "中";
+
+/* Class = "UIButton"; text = "Large"; ObjectID = "08T-Ro-yAF"; */
+"08T-Ro-yAF.text" = "大";
 
 /* Class = "UIButton"; configuration.title = "Save Data"; ObjectID = "Kpp-z4-qn1"; */
 "Kpp-z4-qn1.configuration.title" = "保存數據";

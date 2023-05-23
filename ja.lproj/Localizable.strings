@@ -2,6 +2,14 @@
 "Playback Speed" = "再生速度";
 "Save Data" = "データを保存する";
 "Latest data" = "最新のデータ";
-"I was able to install the latest data." = "最新のデータをインストールすることができました。";
+"The latest data could be installed." = "最新のデータをインストールすることができました。";
 "Verification" = "確認中";
 "Unregistered" = "未登録";
+"normal" = "一般";
+"detail" = "詳細";
+"evacuation" = "避難";
+"exclusive" = "専用";
+"Fontsize" = "文字の大きさ";
+"Small" = "小";
+"Medium" = "中";
+"Large" = "大";

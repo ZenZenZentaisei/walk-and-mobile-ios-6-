@@ -2,6 +2,14 @@
 "Playback Speed" = "播放速度";
 "Save Data" = "保存數據";
 "Latest data" = "最新數據";
-"I was able to install the latest data." = "我能夠安裝最新的數據。";
+"The latest data could be installed." = "可以安裝最新的數據";
 "Verification" = "確認";
 "Unregistered" = "未註冊";
+"normal" = "普通的";
+"detail" = "細節";
+"evacuation" = "疏散";
+"exclusive" = "獨家的";
+"Fontsize" = "字體大小";
+"Small" = "小號";
+"Medium" = "中號";
+"Large" = "大號";

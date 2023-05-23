@@ -79,6 +79,7 @@ class VideoCaptureModel: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate 
         captureSession.startRunning()
     }
     
+    
     public func stopCapturing() {
         captureSession.stopRunning()
     }
@@ -93,12 +94,14 @@ class VideoCaptureModel: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate 
     private func openCVImageProcessing(image: UIImage) {
         let openCV = OpenCV()
         let result = openCV.reader(image)! as NSArray
-        print(result);
         
         let codeResult = result[0]
         let angleResult = result[1]
+        let ImageResult = result[2]
         
-        delegate?.didCaptureFrame(display: image, code: "\(codeResult)", angle: "\(angleResult)")
+        delegate?.didCaptureFrame(display: ImageResult as! UIImage, code: "\(codeResult)", angle: "\(angleResult)")
+        //↓は緑枠なしの時
+        //delegate?.didCaptureFrame(display: image, code: "\(codeResult)", angle: "\(angleResult)")
     }
     
     // sampleBufferからUIImageを作成
