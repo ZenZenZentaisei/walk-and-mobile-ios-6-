@@ -2,8 +2,9 @@ import UIKit
 import SafariServices
 import CoreLocation
 import CoreMotion
+import AVFoundation//変更箇所
 
-class ViewController: UIViewController, UIGestureRecognizerDelegate{
+class ViewController: UIViewController, UIGestureRecognizerDelegate,CLLocationManagerDelegate{
     @IBOutlet weak var cameraImageView: UIImageView!
     @IBOutlet weak var code: UITextField!
     @IBOutlet weak var angle: UITextField!
@@ -16,8 +17,10 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate{
     let guideVoice = AudioPlayerModel()
     let codeBlock = CodeBlockController()
     let videoCapture = VideoCaptureModel()
+    let captureSession = AVCaptureSession()//変更箇所
+    let locationManager = CLLocationManager()
     
-    var safariVC: SFSafariViewController?
+    var safariVC: SFSafariViewController?//Safariアプリに飛ばす
     var coupons: [[String: Any]] = []
     var guideText = NSLocalizedString("Verification", comment: "")
     var guideTextClone = NSLocalizedString("Verification", comment: "")
@@ -27,6 +30,9 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate{
     var genre = String()
     var genreName = NSLocalizedString("normal", comment: "")
     var fontsize = NSLocalizedString("Medium", comment: "")
+    var ecomode = UserDefaults.standard.string(forKey: "ecomode") ?? "nil"
+    var Latitude: String = ""///
+    var Longitude: String = ""///
     
     //加速度センサで利用する変数
     let motionManager = CMMotionManager()
@@ -75,29 +81,31 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate{
         angle.text = "\(0)"
         genres.setTitle(NSLocalizedString(genreName, comment: ""), for: .normal)
         cameraImageView.layer.borderColor = UIColor.clear.cgColor
-        //videoCapture.stopCapturing()
+        
     }
     
     //音声停止ボタン 現在の再生、同code、angleでの連続再生を停止させる。
     @IBAction func stop(_ sender: Any) {
-        self.stopmotion()
+        stopmotion()
     }
     @IBAction func pause(_ sender: Any) {
         changeColorFrame()
         guideVoice.pause()
-        //videoCapture.stopCapturing()
+        
     }
     @IBAction func resume(_ sender: Any) {
         changeColorFrame()
-        setFontsize()
         guideVoice.playback()
     }
+    //リピートボタン
     @IBAction func echo(_ sender: Any) {
         changeColorFrame()
-        setFontsize()
         guideText = guideTextClone
         guideVoice.echo(manuscript: voiceGuidance, lang: codeBlock.language!)
-        videoCapture.stopCapturing()
+        print(voiceGuidance)
+        if voiceGuidance != ""{
+            videoCapture.stopCapturing()
+        }
     }
     //自動スリープを無効化
     override func viewWillAppear(_ animated: Bool) {
@@ -105,39 +113,93 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate{
       UIApplication.shared.isIdleTimerDisabled = true
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
+    override func viewDidLoad() {//Viewが読みこれまれた時の処理
+        super.viewDidLoad()//ライフサイクルメソッドによる記述。決まりのようなもの。下からの処理の解析を行うことに意味がある。
+        //サーバーからデータ取得
         codeBlock.fetchGuideInformation()
-        
+        //省電力モードによるカメラの起動の処理
         videoCapture.startCapturing()
-        videoCapture.delegate = self
+        if ecomode == "ON"{
+            videoCapture.stopCapturing()
+        }
+        videoCapture.delegate = self//全てのselfはViewControllerを示している？
         guideVoice.delegate = self
-
+        
+        //InfoVC(設定画面)へのボタン設置
+        infoBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "info.circle"), style: .done, target: self, action: #selector(infoBarButtonTapped(_:)))
+        self.navigationItem.leftBarButtonItem = infoBarButtonItem
+        //ダブルタップ設定
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestWhenInUseAuthorization()
+        //ダブルタップイベントを登録
+        let tapGesture: UITapGestureRecognizer = UITapGestureRecognizer(
+                        target: self,
+                        action: #selector(tapped(_:)))
+        tapGesture.delegate = self
+        tapGesture.numberOfTapsRequired = 2//ダブルタップで反応
+        self.view.addGestureRecognizer(tapGesture)
+        //長押しイベントを登録
         let longpressGesture = UILongPressGestureRecognizer(target: self, action: #selector(ViewController.longPress(_:)))
         
         longpressGesture.delegate = self
         self.view.addGestureRecognizer(longpressGesture)
-       
-        infoBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "info.circle"), style: .done, target: self, action: #selector(infoBarButtonTapped(_:)))
-        self.navigationItem.leftBarButtonItem = infoBarButtonItem
         guidance.text = guideText
         setDefaultButtonName()
     }
-
-    @objc func longPress(_ sender: UILongPressGestureRecognizer) {
-        if sender.state == .began{
-            print("長押し開始")
-            //カメラ開始
-            videoCapture.startCapturing()
-        }
-        else if sender.state == .ended{
-            print("長押し終了")
-            //カメラ停止
-            videoCapture.stopCapturing()
+    //避難所情報取得機能で使う関数　↓
+    @objc func tapped(_ sender: UITapGestureRecognizer){
+        //ダブルタップした時の処理
+        if genre == "2" {
+            locationManager.requestLocation()   //現在地取得のやつ
+            let nextViewController = self.storyboard?.instantiateViewController(withIdentifier: "toEvaVC") as! EvacuationViewController
+            self.present(nextViewController, animated: true, completion: nil)
         }
     }
     
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+            guard let loc = locations.last else { return }
+            
+            CLGeocoder().reverseGeocodeLocation(loc, completionHandler: {(placemarks, error) in
+                
+                if let error = error {
+                    print("reverseGeocodeLocation Failed: \(error.localizedDescription)")
+                    return
+                }
+                
+                if let placemark = placemarks?[0] {
+                    let Latitude = loc.coordinate.latitude
+                    let Longitude = loc.coordinate.longitude
+                    //print(Latitude, Longitude)
+                    UserDefaults.standard.set(Latitude, forKey: "str0")
+                    UserDefaults.standard.set(Longitude, forKey: "str1")
+                }
+            })
+    }
+        
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("error: \(error.localizedDescription)")
+    }
+    //周辺の避難所情報取得機能　↑
+    
+    //長押しした時の処理
+
+    @objc func longPress(_ sender: UILongPressGestureRecognizer) {
+        ecomode = UserDefaults.standard.string(forKey: "ecomode") ?? "nil"
+        if ecomode == "ON"{
+            if sender.state == .began{
+                print("長押し開始")
+                //カメラ開始(同じインスタンスを使い回すために、他とは書き方が異なる)
+                videoCapture.captureSession.startRunning()
+            }
+            else if sender.state == .ended{
+                print("長押し終了")
+                //カメラ停止
+                videoCapture.stopCapturing()
+            }
+        }
+    }
+    //文字の大きさ設定
     func setFontsize() {
         fontsize = UserDefaults.standard.string(forKey: "fontsize") ?? "nil"
         print(fontsize)
@@ -159,7 +221,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate{
         acceleZ = Alpha * acceleration.z + acceleZ * (1.0 - Alpha);
         //加速度の絶対値が1.3を超えた時の処理（音声停止）
         if acceleX > 1.3 || acceleY > 1.3 || acceleZ > 1.3 || acceleX < -1.3 || acceleY < -1.3 || acceleZ < -1.3 {
-            self.stopmotion()
+            stopmotion()
         }
     }
     
@@ -186,15 +248,16 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate{
         cameraImageView.layer.borderColor = UIColor.red.cgColor
         cameraImageView.layer.borderWidth = 5
     }
-    
+    //画面から移動した時に呼ばれる
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         videoCapture.stopCapturing()
     }
-    
+    //infoVCへのボタンを押した時の画面遷移設定とデリゲートを登録
     @objc func infoBarButtonTapped(_ sender: UIBarButtonItem) {
         let infoVC = self.storyboard?.instantiateViewController(withIdentifier: "infoVC") as! InfoViewController
         infoVC.infoCodeData = codeBlock
+        infoVC.delegate = self
         let nav = UINavigationController(rootViewController: infoVC)
         self.present(nav, animated: true, completion: nil)
     }
@@ -219,7 +282,6 @@ extension ViewController: VideoCaptureDelegate {
          点字ブロックを認識し、登録があった　　　｜　1〜　　　  0〜     |
         */
         if code > 0 && angle > -1{
-            setFontsize()
             changeColorFrame()
             // 読み方を取得
             let resultCalls = codeBlock.resultValue(key: guidanceKey, type: .call)
@@ -245,10 +307,14 @@ extension ViewController: VideoCaptureDelegate {
                 urlMessage = resultMessage
             }
             //　読み方が無い場合、案内文を表示し、案内文をアナウンスする
-            else if resultCall == NSLocalizedString("Unregistered", comment: "") || resultCall == ""{
+            else if resultCall == "" {
                 guideText = resultMessage
                 voiceGuidance = resultMessage
             }
+            /*else if resultCall == NSLocalizedString("Unregistered", comment: "") || resultCall == ""{
+                guideText = resultMessage
+                voiceGuidance = resultMessage
+            }*/
             //通常(案内文も読み方もある場合、案内文を表示し、読み方をアナウンスする)
             else{
                 guideText = resultMessage
@@ -284,19 +350,28 @@ extension ViewController: AudioPlayerDelegate {
             })
         }
         videoCapture.stopCapturing()
+        guard let webView = safariVC else { return }
+        webView.delegate = self
+        present(webView,animated: false,completion: nil)
     }
     
     // 文字を読み終えたら呼び出される
     func didFinishReading() {
+        //省電力モードの処理
+        if ecomode == "OFF"{
+            videoCapture.startCapturing()
+        }
         //加速度センサの読み取り停止
         self.stopAccelerometer()
         
         guideVoice.process = false
+        //現在のジャンルに設定
         genres.setTitle(NSLocalizedString(genreName, comment: ""), for: .normal)
-        
+        //カメラ画面の枠色をクリア
         cameraImageView.layer.borderColor = UIColor.clear.cgColor
         //videoCapture.startCapturing()
         
+        //URLの処理
         if urlMessage != ""{
             videoCapture.stopCapturing()
             guard let webView = safariVC else { return }
@@ -309,13 +384,31 @@ extension ViewController: AudioPlayerDelegate {
 
 extension ViewController: SFSafariViewControllerDelegate {
     // 画面の読み込み完了時に呼び出される
+    //アクションボタンタップ時
     func safariViewController(_ controller: SFSafariViewController, didCompleteInitialLoad didLoadSuccessfully: Bool) {
         safariVC = nil
     }
     
     // 画面が閉じる時に呼び出される
+    //完了ボタンタップ時
     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
-        videoCapture.startCapturing()
+        if ecomode == "OFF"{
+            videoCapture.startCapturing()
+        }
+        //videoCapture.startCapturing()
         guideVoice.process = false
+        urlMessage = ""
+        print("完了する")
     }
+}
+
+extension ViewController: InfoViewDelegate{
+    //infoVCで完了ボタン押し時に呼ばれる
+    func swtichCamera(ecomode: String) {
+        videoCapture.captureSession.startRunning()
+        if ecomode == "ON"{
+            videoCapture.stopCapturing()
+        }
+    }
+    
 }

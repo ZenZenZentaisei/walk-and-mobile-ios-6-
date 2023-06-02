@@ -27,6 +27,8 @@
 		D43116CE250614180050EA18 /* BrailleBlockRecognition_iOSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43116CD250614180050EA18 /* BrailleBlockRecognition_iOSTests.swift */; };
 		D43116D9250614180050EA18 /* BrailleBlockRecognition_iOSUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43116D8250614180050EA18 /* BrailleBlockRecognition_iOSUITests.swift */; };
 		D43116E8250614FC0050EA18 /* OpenCV.mm in Sources */ = {isa = PBXBuildFile; fileRef = D43116E7250614FC0050EA18 /* OpenCV.mm */; };
+		DBA553992A2101B6007797CE /* EvacuationViewContoller.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA553982A2101B6007797CE /* EvacuationViewContoller.swift */; };
+		DBA5539B2A2101C4007797CE /* CurrentViewContoller.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBA5539A2A2101C4007797CE /* CurrentViewContoller.swift */; };
 		DBBB85302A0E975400D2A165 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBBB852F2A0E975400D2A165 /* ViewController.swift */; };
 		DBECC2F329481C6100DB9A40 /* detailStart.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DBECC2EF29481C6100DB9A40 /* detailStart.mp3 */; };
 		DBECC2F429481C6100DB9A40 /* exclusiveStart.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DBECC2F029481C6100DB9A40 /* exclusiveStart.mp3 */; };
@@ -92,6 +94,8 @@
 		D43116E6250614FC0050EA18 /* BrailleBlockRecognition_iOS-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BrailleBlockRecognition_iOS-Bridging-Header.h"; sourceTree = "<group>"; };
 		D43116E7250614FC0050EA18 /* OpenCV.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OpenCV.mm; sourceTree = "<group>"; };
 		D43116E9250615580050EA18 /* OpenCV.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenCV.h; sourceTree = "<group>"; };
+		DBA553982A2101B6007797CE /* EvacuationViewContoller.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EvacuationViewContoller.swift; sourceTree = "<group>"; };
+		DBA5539A2A2101C4007797CE /* CurrentViewContoller.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrentViewContoller.swift; sourceTree = "<group>"; };
 		DBBB852F2A0E975400D2A165 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		DBECC2EF29481C6100DB9A40 /* detailStart.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = detailStart.mp3; sourceTree = "<group>"; };
 		DBECC2F029481C6100DB9A40 /* exclusiveStart.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = exclusiveStart.mp3; sourceTree = "<group>"; };
@@ -141,8 +145,10 @@
 		2A66B73F2720802E0069EF76 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				2AACE764270D1F33009D60D0 /* InfoViewController.swift */,
 				DBBB852F2A0E975400D2A165 /* ViewController.swift */,
+				2AACE764270D1F33009D60D0 /* InfoViewController.swift */,
+				DBA553982A2101B6007797CE /* EvacuationViewContoller.swift */,
+				DBA5539A2A2101C4007797CE /* CurrentViewContoller.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -484,10 +490,12 @@
 			files = (
 				D43116E8250614FC0050EA18 /* OpenCV.mm in Sources */,
 				D43116BE250614170050EA18 /* BrailleBlockRecognition_iOS.xcdatamodeld in Sources */,
+				DBA553992A2101B6007797CE /* EvacuationViewContoller.swift in Sources */,
 				2A66B73E272032670069EF76 /* VideoCaptureModel.swift in Sources */,
 				2A66B735271EF0E70069EF76 /* DataBaseModel.swift in Sources */,
 				2A66B738271FBB6F0069EF76 /* CodeBlockController.swift in Sources */,
 				2A66B733271EF08A0069EF76 /* CodeBlock+CoreDataClass copy.swift in Sources */,
+				DBA5539B2A2101C4007797CE /* CurrentViewContoller.swift in Sources */,
 				DBBB85302A0E975400D2A165 /* ViewController.swift in Sources */,
 				2AACE765270D1F33009D60D0 /* InfoViewController.swift in Sources */,
 				D43116B4250614170050EA18 /* AppDelegate.swift in Sources */,

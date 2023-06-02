@@ -9,7 +9,12 @@
 
 import UIKit
 
-class InfoViewController: UIViewController {
+protocol InfoViewDelegate: AnyObject{
+    func swtichCamera(ecomode: String)
+    func setFontsize()
+}
+
+class InfoViewController: UIViewController,UIGestureRecognizerDelegate {
     
     var previousVCButton: UIBarButtonItem!
 
@@ -24,12 +29,17 @@ class InfoViewController: UIViewController {
     @IBOutlet weak var speedLabel: UILabel!
     @IBOutlet weak var decelerateButton: UIButton!
     @IBOutlet weak var accelerationButton: UIButton!
+    @IBOutlet weak var ecomodeItemLabel: UILabel!
+    @IBOutlet weak var ecomodeLabel: UILabel!
+    @IBOutlet weak var ecomodeOn: UIButton!
+    @IBOutlet weak var ecomodeOff: UIButton!
 
     var fontsize: String = "Medium"
     var loadSpeed: Float = 0.5
-    
+    var ecomode:String = "OFF"
 
     var infoCodeData: CodeBlockController?
+    weak var delegate:InfoViewDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -118,37 +128,69 @@ class InfoViewController: UIViewController {
         
         speedItemLabel.text = NSLocalizedString("Playback Speed", comment: "")
         speedItemLabel.accessibilityHint = "\(loadSpeed)"
+        
+        ecomodeItemLabel.text = NSLocalizedString("EcoMode", comment: "")
+        ecomode = UserDefaults.standard.string(forKey: "ecomode") ?? ""
+        ecomodeLabel.text = NSLocalizedString(ecomode, comment: "")
+ 
+        ecomodeOn.setTitle("ON", for: .normal)
+        ecomodeOn.titleLabel?.font = UIFont.systemFont(ofSize: 25)
+        ecomodeOn.titleLabel?.textAlignment = NSTextAlignment.left
+        ecomodeOn.titleLabel?.contentMode = .scaleAspectFit
+        ecomodeOn.setTitleColor(.black, for: .normal)
+        ecomodeOn.backgroundColor = .secondarySystemFill
+        ecomodeOn.layer.borderWidth = 1
+        ecomodeOn.layer.cornerRadius = 5
+        ecomodeOn.layer.masksToBounds = true
+        ecomodeOn.layer.borderColor = UIColor.secondarySystemFill.cgColor
+        ecomodeOn.addTarget(self, action: #selector(ecomodeOnDidTapped), for: .touchDown)
+        
+        ecomodeOff.setTitle("OFF", for: .normal)
+        ecomodeOff.titleLabel?.font = UIFont.systemFont(ofSize: 25)
+        ecomodeOff.titleLabel?.textAlignment = NSTextAlignment.left
+        ecomodeOff.titleLabel?.contentMode = .scaleAspectFit
+        ecomodeOff.setTitleColor(.black, for: .normal)
+        ecomodeOff.backgroundColor = .secondarySystemFill
+        ecomodeOff.layer.borderWidth = 1
+        ecomodeOff.layer.cornerRadius = 5
+        ecomodeOff.layer.masksToBounds = true
+        ecomodeOff.layer.borderColor = UIColor.secondarySystemFill.cgColor
+        ecomodeOff.addTarget(self, action: #selector(ecomodeOffDidTapped), for: .touchDown)
     }
    
     @objc func previousVCButtonTapped(_ sender: UIBarButtonItem) {
         UserDefaults.standard.set(round(loadSpeed*100)/100, forKey: "reproductionSpeed")
         UserDefaults.standard.set(fontsize, forKey: "fontsize")
-        print(fontsize)
-        self.dismiss(animated: true, completion: nil)
+        UserDefaults.standard.set(ecomode,forKey: "ecomode")
+        
+        delegate?.setFontsize()
+        delegate?.swtichCamera(ecomode: ecomode)
+        
+        dismiss(animated: true, completion: nil)
     }
-    
+    //小ボタンを押した時の処理
     @objc func smallDidTapped(_ sender : Any) {
         fontsize = "Small"
         fontLabel.text = NSLocalizedString(fontsize, comment: "")
     }
-    
+    //中ボタンを押した時の処理
     @objc func mediumDidTapped(_ sender : Any) {
         fontsize = "Medium"
         fontLabel.text = NSLocalizedString(fontsize, comment: "")
     }
-    
+    //大ボタンを押した時の処理
     @objc func largeDidTapped(_ sender : Any) {
         fontsize = "Large"
         fontLabel.text = NSLocalizedString(fontsize, comment: "")
     }
-    
+    //マイナスボタンを押した時の処理
     @objc func decelerateDidTapped(_ sender : Any) {
         if loadSpeed > 0.1{
             loadSpeed -= 0.10
             speedLabel.text = "\(round(loadSpeed*100)/100)"
         }
     }
-    
+    //プラスボタンを押した時の処理
     @objc func accelerationDidTapped(_ sender : Any) {
         if loadSpeed < 1.0{
             loadSpeed += 0.10
@@ -156,6 +198,28 @@ class InfoViewController: UIViewController {
         }
     }
     
+    //ONボタンを押した時の処理
+    @objc func ecomodeOnDidTapped(_ sender: Any) {
+        ecomode = "ON"
+        ecomodeLabel.text = NSLocalizedString(ecomode, comment: "")
+        
+        alertEcomodeOn(title: NSLocalizedString("Power saving mode is turned on.", comment: ""), message: NSLocalizedString("After pressing the done button, press and hold the screen.", comment: ""))
+    }
+    //省電力モードをONの説明文をポップアップ
+    func alertEcomodeOn(title:String, message:String) {
+        var alertController: UIAlertController!
+        
+        alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(alertController, animated: true)
+    }
+    
+    //OFFボタンを押した時の処理
+    @objc func ecomodeOffDidTapped(_ sender: Any) {
+        ecomode = "OFF"
+        ecomodeLabel.text = NSLocalizedString(ecomode, comment: "")
+    }
+    //ダウンロードボタンを押した時の処理
     @IBAction func saveDidTapped(_ sender: Any) {
         guard let setData = infoCodeData else { return }
         setData.saveLocalDataBase() //案内文だけダウンロード
@@ -163,7 +227,7 @@ class InfoViewController: UIViewController {
         alertDownloadCompleted(title: NSLocalizedString("Latest data", comment: ""),
               message: NSLocalizedString("The latest data could be installed.", comment: ""))
     }
-    
+    //ダウンロード完了のポップアップ
     func alertDownloadCompleted(title:String, message:String) {
         var alertController: UIAlertController!
         
