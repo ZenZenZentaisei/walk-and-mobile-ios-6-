@@ -33,7 +33,7 @@ class AudioPlayerModel: NSObject {
         read.rate = self.playbackSpeed
         // 案内文を読み上げ
         DispatchQueue.main.asyncAfter(deadline: .now() + delayStartTime / Double(playbackSpeed)) {
-            self.textToSpeech.speak(read)
+            self.textToSpeech.speak(read)//ここをコメントアウトすると音声案内が停止する
         }
     }
     

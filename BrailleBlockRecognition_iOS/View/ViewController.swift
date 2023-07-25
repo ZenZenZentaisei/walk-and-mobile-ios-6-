@@ -190,7 +190,7 @@ class ViewController: UIViewController, UIGestureRecognizerDelegate,CLLocationMa
             if sender.state == .began{
                 print("長押し開始")
                 //カメラ開始(同じインスタンスを使い回すために、他とは書き方が異なる)
-                videoCapture.captureSession.startRunning()
+                videoCapture.startCapturing()
             }
             else if sender.state == .ended{
                 print("長押し終了")
@@ -405,7 +405,7 @@ extension ViewController: SFSafariViewControllerDelegate {
 extension ViewController: InfoViewDelegate{
     //infoVCで完了ボタン押し時に呼ばれる
     func swtichCamera(ecomode: String) {
-        videoCapture.captureSession.startRunning()
+        videoCapture.startCapturing()
         if ecomode == "ON"{
             videoCapture.stopCapturing()
         }
